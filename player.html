@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Symbian S60 Music Player</title>
+  <title>Nokia XpressMusic S60v5 Player</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --s60-body-bg: #1c2024;
-      --s60-frame: #323842;
-      --s60-screen-bg: #0c1219;
-      --s60-header: #1b2838;
-      --s60-blue: #0084ff;
-      --s60-orange: #ff7700;
-      --s60-text: #e6f0fa;
-      --s60-subtext: #7d93a8;
-      --s60-key: #252b35;
-      --s60-key-border: #444d5c;
+      --s60-chassis: #12151b;
+      --s60-bezel: #1e2430;
+      --s60-screen: #0a0e14;
+      --s60-red: #e02424; /* XpressMusic Red Accent */
+      --s60-blue: #0088ff;
+      --s60-cyan: #00d2ff;
+      --s60-text: #f0f4f8;
+      --s60-subtext: #889bb0;
+      --touch-bg: rgba(255, 255, 255, 0.05);
+      --touch-border: rgba(0, 136, 255, 0.25);
     }
     * {
       box-sizing: border-box;
@@ -27,7 +27,7 @@
       margin: 0;
       padding: 12px;
       min-height: 100vh;
-      background: #080a0d;
+      background: #05070a;
       color: var(--s60-text);
       font-family: "Tahoma", "Lucida Grande", "Segoe UI", sans-serif;
       display: flex;
@@ -36,76 +36,70 @@
       justify-content: center;
     }
 
-    /* Classic Nokia Chasis Frame */
-    .nokia-device {
+    /* All-Glass Touchscreen Bezel */
+    .touch-device {
       width: 100%;
       max-width: 370px;
-      background: linear-gradient(180deg, #3d4552 0%, #20242c 100%);
-      border: 3px solid #566173;
-      border-radius: 26px;
+      background: var(--s60-chassis);
+      border: 3px solid #2d3748;
+      border-radius: 24px;
       padding: 14px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.95), 0 0 15px rgba(224, 36, 36, 0.15);
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
 
-    /* Metallic Earpiece Grill & Brand */
-    .brand-bar {
+    /* Top Branding & Sensor Area */
+    .top-panel {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 8px;
+      padding: 2px 6px;
+      border-bottom: 2px solid var(--s60-red);
+      padding-bottom: 8px;
     }
-    .brand-title {
+    .brand-logo {
       font-weight: 800;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       letter-spacing: 2px;
-      color: #9eb1c7;
-      text-transform: uppercase;
+      color: #cbd5e1;
     }
-    .earpiece {
-      width: 48px;
-      height: 4px;
-      background: #111418;
-      border-radius: 4px;
-      box-shadow: inset 0 1px 1px #000, 0 1px 1px rgba(255, 255, 255, 0.15);
-    }
-    .s60-tag {
-      font-size: 0.65rem;
-      color: var(--s60-blue);
+    .xpress-tag {
+      font-size: 0.7rem;
       font-weight: 700;
+      color: var(--s60-red);
+      letter-spacing: 0.5px;
     }
 
-    /* Symbian TFT LCD Display Screen */
-    .symbian-screen {
-      background: var(--s60-screen-bg);
-      border: 2px solid #000;
-      border-radius: 12px;
+    /* Full Touchscreen Container */
+    .touch-screen {
+      background: var(--s60-screen);
+      border: 1px solid #1a2332;
+      border-radius: 14px;
       padding: 12px;
-      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8), 0 1px 0 rgba(255, 255, 255, 0.1);
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      position: relative;
+      gap: 12px;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
     }
 
-    /* Screen Top Status Bar (Battery, Signal, Mode) */
+    /* S60 Touch Status Bar */
     .status-bar {
       display: flex;
       justify-content: space-between;
-      align-items: center;
       font-size: 0.7rem;
-      color: var(--s60-blue);
-      border-bottom: 1px solid #1a2533;
+      color: var(--s60-cyan);
+      border-bottom: 1px solid #141e2c;
       padding-bottom: 4px;
+      font-weight: 600;
     }
 
-    /* Marquee / Title area */
-    .track-view {
-      background: #080d14;
-      border: 1px solid #1c2b3d;
-      border-radius: 6px;
+    /* Track Metadata Display */
+    .track-panel {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid #172435;
+      border-radius: 10px;
       padding: 8px;
       text-align: center;
     }
@@ -118,7 +112,7 @@
     }
     .track-title {
       display: inline-block;
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 700;
       color: #fff;
     }
@@ -131,12 +125,12 @@
       100% { transform: translateX(-50%); }
     }
     .track-meta {
-      font-size: 0.7rem;
-      color: var(--s60-orange);
-      margin-top: 2px;
+      font-size: 0.72rem;
+      color: var(--s60-cyan);
+      margin-top: 4px;
     }
 
-    /* Symbian Progress Bar */
+    /* Seeking / Progress Bar */
     .progress-box {
       display: flex;
       flex-direction: column;
@@ -144,7 +138,7 @@
     }
     .progress-bar-container {
       width: 100%;
-      height: 18px;
+      height: 22px;
       display: flex;
       align-items: center;
       cursor: pointer;
@@ -152,45 +146,110 @@
     }
     .progress-track {
       width: 100%;
-      height: 8px;
-      background: #151d27;
-      border: 1px solid #28374a;
+      height: 7px;
+      background: #141c27;
       border-radius: 4px;
       position: relative;
       overflow: hidden;
+      border: 1px solid #223247;
     }
     .progress-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #005bb5, #0099ff);
+      background: linear-gradient(90deg, #0088ff, #00d2ff);
       pointer-events: none;
     }
     .time-labels {
       display: flex;
       justify-content: space-between;
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       color: var(--s60-subtext);
       font-family: monospace;
     }
 
-    /* Retro 3-Band Equalizer LCD Box */
+    /* On-Screen Touch Playback Controls */
+    .touch-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      padding: 4px 0;
+    }
+    .touch-btn {
+      background: var(--touch-bg);
+      border: 1px solid var(--touch-border);
+      color: var(--s60-text);
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.1s, transform 0.1s;
+    }
+    .touch-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: #e2e8f0;
+    }
+    .touch-btn:active {
+      transform: scale(0.92);
+      background: rgba(0, 136, 255, 0.25);
+      border-color: var(--s60-cyan);
+    }
+    .touch-btn-play {
+      width: 58px;
+      height: 58px;
+      background: linear-gradient(135deg, rgba(0, 136, 255, 0.3), rgba(0, 210, 255, 0.2));
+      border: 1px solid var(--s60-cyan);
+      box-shadow: 0 0 12px rgba(0, 136, 255, 0.3);
+    }
+    .touch-btn-play svg {
+      width: 22px;
+      height: 22px;
+      fill: #fff;
+    }
+
+    /* On-Screen Touch Volume Bar */
+    .touch-volume-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid #162232;
+      border-radius: 10px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .vol-icon {
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .vol-text {
+      font-size: 0.7rem;
+      font-family: monospace;
+      color: var(--s60-cyan);
+      min-width: 36px;
+      text-align: right;
+    }
+
+    /* 3-Band Equalizer LCD Screen */
     .eq-screen-box {
-      background: #070b10;
+      background: #06090e;
       border: 1px solid #162230;
-      border-radius: 8px;
+      border-radius: 10px;
       padding: 8px 10px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
     .eq-screen-title {
       display: flex;
       justify-content: space-between;
-      font-size: 0.65rem;
+      font-size: 0.68rem;
       font-weight: 700;
-      color: var(--s60-blue);
+      color: var(--s60-cyan);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
     .eq-slider-row {
       display: flex;
@@ -198,154 +257,78 @@
       gap: 8px;
     }
     .eq-name {
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       color: var(--s60-subtext);
       width: 44px;
     }
     .eq-val {
-      font-size: 0.65rem;
-      color: var(--s60-orange);
-      width: 32px;
+      font-size: 0.7rem;
+      color: var(--s60-red);
+      width: 34px;
       text-align: right;
       font-family: monospace;
     }
     input[type="range"] {
       flex: 1;
-      height: 4px;
-      background: #1b2636;
-      border-radius: 2px;
+      height: 5px;
+      background: #172230;
+      border-radius: 3px;
       outline: none;
       accent-color: var(--s60-blue);
       cursor: pointer;
     }
 
-    /* Softkeys & Action Area */
-    .softkeys-row {
+    /* Touch Softkeys Bar (File Open & Stop) */
+    .touch-softkeys {
       display: flex;
-      justify-content: space-between;
-      border-top: 1px solid #172230;
-      padding-top: 6px;
+      gap: 8px;
     }
-    .softkey-btn {
-      background: transparent;
-      border: none;
-      color: var(--s60-blue);
-      font-size: 0.72rem;
+    .touch-action-btn {
+      flex: 1;
+      padding: 9px;
+      background: var(--touch-bg);
+      border: 1px solid #203045;
+      border-radius: 8px;
+      color: var(--s60-cyan);
+      font-size: 0.75rem;
       font-weight: 700;
       cursor: pointer;
       text-transform: uppercase;
-      padding: 2px 4px;
+      text-align: center;
     }
-    .softkey-btn:active {
-      color: var(--s60-orange);
+    .touch-action-btn:active {
+      background: rgba(0, 136, 255, 0.2);
+      border-color: var(--s60-blue);
     }
     #audioInput {
       display: none;
-    }
-
-    /* Hardware Buttons & D-Pad Section */
-    .keypad-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items: center;
-    }
-    .controls-grid {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 4px;
-    }
-    .hw-key {
-      background: linear-gradient(180deg, #3a4250 0%, #1e242d 100%);
-      border: 1px solid var(--s60-key-border);
-      color: #cfd8dc;
-      border-radius: 12px;
-      width: 46px;
-      height: 38px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 3px 0 #12161c, inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    }
-    .hw-key svg {
-      width: 16px;
-      height: 16px;
-      fill: #cfd8dc;
-    }
-    .hw-key:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 #12161c;
-      background: #1e242d;
-    }
-
-    /* Center Media Play Key */
-    .hw-play-key {
-      width: 58px;
-      height: 44px;
-      background: linear-gradient(180deg, #2b6cb0 0%, #1a365d 100%);
-      border: 1px solid #4299e1;
-      border-radius: 14px;
-      box-shadow: 0 3px 0 #0d1b2a, inset 0 1px 1px rgba(255, 255, 255, 0.3);
-    }
-    .hw-play-key svg {
-      width: 20px;
-      height: 20px;
-      fill: #fff;
-    }
-
-    /* Volume Row inside Hardware bezel */
-    .vol-row {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
-      padding: 6px 10px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    .vol-icon {
-      font-size: 0.75rem;
-      color: var(--s60-subtext);
-      cursor: pointer;
-    }
-    .vol-text {
-      font-size: 0.68rem;
-      font-family: monospace;
-      color: var(--s60-text);
-      width: 32px;
-      text-align: right;
     }
   </style>
 </head>
 <body>
 
-  <div class="nokia-device">
-    <!-- Top Grill & Nokia Styling -->
-    <div class="brand-bar">
-      <span class="brand-title">NOKIA</span>
-      <div class="earpiece"></div>
-      <span class="s60-tag">Nseries</span>
+  <div class="touch-device">
+    <!-- Top Branding -->
+    <div class="top-panel">
+      <span class="brand-logo">NOKIA</span>
+      <span class="xpress-tag">XpressMusic Touch</span>
     </div>
 
-    <!-- Symbian Color Screen -->
-    <div class="symbian-screen">
-      <!-- Status Top -->
+    <!-- Main Touchscreen Display -->
+    <div class="touch-screen">
+      <!-- Top Status Header -->
       <div class="status-bar">
-        <span>📶 3G</span>
-        <span>MUSIC PLAYER</span>
+        <span>📶 3.5G HSDPA</span>
+        <span>TOUCH PLAYER</span>
         <span id="screenBattery">🔋 100%</span>
       </div>
 
-      <!-- Track Details Screen -->
-      <div class="track-view">
+      <!-- Track Information Screen -->
+      <div class="track-panel">
         <div class="marquee-wrapper" id="marqueeWrapper">
-          <span class="track-title" id="trackName">Standby mode</span>
+          <span class="track-title" id="trackName">Touch to Select Audio</span>
         </div>
-        <div class="track-meta" id="trackIndex">Select file or chat link</div>
+        <div class="track-meta" id="trackIndex">Local Storage or Chat Stream</div>
       </div>
 
       <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
@@ -363,11 +346,37 @@
         </div>
       </div>
 
-      <!-- Built-in 3-Band Equalizer Box -->
+      <!-- Touch Playback Controls (All Inside Screen) -->
+      <div class="touch-controls">
+        <button class="touch-btn" id="prevBtn" title="Previous Track">
+          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+        </button>
+
+        <button class="touch-btn touch-btn-play" id="playPauseBtn" title="Play / Pause">
+          <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+
+        <button class="touch-btn" id="stopBtn" title="Stop">
+          <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+        </button>
+
+        <button class="touch-btn" id="nextBtn" title="Next Track">
+          <svg viewBox="0 0 24 24"><path d="m6 18 8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+      </div>
+
+      <!-- Touch Volume Slider -->
+      <div class="touch-volume-box">
+        <span class="vol-icon" id="volIcon">🔊</span>
+        <input type="range" id="volSlider" min="0" max="1" step="0.01" value="1">
+        <span class="vol-text" id="volText">100%</span>
+      </div>
+
+      <!-- Symbian Touch Equalizer Box -->
       <div class="eq-screen-box">
         <div class="eq-screen-title">
-          <span>Preset: Manual EQ</span>
-          <span>S60 DSP</span>
+          <span>Manual Equalizer</span>
+          <span>DSP Active</span>
         </div>
 
         <div class="eq-slider-row">
@@ -389,39 +398,13 @@
         </div>
       </div>
 
-      <!-- Symbian Softkeys -->
-      <div class="softkeys-row">
-        <button class="softkey-btn" onclick="document.getElementById('audioInput').click()">📁 Open File</button>
-        <button class="softkey-btn" id="stopSoftkey">⏹ Stop</button>
+      <!-- Touch Bottom Actions -->
+      <div class="touch-softkeys">
+        <button class="touch-action-btn" onclick="document.getElementById('audioInput').click()">📂 Open Audio</button>
       </div>
     </div>
 
     <input type="file" id="audioInput" accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*,audio/mpeg,audio/mp4" multiple>
-
-    <!-- Retro Hardware Keypad Area -->
-    <div class="keypad-panel">
-      <!-- Media Navigation Controls -->
-      <div class="controls-grid">
-        <button class="hw-key" id="prevBtn" title="Rewind">
-          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
-        </button>
-
-        <button class="hw-key hw-play-key" id="playPauseBtn" title="Play / Pause">
-          <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </button>
-
-        <button class="hw-key" id="nextBtn" title="Forward">
-          <svg viewBox="0 0 24 24"><path d="m6 18 8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-        </button>
-      </div>
-
-      <!-- Volume Adjuster Bar -->
-      <div class="vol-row">
-        <span class="vol-icon" id="volIcon">🔊</span>
-        <input type="range" id="volSlider" min="0" max="1" step="0.01" value="1">
-        <span class="vol-text" id="volText">100%</span>
-      </div>
-    </div>
   </div>
 
   <script>
@@ -443,7 +426,7 @@
 
     const playPauseBtn = document.getElementById('playPauseBtn');
     const playIcon = document.getElementById('playIcon');
-    const stopSoftkey = document.getElementById('stopSoftkey');
+    const stopBtn = document.getElementById('stopBtn');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
 
@@ -583,6 +566,10 @@
       isSeeking = false;
     });
 
+    window.addEventListener('pointercancel', () => {
+      isSeeking = false;
+    });
+
     // Chat link receiver
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
@@ -593,7 +580,7 @@
       if (streamUrl) {
         const fullTitle = songTitle ? decodeURIComponent(songTitle) : "Telegram Audio";
         updateTrackTitle(fullTitle);
-        trackIndex.textContent = artist ? `Chat • ${decodeURIComponent(artist)}` : "Streaming Track";
+        trackIndex.textContent = artist ? `Chat Stream • ${decodeURIComponent(artist)}` : "Streaming Track";
         audio.src = streamUrl;
         audio.load();
         playAudio();
@@ -620,7 +607,7 @@
       else pauseAudio();
     });
 
-    stopSoftkey.addEventListener('click', () => {
+    stopBtn.addEventListener('click', () => {
       if (!audio.src) return;
       audio.pause();
       audio.currentTime = 0;
@@ -702,7 +689,7 @@
       }
     });
 
-    // Equalizer
+    // Equalizer Sliders
     bassSlider.addEventListener('input', (e) => {
       bassVal.textContent = `${e.target.value}dB`;
       if (bassFilter) bassFilter.gain.value = Number(e.target.value);
