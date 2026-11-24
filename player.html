@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>iPod Classic OS</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- Library to read Embedded Album Cover Art from MP3/M4A -->
+  <!-- Embedded ID3 Album Cover Art Extractor -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
   <style>
     * {
@@ -21,7 +21,6 @@
       height: 100%;
       overflow: hidden;
       overscroll-behavior: none;
-      touch-action: none;
     }
     body {
       background-color: #050505;
@@ -95,7 +94,7 @@
     .battery-fill { width: 80%; height: 100%; background: #27ae60; border-radius: 1px; }
     .lcd-content { flex: 1; display: flex; position: relative; overflow: hidden; }
 
-    /* Semi-transparent Glass Split Screen for Wallpaper visibility */
+    /* Split Screen */
     .split-menu { width: 100%; height: 100%; display: flex; }
     .menu-left { width: 55%; height: 100%; border-right: 1px solid rgba(210,214,220,0.8); overflow-y: auto; background: rgba(255,255,255,0.88); backdrop-filter: blur(4px); }
     .menu-list { list-style: none; }
@@ -114,7 +113,6 @@
     .np-view { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
     .np-top { display: flex; gap: 10px; flex: 1; align-items: center; }
     
-    /* Real Album Art Display */
     .album-art-container {
       width: 78px; height: 78px; background: #222; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.5); flex-shrink: 0; overflow: hidden;
     }
@@ -170,7 +168,11 @@
       width: 80px; height: 80px; background: linear-gradient(145deg, #e6e6e6, #d1d1d1); border-radius: 50%; box-shadow: 0 3px 6px rgba(0,0,0,0.18), inset 0 1px 2px rgba(255,255,255,0.9); border: 1px solid #bfbfbf; cursor: pointer; z-index: 3; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #777;
     }
     .center-btn:active { background: #c8c8c8; box-shadow: inset 0 2px 4px rgba(0,0,0,0.25); transform: scale(0.96); }
-    #audioFileInput, #videoFileInput, #photoFileInput, #wallpaperFileInput { display: none; }
+
+    /* Native hidden inputs */
+    .hidden-file-input {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -193,26 +195,35 @@
           <div class="split-menu" id="splitMenuView">
             <div class="menu-left">
               <ul class="menu-list" id="menuList">
-                <li class="menu-item active" data-type="offlineMusic">
-                  <span>Add Offline Songs</span>
-                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                </li>
+                <!-- Using direct native label triggers for 100% reliable iOS file picker opening -->
+                <label for="audioFileInput">
+                  <li class="menu-item active" data-type="offlineMusic">
+                    <span>Add Offline Songs</span>
+                    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  </li>
+                </label>
                 <li class="menu-item" data-type="nowPlaying">
                   <span>Now Playing</span>
                   <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 </li>
-                <li class="menu-item" data-type="wallpaper">
-                  <span>Set Wallpaper</span>
-                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                </li>
-                <li class="menu-item" data-type="videos">
-                  <span>Videos</span>
-                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                </li>
-                <li class="menu-item" data-type="photos">
-                  <span>Photos</span>
-                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                </li>
+                <label for="wallpaperFileInput">
+                  <li class="menu-item" data-type="wallpaper">
+                    <span>Set Wallpaper</span>
+                    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  </li>
+                </label>
+                <label for="videoFileInput">
+                  <li class="menu-item" data-type="videos">
+                    <span>Videos</span>
+                    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  </li>
+                </label>
+                <label for="photoFileInput">
+                  <li class="menu-item" data-type="photos">
+                    <span>Photos</span>
+                    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  </li>
+                </label>
                 <li class="menu-item" data-type="equalizer">
                   <span>Equalizer</span>
                   <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -231,7 +242,7 @@
             <div class="menu-right">
               <div class="preview-box" id="previewBox">
                 <svg id="previewIcon" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                <span class="preview-text" id="previewText">Saved Audio</span>
+                <span class="preview-text" id="previewText">Offline Storage</span>
               </div>
             </div>
           </div>
@@ -319,14 +330,13 @@
       <div class="center-btn" id="centerBtn">SELECT</div>
     </div>
 
-    <!-- Audio Player -->
     <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
 
-    <!-- Inputs -->
-    <input type="file" id="audioFileInput" accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*" multiple>
-    <input type="file" id="videoFileInput" accept=".mp4,.webm,.mov,video/*">
-    <input type="file" id="photoFileInput" accept=".jpg,.jpeg,.png,.webp,image/*" multiple>
-    <input type="file" id="wallpaperFileInput" accept="image/*">
+    <!-- Inputs with explicit native IDs -->
+    <input type="file" id="audioFileInput" class="hidden-file-input" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg,audio/mpeg,audio/mp4" multiple>
+    <input type="file" id="videoFileInput" class="hidden-file-input" accept="video/*,.mp4,.webm,.mov">
+    <input type="file" id="photoFileInput" class="hidden-file-input" accept="image/*,.jpg,.jpeg,.png,.webp" multiple>
+    <input type="file" id="wallpaperFileInput" class="hidden-file-input" accept="image/*,.jpg,.jpeg,.png,.webp">
   </div>
 
   <script>
@@ -342,9 +352,6 @@
       if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
     }
 
-    document.body.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
-
-    // Elements
     const audio = document.getElementById('audioElement');
     const video = document.getElementById('videoElement');
     const photo = document.getElementById('photoElement');
@@ -398,13 +405,13 @@
     const volText = document.getElementById('volText');
 
     let currentVolume = 1;
-    let playlist = []; // Array of { name, blob }
+    let playlist = [];
     let photoList = [];
     let currentPhotoIndex = 0;
     let currentIndex = 0;
     let audioCtx = null, sourceNode = null, bassFilter = null, midFilter = null, trebleFilter = null, gainNode = null;
 
-    // --- INDEXEDDB FOR PERSISTENT OFFLINE MUSIC ---
+    // --- INDEXEDDB STORAGE ---
     const DB_NAME = 'iPodOfflineDB';
     const STORE_NAME = 'songs';
     let db = null;
@@ -450,7 +457,7 @@
 
     initDB();
 
-    // --- WALLPAPER LOCALSTORAGE SYSTEM ---
+    // --- WALLPAPER LOCALSTORAGE ---
     function applySavedWallpaper() {
       const savedWp = localStorage.getItem('ipod_wallpaper');
       if (savedWp) {
@@ -481,7 +488,7 @@
       }
     });
 
-    // --- ID3 ALBUM ART THUMBNAIL EXTRACTOR ---
+    // --- ID3 ALBUM ART EXTRACTION ---
     function extractAlbumArt(fileBlob) {
       albumArtImg.style.display = 'none';
       albumArtFallback.style.display = 'block';
@@ -504,12 +511,11 @@
               artistName.textContent = tag.tags.artist;
             }
           },
-          onError: function(error) {}
+          onError: function() {}
         });
       }
     }
 
-    // Menu preview icons
     const previewDetails = {
       offlineMusic: {
         icon: '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>',
@@ -604,11 +610,15 @@
       item.addEventListener('click', () => {
         triggerHaptic();
         updateMenuSelection(idx);
-        handleSelectAction();
+        const type = item.dataset.type;
+        // Non-file picker views switch directly
+        if (type !== 'offlineMusic' && type !== 'wallpaper' && type !== 'videos' && type !== 'photos') {
+          showView(type);
+        }
       });
     });
 
-    function handleSelectAction() {
+    function handleCenterSelect() {
       if (activeView === 'menu') {
         const type = menuItems[currentMenuIndex].dataset.type;
         if (type === 'offlineMusic') {
@@ -633,13 +643,14 @@
       }
     }
 
-    document.getElementById('centerBtn').addEventListener('pointerdown', (e) => {
+    // Pure Native Click Binding (Safe from iOS security block)
+    document.getElementById('centerBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       triggerHaptic();
-      handleSelectAction();
+      handleCenterSelect();
     });
 
-    document.getElementById('menuBtn').addEventListener('pointerdown', (e) => {
+    document.getElementById('menuBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       triggerHaptic();
       if (activeView !== 'menu') {
@@ -648,7 +659,7 @@
       }
     });
 
-    document.getElementById('playPauseBtn').addEventListener('pointerdown', (e) => {
+    document.getElementById('playPauseBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       triggerHaptic();
       if (activeView === 'video') {
@@ -659,7 +670,7 @@
       }
     });
 
-    document.getElementById('nextBtn').addEventListener('pointerdown', (e) => {
+    document.getElementById('nextBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       triggerHaptic();
       if (activeView === 'photo' && photoList.length > 1) {
@@ -671,7 +682,7 @@
       }
     });
 
-    document.getElementById('prevBtn').addEventListener('pointerdown', (e) => {
+    document.getElementById('prevBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       triggerHaptic();
       if (activeView === 'photo' && photoList.length > 1) {
@@ -750,7 +761,6 @@
     audioFileInput.addEventListener('change', function() {
       if (this.files && this.files.length > 0) {
         saveSongsToDB(this.files);
-        // Direct auto-play first selected song
         const firstFile = this.files[0];
         trackName.textContent = firstFile.name;
         artistName.textContent = 'Offline Library';
@@ -808,7 +818,7 @@
       if (audio.paused) playAudio();
     }
 
-    progressContainer.addEventListener('pointerdown', (e) => {
+    progressContainer.addEventListener('click', (e) => {
       seekFromEvent(e);
       triggerHaptic();
     });
@@ -825,6 +835,7 @@
       totalDurationEl.textContent = formatTime(audio.duration);
     });
 
+    // ROTATING CLICK-WHEEL
     const wheel = document.getElementById('clickWheel');
     let lastAngle = null;
     let accumulatedAngle = 0;
@@ -839,12 +850,9 @@
     wheel.addEventListener('touchstart', (e) => {
       lastAngle = getAngle(e.touches[0], wheel);
       accumulatedAngle = 0;
-    }, { passive: false });
+    }, { passive: true });
 
     wheel.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-
       if (lastAngle === null) return;
       const currentAngle = getAngle(e.touches[0], wheel);
       let diff = currentAngle - lastAngle;
@@ -893,7 +901,7 @@
           video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + step * 2));
         }
       }
-    }, { passive: false });
+    }, { passive: true });
 
     wheel.addEventListener('touchend', () => { lastAngle = null; });
     wheel.addEventListener('touchcancel', () => { lastAngle = null; });
