@@ -93,7 +93,7 @@
       display: none;
     }
 
-    /* Track Information with Sliding Animation */
+    /* Track Info & Sliding */
     .track-info {
       text-align: center;
       padding: 2px 4px;
@@ -117,7 +117,6 @@
       color: #fff;
       will-change: transform;
     }
-    /* Auto sliding animation when text overflows */
     .marquee-active {
       display: inline-flex;
       animation: marqueeSlide 10s linear infinite;
@@ -133,26 +132,35 @@
         transform: translateX(-50%);
       }
     }
-
     .track-status {
       font-size: 0.78rem;
       color: var(--subtext);
       margin-top: 4px;
     }
 
-    /* Progress & Timing Bar */
+    /* Timing Bar & Touch Area */
     .progress-area {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
+    /* Touch target padding to ensure instant tapping on mobile */
     .progress-bar-container {
+      width: 100%;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      touch-action: none;
+    }
+    .progress-track {
       width: 100%;
       height: 6px;
       background: var(--slider-track);
       border-radius: 4px;
-      cursor: pointer;
       position: relative;
+      overflow: hidden;
     }
     .progress-fill {
       height: 100%;
@@ -170,7 +178,7 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Modern Vector Action Buttons */
+    /* Modern Vector Buttons */
     .controls {
       display: flex;
       align-items: center;
@@ -218,7 +226,7 @@
       box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
     }
 
-    /* Volume Slider */
+    /* Volume */
     .volume-box {
       background: var(--surface);
       border: 1px solid rgba(255, 255, 255, 0.05);
@@ -234,15 +242,11 @@
       align-items: center;
       justify-content: center;
       color: var(--subtext);
-      transition: color 0.2s;
     }
     .vol-icon svg {
       width: 20px;
       height: 20px;
       fill: currentColor;
-    }
-    .vol-icon:hover {
-      color: #fff;
     }
     .vol-percent {
       font-size: 0.75rem;
@@ -252,7 +256,7 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Equalizer Box */
+    /* Equalizer */
     .eq-container {
       background: var(--surface);
       border: 1px solid rgba(255, 255, 255, 0.05);
@@ -313,7 +317,7 @@
     </button>
     <input type="file" id="audioInput" accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*,audio/mpeg,audio/mp4" multiple>
 
-    <!-- Track Details (With Sliding Support) -->
+    <!-- Track Details -->
     <div class="track-info">
       <div class="marquee-wrapper" id="marqueeWrapper">
         <span class="track-title" id="trackName">Waiting for audio...</span>
@@ -323,10 +327,12 @@
 
     <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
 
-    <!-- Progress Bar -->
+    <!-- Timing & Seeking Bar -->
     <div class="progress-area">
       <div class="progress-bar-container" id="progressContainer">
-        <div class="progress-fill" id="progressFill"></div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
       </div>
       <div class="time-labels">
         <span id="currentTime">00:00</span>
@@ -336,28 +342,24 @@
 
     <!-- Action Buttons -->
     <div class="controls">
-      <!-- Previous -->
       <button class="btn-ctrl" id="prevBtn" title="Previous">
         <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
       </button>
 
-      <!-- Stop -->
       <button class="btn-ctrl" id="stopBtn" title="Stop">
         <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
       </button>
 
-      <!-- Play/Pause -->
       <button class="btn-ctrl btn-play" id="playPauseBtn" title="Play">
         <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
       </button>
 
-      <!-- Next -->
       <button class="btn-ctrl" id="nextBtn" title="Next">
         <svg viewBox="0 0 24 24"><path d="m6 18 8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
       </button>
     </div>
 
-    <!-- Volume Control -->
+    <!-- Volume -->
     <div class="volume-box">
       <div class="vol-icon" id="volIcon">
         <svg id="volSvg" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
@@ -438,6 +440,7 @@
     let playlist = [];
     let currentIndex = 0;
     let lastVolume = 1;
+    let isSeeking = false; // Prevents timeupdate glitch while user drags
 
     let audioCtx = null;
     let sourceNode = null;
@@ -446,23 +449,16 @@
     let trebleFilter = null;
     let gainNode = null;
 
-    // গানের নাম বড় হলে ডাইনামিক স্লাইড এনিমেশন হ্যান্ডলার
     function updateTrackTitle(title) {
-      // রিসেট
       trackName.classList.remove('marquee-active');
-      trackName.style.animationDuration = '10s';
       trackName.textContent = title;
 
-      // মেপে দেখা নাম কন্টেইনারের চেয়ে বড় কি না
       setTimeout(() => {
         const wrapperWidth = marqueeWrapper.offsetWidth;
         const textWidth = trackName.scrollWidth;
 
         if (textWidth > wrapperWidth) {
-          // নাম দ্বিগুণ করে দেওয়া যাতে লুপে স্মুথ ট্রানজিশন হয়
           trackName.innerHTML = `<span>${title}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>${title}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>`;
-          
-          // টাইটেল যত বড় হবে স্পিড সেভাবে ব্যালেন্স হবে
           const duration = Math.max(8, Math.round(textWidth / 25));
           trackName.style.animationDuration = `${duration}s`;
           trackName.classList.add('marquee-active');
@@ -505,7 +501,7 @@
     }
 
     function formatTime(seconds) {
-      if (isNaN(seconds)) return "00:00";
+      if (isNaN(seconds) || seconds < 0) return "00:00";
       const mins = Math.floor(seconds / 60);
       const secs = Math.floor(seconds % 60);
       return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
@@ -534,7 +530,46 @@
       setPlayButtonIcon(false);
     }
 
-    // চ্যাট থেকে অডিও লিঙ্ক আসা হ্যান্ডল করা
+    // Direct Seek Calculation function
+    function seekToPosition(clientX) {
+      if (!audio.src || isNaN(audio.duration) || audio.duration <= 0) return;
+      const rect = progressContainer.getBoundingClientRect();
+      const clickX = clientX - rect.left;
+      const clampedX = Math.max(0, Math.min(rect.width, clickX));
+      const percentage = clampedX / rect.width;
+
+      const targetTime = percentage * audio.duration;
+      audio.currentTime = targetTime;
+      progressFill.style.width = `${percentage * 100}%`;
+      currentTimeEl.textContent = formatTime(targetTime);
+
+      // If user taps while paused, immediately start playback from that point
+      if (audio.paused) {
+        playAudio();
+      }
+    }
+
+    // Touch & Click Event Listeners for Instant Seeking
+    progressContainer.addEventListener('pointerdown', (e) => {
+      isSeeking = true;
+      seekToPosition(e.clientX);
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (isSeeking) {
+        seekToPosition(e.clientX);
+      }
+    });
+
+    window.addEventListener('pointerup', () => {
+      isSeeking = false;
+    });
+
+    window.addEventListener('pointercancel', () => {
+      isSeeking = false;
+    });
+
+    // Chat URL Loading
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       const streamUrl = params.get('stream');
@@ -551,7 +586,7 @@
       }
     });
 
-    // লোকাল ফাইল পিকার
+    // Local file selector
     audioInput.addEventListener('change', function() {
       if (this.files.length > 0) {
         playlist = Array.from(this.files);
@@ -604,7 +639,7 @@
     });
 
     audio.addEventListener('timeupdate', () => {
-      if (!isNaN(audio.duration) && audio.duration > 0) {
+      if (!isSeeking && !isNaN(audio.duration) && audio.duration > 0) {
         const percent = (audio.currentTime / audio.duration) * 100;
         progressFill.style.width = `${percent}%`;
         currentTimeEl.textContent = formatTime(audio.currentTime);
@@ -615,14 +650,21 @@
       totalDurationEl.textContent = formatTime(audio.duration);
     });
 
-    progressContainer.addEventListener('click', (e) => {
-      if (!audio.src || isNaN(audio.duration)) return;
-      const rect = progressContainer.getBoundingClientRect();
-      const clickPos = (e.clientX - rect.left) / rect.width;
-      audio.currentTime = clickPos * audio.duration;
+    audio.addEventListener('ended', () => {
+      if (playlist.length > 1) {
+        currentIndex = (currentIndex + 1) % playlist.length;
+        const file = playlist[currentIndex];
+        updateTrackTitle(file.name);
+        trackIndex.textContent = `Track ${currentIndex + 1} of ${playlist.length}`;
+        audio.src = URL.createObjectURL(file);
+        audio.load();
+        playAudio();
+      } else {
+        setPlayButtonIcon(false);
+      }
     });
 
-    // ভলিউম আপডেট
+    // Volume
     function updateVolume(val) {
       val = Math.max(0, Math.min(1, val));
       audio.volume = val;
@@ -654,7 +696,7 @@
       }
     });
 
-    // EQ Sliders
+    // Equalizer
     bassSlider.addEventListener('input', (e) => {
       bassVal.textContent = `${e.target.value} dB`;
       if (bassFilter) bassFilter.gain.value = Number(e.target.value);
