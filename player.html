@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>iPod Classic Ultra Fast</title>
+  <title>iPod Classic OS</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * {
@@ -28,8 +28,6 @@
       justify-content: center;
       align-items: center;
     }
-
-    /* Metallic Chassis */
     .ipod-body {
       width: 100%;
       max-width: 380px;
@@ -42,14 +40,9 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.9),
-                  inset 0 -3px 6px rgba(0, 0, 0, 0.45),
-                  0 20px 50px rgba(0, 0, 0, 0.95);
+      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.9), inset 0 -3px 6px rgba(0, 0, 0, 0.45), 0 20px 50px rgba(0, 0, 0, 0.95);
       border: 1px solid #b2b2b2;
-      will-change: transform;
     }
-
-    /* Screen Bezel & Display */
     .screen-bezel {
       width: 100%;
       height: 48%;
@@ -67,12 +60,10 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      font-size: 13px;
+      font-size: 12px;
       color: #1a1a1a;
       border: 1px solid #c2c8d0;
     }
-
-    /* Header Bar */
     .lcd-header {
       height: 22px;
       background: linear-gradient(180deg, #d3d8df 0%, #b2bac5 50%, #9ba5b2 51%, #bac2cd 100%);
@@ -85,326 +76,86 @@
       font-size: 11px;
       color: #1e252d;
       text-shadow: 0 1px 0 rgba(255,255,255,0.7);
+      flex-shrink: 0;
     }
-    .header-icons {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .apple-icon {
-      width: 12px;
-      height: 12px;
-      fill: #222;
-    }
+    .header-icons { display: flex; align-items: center; gap: 6px; }
+    .apple-icon { width: 11px; height: 11px; fill: #222; }
     .battery-icon {
-      width: 18px;
-      height: 10px;
-      border: 1px solid #333;
-      border-radius: 2px;
-      position: relative;
-      padding: 1px;
+      width: 17px; height: 9px; border: 1px solid #333; border-radius: 2px; position: relative; padding: 1px;
     }
     .battery-icon::after {
-      content: '';
-      position: absolute;
-      right: -3px;
-      top: 2px;
-      width: 2px;
-      height: 4px;
-      background: #333;
-      border-radius: 0 1px 1px 0;
+      content: ''; position: absolute; right: -3px; top: 1.5px; width: 2px; height: 4px; background: #333; border-radius: 0 1px 1px 0;
     }
-    .battery-fill {
-      width: 80%;
-      height: 100%;
-      background: #27ae60;
-      border-radius: 1px;
-    }
-
-    /* Screen Views Area */
-    .lcd-content {
-      flex: 1;
-      display: flex;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(180deg, #ffffff 0%, #edf0f5 100%);
-    }
-
-    /* 1. Menu */
-    .menu-view {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-    .menu-list {
-      list-style: none;
-      flex: 1;
-      overflow-y: auto;
-    }
+    .battery-fill { width: 80%; height: 100%; background: #27ae60; border-radius: 1px; }
+    .lcd-content { flex: 1; display: flex; position: relative; overflow: hidden; background: #fff; }
+    .split-menu { width: 100%; height: 100%; display: flex; }
+    .menu-left { width: 50%; height: 100%; border-right: 1px solid #d2d6dc; overflow-y: auto; background: #fff; }
+    .menu-list { list-style: none; }
     .menu-item {
-      padding: 8px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-      border-bottom: 1px solid #e2e6eb;
-      cursor: pointer;
+      padding: 6px 8px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 11px; border-bottom: 1px solid #f0f2f5; cursor: pointer;
     }
-    .menu-item.active {
-      background: linear-gradient(180deg, #378fe6 0%, #175bb3 100%);
-      color: #fff;
-    }
-    .menu-item .arrow-svg {
-      width: 8px;
-      height: 8px;
-      fill: currentColor;
-    }
-
-    /* 2. Now Playing */
-    .now-playing-view {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: none;
-      flex-direction: column;
-      padding: 12px;
-      gap: 10px;
-    }
-    .np-top {
-      display: flex;
-      gap: 12px;
-      flex: 1;
-      align-items: center;
-    }
+    .menu-item.active { background: linear-gradient(180deg, #378fe6 0%, #175bb3 100%); color: #fff; }
+    .menu-item .arrow-svg { width: 7px; height: 7px; fill: currentColor; }
+    .menu-right { width: 50%; height: 100%; background: #f4f6f9; display: flex; align-items: center; justify-content: center; padding: 10px; }
+    .preview-box { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; color: #64748b; }
+    .preview-box svg { width: 48px; height: 48px; fill: #94a3b8; }
+    .preview-text { font-size: 10px; font-weight: 600; }
+    .view-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; display: none; flex-direction: column; }
+    .np-view { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .np-top { display: flex; gap: 10px; flex: 1; align-items: center; }
     .album-art {
-      width: 84px;
-      height: 84px;
-      background: linear-gradient(135deg, #1b2430 0%, #3a4b61 100%);
-      border-radius: 4px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid rgba(255,255,255,0.4);
+      width: 76px; height: 76px; background: linear-gradient(135deg, #1b2430 0%, #3a4b61 100%); border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.25); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.4); flex-shrink: 0;
     }
-    .album-art svg {
-      width: 36px;
-      height: 36px;
-      fill: #a0aec0;
-    }
-    .track-details {
-      flex: 1;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .np-title {
-      font-size: 13px;
-      font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: #111;
-    }
-    .np-artist, .np-album {
-      font-size: 11px;
-      color: #555;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* Scrubber */
-    .progress-box {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .progress-track-wrapper {
-      width: 100%;
-      height: 16px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-    }
-    .progress-track {
-      width: 100%;
-      height: 6px;
-      background: #c8ced6;
-      border-radius: 3px;
-      border: 1px solid #a8b0ba;
-      position: relative;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(180deg, #4da4f7 0%, #1566be 100%);
-      pointer-events: none;
-    }
-    .time-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 10px;
-      font-weight: 600;
-      color: #444;
-    }
-
-    /* 3. Equalizer */
-    .eq-view {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: none;
-      flex-direction: column;
-      padding: 10px 14px;
-      gap: 10px;
-    }
-    .eq-row {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      padding: 4px 6px;
-      border-radius: 6px;
-      border: 1px solid transparent;
-      transition: background 0.05s ease;
-    }
-    .eq-row.active {
-      background: rgba(55, 143, 230, 0.16);
-      border: 1px solid #378fe6;
-    }
-    .eq-info {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      font-weight: 700;
-      color: #222;
-    }
-    .eq-info span.val {
-      color: #175bb3;
-      font-family: monospace;
-    }
-    .eq-hint {
-      font-size: 9px;
-      color: #666;
-      text-align: center;
-      margin-top: auto;
-      font-weight: 600;
-    }
-
-    /* 4. Volume */
-    .volume-view {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      gap: 12px;
-    }
-    .vol-track {
-      width: 85%;
-      height: 8px;
-      background: #c8ced6;
-      border: 1px solid #a8b0ba;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .vol-fill {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(180deg, #4da4f7 0%, #1566be 100%);
-    }
-
-    /* Ultra-Responsive Click-Wheel */
+    .album-art svg { width: 32px; height: 32px; fill: #a0aec0; }
+    .track-details { flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: 3px; }
+    .np-title { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #111; }
+    .np-artist, .np-album { font-size: 10px; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .progress-box { display: flex; flex-direction: column; gap: 4px; }
+    .progress-track-wrapper { width: 100%; height: 14px; display: flex; align-items: center; cursor: pointer; }
+    .progress-track { width: 100%; height: 6px; background: #c8ced6; border-radius: 3px; border: 1px solid #a8b0ba; position: relative; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(180deg, #4da4f7 0%, #1566be 100%); pointer-events: none; }
+    .time-labels { display: flex; justify-content: space-between; font-size: 10px; font-weight: 600; color: #444; }
+    .video-view { background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+    video { width: 100%; height: 100%; object-fit: contain; }
+    .photo-view { background: #000; display: flex; align-items: center; justify-content: center; }
+    .photo-view img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .eq-view { padding: 10px 14px; gap: 8px; }
+    .eq-row { display: flex; flex-direction: column; gap: 2px; padding: 4px 6px; border-radius: 6px; border: 1px solid transparent; }
+    .eq-row.active { background: rgba(55, 143, 230, 0.16); border: 1px solid #378fe6; }
+    .eq-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #222; }
+    .eq-info span.val { color: #175bb3; font-family: monospace; }
+    .eq-hint { font-size: 9px; color: #666; text-align: center; margin-top: auto; font-weight: 600; }
+    .volume-view { justify-content: center; align-items: center; padding: 20px; gap: 12px; }
+    .vol-track { width: 85%; height: 8px; background: #c8ced6; border: 1px solid #a8b0ba; border-radius: 4px; overflow: hidden; }
+    .vol-fill { width: 100%; height: 100%; background: linear-gradient(180deg, #4da4f7 0%, #1566be 100%); }
+    .settings-view { padding: 12px; font-size: 11px; color: #333; display: flex; flex-direction: column; gap: 8px; }
+    .settings-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #eee; }
     .click-wheel {
-      width: 220px;
-      height: 220px;
-      background: #f7f7f7;
-      border-radius: 50%;
-      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1),
-                  0 4px 10px rgba(0,0,0,0.25),
-                  0 0 0 1px #d6d6d6;
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      touch-action: none;
+      width: 220px; height: 220px; background: #f7f7f7; border-radius: 50%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.25), 0 0 0 1px #d6d6d6; position: relative; display: flex; justify-content: center; align-items: center; touch-action: none;
     }
     .wheel-label {
-      position: absolute;
-      font-weight: 700;
-      font-size: 12px;
-      color: #8c8c8c;
-      letter-spacing: 0.5px;
-      padding: 14px;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
+      position: absolute; font-weight: 700; font-size: 12px; color: #8c8c8c; letter-spacing: 0.5px; padding: 14px; z-index: 2; display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
-    .wheel-label:active {
-      color: #175bb3;
-      transform: scale(0.92);
-    }
+    .wheel-label:active { color: #175bb3; transform: scale(0.92); }
     .wheel-menu { top: 4px; }
     .wheel-prev { left: 4px; }
     .wheel-next { right: 4px; }
     .wheel-play { bottom: 4px; }
-    .wheel-label svg {
-      width: 16px;
-      height: 16px;
-      fill: currentColor;
-    }
-
-    /* Center Select Button */
+    .wheel-label svg { width: 16px; height: 16px; fill: currentColor; }
     .center-btn {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(145deg, #e6e6e6, #d1d1d1);
-      border-radius: 50%;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.18), inset 0 1px 2px rgba(255,255,255,0.9);
-      border: 1px solid #bfbfbf;
-      cursor: pointer;
-      z-index: 3;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 700;
-      color: #777;
+      width: 80px; height: 80px; background: linear-gradient(145deg, #e6e6e6, #d1d1d1); border-radius: 50%; box-shadow: 0 3px 6px rgba(0,0,0,0.18), inset 0 1px 2px rgba(255,255,255,0.9); border: 1px solid #bfbfbf; cursor: pointer; z-index: 3; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #777;
     }
-    .center-btn:active {
-      background: #c8c8c8;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.25);
-      transform: scale(0.96);
-    }
-
-    /* Hidden file input placed outside viewport */
-    #fileInput {
-      position: fixed;
-      left: -9999px;
-      opacity: 0;
-      pointer-events: none;
-    }
+    .center-btn:active { background: #c8c8c8; box-shadow: inset 0 2px 4px rgba(0,0,0,0.25); transform: scale(0.96); }
+    #audioFileInput, #videoFileInput, #photoFileInput { display: none; }
   </style>
 </head>
 <body>
 
   <div class="ipod-body">
+    <!-- Screen Bezel -->
     <div class="screen-bezel">
       <div class="ipod-lcd">
+        <!-- Status Header Bar -->
         <div class="lcd-header">
           <span id="headerTitle">iPod</span>
           <div class="header-icons">
@@ -414,38 +165,59 @@
         </div>
 
         <div class="lcd-content">
-          <!-- 1. Menu Screen -->
-          <div class="menu-view" id="menuView">
-            <ul class="menu-list" id="menuList">
-              <li class="menu-item active" data-view="nowPlaying">
-                <span>Now Playing</span>
-                <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-              </li>
-              <li class="menu-item" data-view="openFile" id="openFileItem">
-                <span>Choose Local Songs</span>
-                <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-              </li>
-              <li class="menu-item" data-view="equalizer">
-                <span>Equalizer (DSP)</span>
-                <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-              </li>
-              <li class="menu-item" data-view="volume">
-                <span>Volume Control</span>
-                <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-              </li>
-            </ul>
+          <!-- 1. Apple iPod Split-Screen Main OS Menu -->
+          <div class="split-menu" id="splitMenuView">
+            <div class="menu-left">
+              <ul class="menu-list" id="menuList">
+                <li class="menu-item active" data-type="music">
+                  <span>Music</span>
+                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </li>
+                <li class="menu-item" data-type="videos">
+                  <span>Videos</span>
+                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </li>
+                <li class="menu-item" data-type="photos">
+                  <span>Photos</span>
+                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </li>
+                <li class="menu-item" data-type="nowPlaying">
+                  <span>Now Playing</span>
+                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </li>
+                <li class="menu-item" data-type="equalizer">
+                  <span>Equalizer</span>
+                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </li>
+                <li class="menu-item" data-type="volume">
+                  <span>Volume</span>
+                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </li>
+                <li class="menu-item" data-type="settings">
+                  <span>Settings / About</span>
+                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </li>
+              </ul>
+            </div>
+            <!-- Dynamic Right Preview Panel -->
+            <div class="menu-right">
+              <div class="preview-box" id="previewBox">
+                <svg id="previewIcon" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                <span class="preview-text" id="previewText">Audio Library</span>
+              </div>
+            </div>
           </div>
 
-          <!-- 2. Now Playing Screen -->
-          <div class="now-playing-view" id="nowPlayingView">
+          <!-- 2. Music / Now Playing Screen -->
+          <div class="view-container np-view" id="nowPlayingView">
             <div class="np-top">
-              <div class="album-art" id="npArt">
+              <div class="album-art">
                 <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
               </div>
               <div class="track-details">
-                <div class="np-title" id="trackName">No song loaded</div>
+                <div class="np-title" id="trackName">No track playing</div>
                 <div class="np-artist" id="artistName">Apple iPod</div>
-                <div class="np-album" id="sourceMeta">Scroll wheel to browse</div>
+                <div class="np-album" id="sourceMeta">Select Music to load</div>
               </div>
             </div>
 
@@ -460,8 +232,18 @@
             </div>
           </div>
 
-          <!-- 3. Equalizer Screen -->
-          <div class="eq-view" id="eqView">
+          <!-- 3. Video Player Screen -->
+          <div class="view-container video-view" id="videoView">
+            <video id="videoElement" playsinline></video>
+          </div>
+
+          <!-- 4. Photo Viewer Screen -->
+          <div class="view-container photo-view" id="photoView">
+            <img id="photoElement" src="" alt="Photo Viewer">
+          </div>
+
+          <!-- 5. Equalizer Screen -->
+          <div class="view-container eq-view" id="eqView">
             <div class="eq-row active" id="eqRowBass">
               <div class="eq-info"><span>Bass (60Hz)</span><span class="val" id="bassVal">0dB</span></div>
             </div>
@@ -474,17 +256,26 @@
             <div class="eq-hint">Center: Switch Band • Wheel: Fast Gain</div>
           </div>
 
-          <!-- 4. Volume Screen -->
-          <div class="volume-view" id="volumeView">
+          <!-- 6. Volume Screen -->
+          <div class="view-container volume-view" id="volumeView">
             <div style="font-weight:700; color:#333; font-size:12px;">Headphone Volume</div>
             <div class="vol-track"><div class="vol-fill" id="volFill"></div></div>
             <div style="font-size:11px; font-weight:700; color:#175bb3;" id="volText">100%</div>
+          </div>
+
+          <!-- 7. Settings / About Screen -->
+          <div class="view-container settings-view" id="settingsView">
+            <div style="font-weight:700; color:#111; margin-bottom:4px;">iPod Classic (6th Gen)</div>
+            <div class="settings-row"><span>Version</span><span>2.0.4 PC</span></div>
+            <div class="settings-row"><span>Format</span><span>Audio / Video / Photo</span></div>
+            <div class="settings-row"><span>Audio Engine</span><span>Web Audio DSP (3-Band)</span></div>
+            <div class="settings-row"><span>Connection</span><span>Telegram Mini App</span></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Ultra Sensitive Click Wheel -->
+    <!-- Ultra-Sensitive Click Wheel -->
     <div class="click-wheel" id="clickWheel">
       <div class="wheel-label wheel-menu" id="menuBtn">MENU</div>
       <div class="wheel-label wheel-prev" id="prevBtn">
@@ -500,8 +291,10 @@
     </div>
 
     <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
-    <!-- Explicit audio extensions for iOS Safari file pickers -->
-    <input type="file" id="fileInput" accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*,audio/mpeg,audio/mp4" multiple>
+
+    <input type="file" id="audioFileInput" accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*" multiple>
+    <input type="file" id="videoFileInput" accept=".mp4,.webm,.mov,video/*">
+    <input type="file" id="photoFileInput" accept=".jpg,.jpeg,.png,.webp,image/*" multiple>
   </div>
 
   <script>
@@ -509,31 +302,37 @@
     if (tg) {
       tg.ready();
       tg.expand();
-      if (typeof tg.isVerticalSwipesEnabled !== 'undefined') {
-        tg.isVerticalSwipesEnabled = false;
-      }
+      if (typeof tg.isVerticalSwipesEnabled !== 'undefined') tg.isVerticalSwipesEnabled = false;
       tg.enableClosingConfirmation && tg.enableClosingConfirmation();
     }
 
     function triggerHaptic() {
-      if (tg && tg.HapticFeedback) {
-        tg.HapticFeedback.impactOccurred('light');
-      }
+      if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
     }
 
-    document.body.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-    }, { passive: false });
+    document.body.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 
     const audio = document.getElementById('audioElement');
-    const fileInput = document.getElementById('fileInput');
+    const video = document.getElementById('videoElement');
+    const photo = document.getElementById('photoElement');
+
+    const audioFileInput = document.getElementById('audioFileInput');
+    const videoFileInput = document.getElementById('videoFileInput');
+    const photoFileInput = document.getElementById('photoFileInput');
 
     const headerTitle = document.getElementById('headerTitle');
     const playStateSvg = document.getElementById('playStateSvg');
-    const menuView = document.getElementById('menuView');
+
+    const splitMenuView = document.getElementById('splitMenuView');
     const nowPlayingView = document.getElementById('nowPlayingView');
+    const videoView = document.getElementById('videoView');
+    const photoView = document.getElementById('photoView');
     const eqView = document.getElementById('eqView');
     const volumeView = document.getElementById('volumeView');
+    const settingsView = document.getElementById('settingsView');
+
+    const previewIcon = document.getElementById('previewIcon');
+    const previewText = document.getElementById('previewText');
 
     const menuItems = Array.from(document.querySelectorAll('.menu-item'));
     let currentMenuIndex = 0;
@@ -554,7 +353,6 @@
     ];
     let selectedEqBand = 0;
     let eqGains = { bass: 0, mid: 0, treble: 0 };
-
     const bassVal = document.getElementById('bassVal');
     const midVal = document.getElementById('midVal');
     const trebleVal = document.getElementById('trebleVal');
@@ -563,22 +361,71 @@
 
     let currentVolume = 1;
     let playlist = [];
+    let photoList = [];
+    let currentPhotoIndex = 0;
     let currentIndex = 0;
     let audioCtx = null, sourceNode = null, bassFilter = null, midFilter = null, trebleFilter = null, gainNode = null;
 
+    const previewDetails = {
+      music: {
+        icon: '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>',
+        label: 'Audio Library'
+      },
+      videos: {
+        icon: '<path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>',
+        label: 'iPod Videos'
+      },
+      photos: {
+        icon: '<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>',
+        label: 'Photo Viewer'
+      },
+      nowPlaying: {
+        icon: '<path d="M8 5v14l11-7z"/>',
+        label: 'Now Playing'
+      },
+      equalizer: {
+        icon: '<path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>',
+        label: 'DSP Equalizer'
+      },
+      volume: {
+        icon: '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>',
+        label: 'Volume Master'
+      },
+      settings: {
+        icon: '<path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>',
+        label: 'System Info'
+      }
+    };
+
+    function updatePreview(type) {
+      if (previewDetails[type]) {
+        previewIcon.innerHTML = previewDetails[type].icon;
+        previewText.textContent = previewDetails[type].label;
+      }
+    }
+
     function showView(view) {
       activeView = view;
-      menuView.style.display = 'none';
+      splitMenuView.style.display = 'none';
       nowPlayingView.style.display = 'none';
+      videoView.style.display = 'none';
+      photoView.style.display = 'none';
       eqView.style.display = 'none';
       volumeView.style.display = 'none';
+      settingsView.style.display = 'none';
 
       if (view === 'menu') {
         headerTitle.textContent = 'iPod';
-        menuView.style.display = 'flex';
+        splitMenuView.style.display = 'flex';
       } else if (view === 'nowPlaying') {
         headerTitle.textContent = 'Now Playing';
         nowPlayingView.style.display = 'flex';
+      } else if (view === 'video') {
+        headerTitle.textContent = 'Videos';
+        videoView.style.display = 'flex';
+      } else if (view === 'photo') {
+        headerTitle.textContent = 'Photos';
+        photoView.style.display = 'flex';
       } else if (view === 'equalizer') {
         headerTitle.textContent = 'Equalizer';
         eqView.style.display = 'flex';
@@ -586,6 +433,9 @@
       } else if (view === 'volume') {
         headerTitle.textContent = 'Volume';
         volumeView.style.display = 'flex';
+      } else if (view === 'settings') {
+        headerTitle.textContent = 'About';
+        settingsView.style.display = 'flex';
       }
     }
 
@@ -593,6 +443,7 @@
       menuItems[currentMenuIndex].classList.remove('active');
       menuItems[index].classList.add('active');
       currentMenuIndex = index;
+      updatePreview(menuItems[index].dataset.type);
     }
 
     function updateEqRowHighlight() {
@@ -601,7 +452,6 @@
       });
     }
 
-    // Direct Menu item touch click (Direct tap on LCD list)
     menuItems.forEach((item, idx) => {
       item.addEventListener('click', () => {
         triggerHaptic();
@@ -612,64 +462,77 @@
 
     function handleSelectAction() {
       if (activeView === 'menu') {
-        const selected = menuItems[currentMenuIndex].dataset.view;
-        if (selected === 'openFile') {
-          // Native clean trigger for iOS file picker
-          fileInput.click();
+        const type = menuItems[currentMenuIndex].dataset.type;
+        if (type === 'music') {
+          audioFileInput.click();
+        } else if (type === 'videos') {
+          videoFileInput.click();
+        } else if (type === 'photos') {
+          photoFileInput.click();
         } else {
-          showView(selected);
+          showView(type);
         }
       } else if (activeView === 'nowPlaying') {
         if (!audio.src) return;
         audio.paused ? playAudio() : pauseAudio();
+      } else if (activeView === 'video') {
+        video.paused ? video.play() : video.pause();
       } else if (activeView === 'equalizer') {
         selectedEqBand = (selectedEqBand + 1) % 3;
         updateEqRowHighlight();
       }
     }
 
-    // Center Select Button
     document.getElementById('centerBtn').addEventListener('pointerdown', (e) => {
       e.stopPropagation();
       triggerHaptic();
       handleSelectAction();
     });
 
-    // Menu (Back) Button
     document.getElementById('menuBtn').addEventListener('pointerdown', (e) => {
       e.stopPropagation();
       triggerHaptic();
       if (activeView !== 'menu') {
+        if (activeView === 'video') video.pause();
         showView('menu');
       }
     });
 
-    // Play/Pause Button
     document.getElementById('playPauseBtn').addEventListener('pointerdown', (e) => {
       e.stopPropagation();
       triggerHaptic();
-      if (!audio.src) return;
-      audio.paused ? playAudio() : pauseAudio();
+      if (activeView === 'video') {
+        video.paused ? video.play() : video.pause();
+      } else {
+        if (!audio.src) return;
+        audio.paused ? playAudio() : pauseAudio();
+      }
     });
 
-    // Next / Prev Buttons
     document.getElementById('nextBtn').addEventListener('pointerdown', (e) => {
       e.stopPropagation();
       triggerHaptic();
-      if (playlist.length <= 1) return;
-      currentIndex = (currentIndex + 1) % playlist.length;
-      loadLocalTrack(currentIndex);
+      if (activeView === 'photo' && photoList.length > 1) {
+        currentPhotoIndex = (currentPhotoIndex + 1) % photoList.length;
+        photo.src = URL.createObjectURL(photoList[currentPhotoIndex]);
+      } else if (playlist.length > 1) {
+        currentIndex = (currentIndex + 1) % playlist.length;
+        loadLocalTrack(currentIndex);
+      }
     });
 
     document.getElementById('prevBtn').addEventListener('pointerdown', (e) => {
       e.stopPropagation();
       triggerHaptic();
-      if (playlist.length <= 1) return;
-      currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-      loadLocalTrack(currentIndex);
+      if (activeView === 'photo' && photoList.length > 1) {
+        currentPhotoIndex = (currentPhotoIndex - 1 + photoList.length) % photoList.length;
+        photo.src = URL.createObjectURL(photoList[currentPhotoIndex]);
+      } else if (playlist.length > 1) {
+        currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+        loadLocalTrack(currentIndex);
+      }
     });
 
-    // Web Audio DSP Equalizer
     function setupEqualizer() {
       if (audioCtx) return;
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -733,12 +596,29 @@
       playAudio();
     }
 
-    // Local Audio File Change Event
-    fileInput.addEventListener('change', function() {
+    audioFileInput.addEventListener('change', function() {
       if (this.files && this.files.length > 0) {
         playlist = Array.from(this.files);
         currentIndex = 0;
         loadLocalTrack(0);
+      }
+    });
+
+    videoFileInput.addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        pauseAudio();
+        video.src = URL.createObjectURL(this.files[0]);
+        showView('video');
+        video.play().catch(() => {});
+      }
+    });
+
+    photoFileInput.addEventListener('change', function() {
+      if (this.files && this.files.length > 0) {
+        photoList = Array.from(this.files);
+        currentPhotoIndex = 0;
+        photo.src = URL.createObjectURL(photoList[0]);
+        showView('photo');
       }
     });
 
@@ -759,7 +639,6 @@
       }
     });
 
-    // Scrubber Seeking
     function seekFromEvent(e) {
       if (!audio.src || isNaN(audio.duration)) return;
       const rect = progressContainer.getBoundingClientRect();
@@ -788,7 +667,6 @@
       totalDurationEl.textContent = formatTime(audio.duration);
     });
 
-    // ROTATING CLICK-WHEEL (Fast Response)
     const wheel = document.getElementById('clickWheel');
     let lastAngle = null;
     let accumulatedAngle = 0;
@@ -832,6 +710,7 @@
         } else if (activeView === 'volume') {
           currentVolume = Math.max(0, Math.min(1, currentVolume + step * 0.03));
           audio.volume = currentVolume;
+          video.volume = currentVolume;
           if (gainNode) gainNode.gain.value = currentVolume;
           volFill.style.width = `${currentVolume * 100}%`;
           volText.textContent = `${Math.round(currentVolume * 100)}%`;
@@ -852,6 +731,8 @@
           }
         } else if (activeView === 'nowPlaying' && audio.duration) {
           audio.currentTime = Math.max(0, Math.min(audio.duration, audio.currentTime + step * 2));
+        } else if (activeView === 'video' && video.duration) {
+          video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + step * 2));
         }
       }
     }, { passive: false });
