@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>iPod Classic OS</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- Embedded ID3 Album Cover Art Extractor -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
   <style>
     * {
@@ -69,15 +68,18 @@
       position: relative;
     }
 
-    /* Dynamic Blur State for Custom Wallpaper */
-    .lcd-wp-blur {
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+    /* Dim Tint Overlay for Clean Readability */
+    .lcd-tint-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0);
+      pointer-events: none;
+      z-index: 1;
     }
 
     .lcd-header {
       height: 22px;
-      background: linear-gradient(180deg, rgba(211,216,223,0.85) 0%, rgba(178,186,197,0.85) 50%, rgba(155,165,178,0.85) 51%, rgba(186,194,205,0.85) 100%);
+      background: linear-gradient(180deg, rgba(211,216,223,0.92) 0%, rgba(178,186,197,0.92) 50%, rgba(155,165,178,0.92) 51%, rgba(186,194,205,0.92) 100%);
       border-bottom: 1px solid rgba(124, 136, 150, 0.6);
       display: flex;
       align-items: center;
@@ -88,7 +90,7 @@
       color: #1e252d;
       text-shadow: 0 1px 0 rgba(255,255,255,0.7);
       flex-shrink: 0;
-      z-index: 5;
+      z-index: 10;
     }
     .header-icons { display: flex; align-items: center; gap: 6px; }
     .apple-icon { width: 11px; height: 11px; fill: #222; }
@@ -99,14 +101,14 @@
       content: ''; position: absolute; right: -3px; top: 1.5px; width: 2px; height: 4px; background: #333; border-radius: 0 1px 1px 0;
     }
     .battery-fill { width: 80%; height: 100%; background: #27ae60; border-radius: 1px; }
-    .lcd-content { flex: 1; display: flex; position: relative; overflow: hidden; }
+    .lcd-content { flex: 1; display: flex; position: relative; overflow: hidden; z-index: 2; }
 
-    /* 50/50 Translucent Glass Split Screen */
+    /* 50/50 Glass Split View */
     .split-menu { width: 100%; height: 100%; display: flex; }
     .menu-left {
       width: 55%;
       height: 100%;
-      border-right: 1px solid rgba(255, 255, 255, 0.3);
+      border-right: 1px solid rgba(255, 255, 255, 0.35);
       overflow-y: auto;
       background: rgba(255, 255, 255, 0.48);
     }
@@ -143,14 +145,14 @@
     .preview-box svg { width: 44px; height: 44px; fill: #1e293b; }
     .preview-text { font-size: 10px; font-weight: 700; text-shadow: 0 1px 2px rgba(255,255,255,0.7); }
 
-    /* Screen Views (50/50 Translucent Background) */
+    /* Screen Views */
     .view-container {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.52);
       display: none;
       flex-direction: column;
     }
@@ -185,16 +187,39 @@
     .vol-track { width: 85%; height: 8px; background: rgba(200, 206, 214, 0.8); border: 1px solid #7c8896; border-radius: 4px; overflow: hidden; }
     .vol-fill { width: 100%; height: 100%; background: linear-gradient(180deg, #4da4f7 0%, #1566be 100%); }
 
-    /* Video & Photo Views */
-    .video-view { background: #000; display: flex; align-items: center; justify-content: center; }
+    /* Video Player with iPod Auto-hiding HUD */
+    .video-view { background: #000; display: flex; align-items: center; justify-content: center; position: relative; }
     video { width: 100%; height: 100%; object-fit: contain; }
+    .video-hud {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.85) 100%);
+      padding: 10px 12px 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: opacity 0.3s ease;
+      z-index: 5;
+    }
+    .video-hud.hidden { opacity: 0; pointer-events: none; }
+    .video-time-labels { display: flex; justify-content: space-between; color: #fff; font-size: 9px; font-weight: 700; font-family: monospace; }
+    .video-track-bar { width: 100%; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden; cursor: pointer; }
+    .video-track-fill { height: 100%; width: 0%; background: #378fe6; }
+
+    /* Photo View */
     .photo-view { background: #000; display: flex; align-items: center; justify-content: center; }
     .photo-view img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
     /* Settings View */
-    .settings-view { padding: 12px; font-size: 11px; color: #111; font-weight: 600; display: flex; flex-direction: column; gap: 8px; }
-    .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .settings-view { padding: 10px; font-size: 11px; color: #111; font-weight: 600; display: flex; flex-direction: column; gap: 6px; }
+    .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 4px; border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .settings-row.active { background: rgba(55, 143, 230, 0.25); border-radius: 4px; color: #0a4da3; font-weight: 700; }
     .settings-btn { padding: 4px 8px; font-size: 10px; font-weight: 700; border-radius: 4px; border: 1px solid #7c8896; background: rgba(255,255,255,0.8); cursor: pointer; }
+
+    /* Stopwatch View */
+    .stopwatch-view { padding: 16px; align-items: center; justify-content: center; gap: 12px; }
+    .sw-display { font-size: 28px; font-weight: 800; font-family: monospace; color: #111; }
+    .sw-sub { font-size: 10px; color: #444; font-weight: 700; }
 
     /* Click Wheel */
     .click-wheel {
@@ -220,10 +245,9 @@
 <body>
 
   <div class="ipod-body">
-    <!-- LCD Bezel -->
     <div class="screen-bezel">
       <div class="ipod-lcd" id="ipodLcd">
-        <!-- Header -->
+        <div class="lcd-tint-overlay" id="tintOverlay"></div>
         <div class="lcd-header">
           <span id="headerTitle">iPod</span>
           <div class="header-icons">
@@ -233,7 +257,7 @@
         </div>
 
         <div class="lcd-content" id="lcdContent">
-          <!-- 1. Apple iPod Split-Screen Main OS Menu -->
+          <!-- 1. Apple iPod Main Split-Menu -->
           <div class="split-menu" id="splitMenuView">
             <div class="menu-left">
               <ul class="menu-list" id="menuList">
@@ -247,12 +271,10 @@
                   <span>Now Playing</span>
                   <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 </li>
-                <label for="wallpaperFileInput">
-                  <li class="menu-item" data-type="wallpaper">
-                    <span>Set Wallpaper</span>
-                    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                  </li>
-                </label>
+                <li class="menu-item" data-type="shuffle">
+                  <span>Shuffle Songs</span>
+                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </li>
                 <label for="videoFileInput">
                   <li class="menu-item" data-type="videos">
                     <span>Videos</span>
@@ -265,6 +287,10 @@
                     <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                   </li>
                 </label>
+                <li class="menu-item" data-type="wallpaperSettings">
+                  <span>Wallpaper Settings</span>
+                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </li>
                 <li class="menu-item" data-type="equalizer">
                   <span>Equalizer</span>
                   <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -273,13 +299,16 @@
                   <span>Volume</span>
                   <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 </li>
+                <li class="menu-item" data-type="stopwatch">
+                  <span>Stopwatch</span>
+                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </li>
                 <li class="menu-item" data-type="settings">
                   <span>Settings / About</span>
                   <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 </li>
               </ul>
             </div>
-            <!-- Right Preview -->
             <div class="menu-right">
               <div class="preview-box" id="previewBox">
                 <svg id="previewIcon" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
@@ -288,7 +317,7 @@
             </div>
           </div>
 
-          <!-- 2. Music / Now Playing Screen -->
+          <!-- 2. Now Playing -->
           <div class="view-container np-view" id="nowPlayingView">
             <div class="np-top">
               <div class="album-art-container">
@@ -313,17 +342,50 @@
             </div>
           </div>
 
-          <!-- 3. Video Player Screen -->
+          <!-- 3. Video Player with Auto-hiding HUD -->
           <div class="view-container video-view" id="videoView">
             <video id="videoElement" playsinline></video>
+            <div class="video-hud" id="videoHud">
+              <div class="video-track-bar" id="videoTrackBar">
+                <div class="video-track-fill" id="videoTrackFill"></div>
+              </div>
+              <div class="video-time-labels">
+                <span id="videoCurrentTime">00:00</span>
+                <span id="videoTotalDuration">00:00</span>
+              </div>
+            </div>
           </div>
 
-          <!-- 4. Photo Viewer Screen -->
+          <!-- 4. Photo Viewer -->
           <div class="view-container photo-view" id="photoView">
             <img id="photoElement" src="" alt="Photo Viewer">
           </div>
 
-          <!-- 5. Equalizer Screen -->
+          <!-- 5. Wallpaper Settings Menu -->
+          <div class="view-container settings-view" id="wallpaperSettingsView">
+            <div style="font-weight:700; color:#000; margin-bottom:4px;">Wallpaper Tuning</div>
+            <div class="settings-row active" id="wpRowBlur">
+              <span>Blur Level</span>
+              <span id="wpBlurVal" style="font-family:monospace; font-weight:700;">10%</span>
+            </div>
+            <div class="settings-row" id="wpRowTint">
+              <span>Dim / Tint</span>
+              <span id="wpTintVal" style="font-family:monospace; font-weight:700;">20%</span>
+            </div>
+            <label for="wallpaperFileInput" style="width:100%;">
+              <div class="settings-row" id="wpRowImage">
+                <span>Choose New Image</span>
+                <span style="color:#0a4da3;">Browse ▶</span>
+              </div>
+            </label>
+            <div class="settings-row" id="wpRowReset">
+              <span>Reset Wallpaper</span>
+              <button class="settings-btn" onclick="resetWallpaper()">Reset</button>
+            </div>
+            <div style="font-size:9px; color:#444; margin-top:auto; text-align:center;">Center: Switch Setting • Wheel: Change Value</div>
+          </div>
+
+          <!-- 6. Equalizer -->
           <div class="view-container eq-view" id="eqView">
             <div class="eq-row active" id="eqRowBass">
               <div class="eq-info"><span>Bass (60Hz)</span><span class="val" id="bassVal">0dB</span></div>
@@ -337,26 +399,29 @@
             <div class="eq-hint">Center: Switch Band • Wheel: Fast Gain</div>
           </div>
 
-          <!-- 6. Volume Screen -->
+          <!-- 7. Volume -->
           <div class="view-container volume-view" id="volumeView">
             <div style="font-weight:700; color:#111; font-size:12px;">Headphone Volume</div>
             <div class="vol-track"><div class="vol-fill" id="volFill"></div></div>
             <div style="font-size:11px; font-weight:700; color:#175bb3;" id="volText">100%</div>
           </div>
 
-          <!-- 7. Settings / About Screen -->
+          <!-- 8. Stopwatch -->
+          <div class="view-container stopwatch-view" id="stopwatchView">
+            <div class="sw-display" id="swDisplay">00:00.0</div>
+            <div class="sw-sub">Center: Start / Stop • Wheel: Reset</div>
+          </div>
+
+          <!-- 9. Settings / About -->
           <div class="view-container settings-view" id="settingsView">
             <div style="font-weight:700; color:#000; margin-bottom:4px;">iPod Settings</div>
             <div class="settings-row">
-              <span>Wallpaper Blur</span>
-              <button class="settings-btn" id="blurToggleBtn" onclick="toggleWallpaperBlur()">Blur: OFF</button>
+              <span>Sleep Timer</span>
+              <span id="sleepTimerStatus" style="font-family:monospace; font-weight:700; cursor:pointer;" onclick="cycleSleepTimer()">OFF</span>
             </div>
-            <div class="settings-row">
-              <span>Reset Wallpaper</span>
-              <button class="settings-btn" onclick="resetWallpaper()">Reset to Default</button>
-            </div>
-            <div class="settings-row"><span>Storage</span><span id="storageCount">0 Songs</span></div>
+            <div class="settings-row"><span>IndexedDB Storage</span><span id="storageCount">0 Songs</span></div>
             <div class="settings-row"><span>DSP Engine</span><span>3-Band Active</span></div>
+            <div class="settings-row"><span>Software Version</span><span>2.0.5 iPod OS</span></div>
           </div>
         </div>
       </div>
@@ -379,7 +444,7 @@
 
     <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
 
-    <!-- Inputs -->
+    <!-- Native Inputs -->
     <input type="file" id="audioFileInput" class="hidden-file-input" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg,audio/mpeg,audio/mp4" multiple>
     <input type="file" id="videoFileInput" class="hidden-file-input" accept="video/*,.mp4,.webm,.mov">
     <input type="file" id="photoFileInput" class="hidden-file-input" accept="image/*,.jpg,.jpeg,.png,.webp" multiple>
@@ -403,6 +468,7 @@
     const video = document.getElementById('videoElement');
     const photo = document.getElementById('photoElement');
     const ipodLcd = document.getElementById('ipodLcd');
+    const tintOverlay = document.getElementById('tintOverlay');
     const lcdContent = document.getElementById('lcdContent');
 
     const audioFileInput = document.getElementById('audioFileInput');
@@ -413,13 +479,24 @@
     const headerTitle = document.getElementById('headerTitle');
     const playStateSvg = document.getElementById('playStateSvg');
 
+    // Views
     const splitMenuView = document.getElementById('splitMenuView');
     const nowPlayingView = document.getElementById('nowPlayingView');
     const videoView = document.getElementById('videoView');
     const photoView = document.getElementById('photoView');
+    const wallpaperSettingsView = document.getElementById('wallpaperSettingsView');
     const eqView = document.getElementById('eqView');
     const volumeView = document.getElementById('volumeView');
+    const stopwatchView = document.getElementById('stopwatchView');
     const settingsView = document.getElementById('settingsView');
+
+    // Video HUD Elements
+    const videoHud = document.getElementById('videoHud');
+    const videoTrackBar = document.getElementById('videoTrackBar');
+    const videoTrackFill = document.getElementById('videoTrackFill');
+    const videoCurrentTime = document.getElementById('videoCurrentTime');
+    const videoTotalDuration = document.getElementById('videoTotalDuration');
+    let videoHudTimeout = null;
 
     const previewIcon = document.getElementById('previewIcon');
     const previewText = document.getElementById('previewText');
@@ -439,6 +516,18 @@
     const albumArtImg = document.getElementById('albumArtImg');
     const albumArtFallback = document.getElementById('albumArtFallback');
 
+    // Wallpaper Tuning Variables
+    let wpBlurVal = parseInt(localStorage.getItem('ipod_wp_blur_amount') || '10');
+    let wpTintVal = parseInt(localStorage.getItem('ipod_wp_tint_amount') || '20');
+    let wpSettingSelected = 0; // 0 = Blur, 1 = Tint
+    const wpRows = [
+      document.getElementById('wpRowBlur'),
+      document.getElementById('wpRowTint'),
+      document.getElementById('wpRowImage'),
+      document.getElementById('wpRowReset')
+    ];
+
+    // Equalizer
     const eqRows = [
       document.getElementById('eqRowBass'),
       document.getElementById('eqRowMid'),
@@ -485,9 +574,7 @@
       Array.from(files).forEach((file) => {
         store.add({ name: file.name, blob: file });
       });
-      tx.oncomplete = () => {
-        loadSongsFromDB();
-      };
+      tx.oncomplete = () => loadSongsFromDB();
     }
 
     function loadSongsFromDB() {
@@ -502,42 +589,38 @@
         }
       };
     }
-
     initDB();
 
-    // --- WALLPAPER & BLUR SETTINGS ---
-    let isWallpaperBlur = localStorage.getItem('ipod_wp_blur') === 'true';
-
-    function updateBlurUI() {
-      const btn = document.getElementById('blurToggleBtn');
-      if (isWallpaperBlur) {
-        lcdContent.classList.add('lcd-wp-blur');
-        if (btn) btn.textContent = 'Blur: ON';
-      } else {
-        lcdContent.classList.remove('lcd-wp-blur');
-        if (btn) btn.textContent = 'Blur: OFF';
-      }
-    }
-
-    function toggleWallpaperBlur() {
-      isWallpaperBlur = !isWallpaperBlur;
-      localStorage.setItem('ipod_wp_blur', isWallpaperBlur);
-      updateBlurUI();
-      triggerHaptic();
-    }
-
-    function applySavedWallpaper() {
+    // --- WALLPAPER TUNING ENGINE ---
+    function applyWallpaperSettings() {
       const savedWp = localStorage.getItem('ipod_wallpaper');
       if (savedWp) {
         ipodLcd.style.backgroundImage = `url(${savedWp})`;
+      } else {
+        ipodLcd.style.backgroundImage = 'linear-gradient(180deg, #f8f9fa 0%, #eef1f5 100%)';
       }
-      updateBlurUI();
+      lcdContent.style.backdropFilter = wpBlurVal > 0 ? `blur(${wpBlurVal * 0.15}px)` : 'none';
+      lcdContent.style.webkitBackdropFilter = wpBlurVal > 0 ? `blur(${wpBlurVal * 0.15}px)` : 'none';
+      tintOverlay.style.background = `rgba(0, 0, 0, ${wpTintVal * 0.01})`;
+
+      document.getElementById('wpBlurVal').textContent = `${wpBlurVal}%`;
+      document.getElementById('wpTintVal').textContent = `${wpTintVal}%`;
     }
-    applySavedWallpaper();
+    applyWallpaperSettings();
+
+    function updateWpSettingRow() {
+      wpRows.forEach((row, idx) => {
+        if (row) row.classList.toggle('active', idx === wpSettingSelected);
+      });
+    }
 
     function resetWallpaper() {
       localStorage.removeItem('ipod_wallpaper');
-      ipodLcd.style.backgroundImage = 'linear-gradient(180deg, #f8f9fa 0%, #eef1f5 100%)';
+      wpBlurVal = 0;
+      wpTintVal = 0;
+      localStorage.setItem('ipod_wp_blur_amount', '0');
+      localStorage.setItem('ipod_wp_tint_amount', '0');
+      applyWallpaperSettings();
       triggerHaptic();
     }
 
@@ -545,16 +628,15 @@
       if (this.files && this.files[0]) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          const dataUrl = e.target.result;
-          localStorage.setItem('ipod_wallpaper', dataUrl);
-          ipodLcd.style.backgroundImage = `url(${dataUrl})`;
+          localStorage.setItem('ipod_wallpaper', e.target.result);
+          applyWallpaperSettings();
           showView('menu');
         };
         reader.readAsDataURL(this.files[0]);
       }
     });
 
-    // --- ID3 ALBUM ART EXTRACTION ---
+    // --- ALBUM ART EXTRACTOR ---
     function extractAlbumArt(fileBlob) {
       albumArtImg.style.display = 'none';
       albumArtFallback.style.display = 'block';
@@ -573,48 +655,115 @@
               albumArtImg.style.display = 'block';
               albumArtFallback.style.display = 'none';
             }
-            if (tag.tags.artist) {
-              artistName.textContent = tag.tags.artist;
-            }
+            if (tag.tags.artist) artistName.textContent = tag.tags.artist;
           },
           onError: function() {}
         });
       }
     }
 
-    const previewDetails = {
-      offlineMusic: {
-        icon: '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>',
-        label: 'Offline Storage'
-      },
-      nowPlaying: {
-        icon: '<path d="M8 5v14l11-7z"/>',
-        label: 'Now Playing'
-      },
-      wallpaper: {
-        icon: '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>',
-        label: 'LCD Theme'
-      },
-      videos: {
-        icon: '<path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>',
-        label: 'iPod Videos'
-      },
-      photos: {
-        icon: '<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>',
-        label: 'Photo Viewer'
-      },
-      equalizer: {
-        icon: '<path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>',
-        label: 'DSP Equalizer'
-      },
-      volume: {
-        icon: '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>',
-        label: 'Volume Master'
-      },
-      settings: {
-        icon: '<path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>',
-        label: 'System Info'
+    // --- AUTO-HIDING VIDEO HUD SYSTEM ---
+    function showVideoHud() {
+      videoHud.classList.remove('hidden');
+      clearTimeout(videoHudTimeout);
+      videoHudTimeout = setTimeout(() => {
+        if (!video.paused) {
+          videoHud.classList.add('hidden');
+        }
+      }, 3000);
+    }
+
+    video.addEventListener('timeupdate', () => {
+      if (video.duration) {
+        const pct = (video.currentTime / video.duration) * 100;
+        videoTrackFill.style.width = `${pct}%`;
+        videoCurrentTime.textContent = formatTime(video.currentTime);
+        videoTotalDuration.textContent = formatTime(video.duration);
       }
+    });
+
+    videoView.addEventListener('click', () => {
+      showVideoHud();
+    });
+
+    videoTrackBar.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!video.duration) return;
+      const rect = videoTrackBar.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      video.currentTime = pct * video.duration;
+      showVideoHud();
+    });
+
+    // --- STOPWATCH SYSTEM ---
+    let swRunning = false;
+    let swTime = 0;
+    let swInterval = null;
+    function updateSw() {
+      const ms = Math.floor((swTime % 1000) / 100);
+      const totalSecs = Math.floor(swTime / 1000);
+      const s = totalSecs % 60;
+      const m = Math.floor(totalSecs / 60);
+      document.getElementById('swDisplay').textContent = 
+        `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}.${ms}`;
+    }
+    function toggleStopwatch() {
+      if (!swRunning) {
+        swRunning = true;
+        const startT = performance.now() - swTime;
+        swInterval = setInterval(() => {
+          swTime = performance.now() - startT;
+          updateSw();
+        }, 100);
+      } else {
+        swRunning = false;
+        clearInterval(swInterval);
+      }
+      triggerHaptic();
+    }
+    function resetStopwatch() {
+      swRunning = false;
+      clearInterval(swInterval);
+      swTime = 0;
+      updateSw();
+      triggerHaptic();
+    }
+
+    // --- SLEEP TIMER SYSTEM ---
+    let sleepTimer = null;
+    let sleepMinutes = 0;
+    function cycleSleepTimer() {
+      if (sleepMinutes === 0) sleepMinutes = 15;
+      else if (sleepMinutes === 15) sleepMinutes = 30;
+      else if (sleepMinutes === 30) sleepMinutes = 60;
+      else sleepMinutes = 0;
+
+      clearTimeout(sleepTimer);
+      if (sleepMinutes > 0) {
+        document.getElementById('sleepTimerStatus').textContent = `${sleepMinutes} Min`;
+        sleepTimer = setTimeout(() => {
+          pauseAudio();
+          video.pause();
+          sleepMinutes = 0;
+          document.getElementById('sleepTimerStatus').textContent = 'OFF';
+        }, sleepMinutes * 60 * 1000);
+      } else {
+        document.getElementById('sleepTimerStatus').textContent = 'OFF';
+      }
+      triggerHaptic();
+    }
+
+    const previewDetails = {
+      offlineMusic: { icon: '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>', label: 'Offline Storage' },
+      nowPlaying: { icon: '<path d="M8 5v14l11-7z"/>', label: 'Now Playing' },
+      shuffle: { icon: '<path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>', label: 'Shuffle All' },
+      wallpaperSettings: { icon: '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>', label: 'Wallpaper Tuning' },
+      videos: { icon: '<path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>', label: 'iPod Videos' },
+      photos: { icon: '<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>', label: 'Photo Viewer' },
+      equalizer: { icon: '<path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>', label: 'DSP Equalizer' },
+      volume: { icon: '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>', label: 'Volume Master' },
+      stopwatch: { icon: '<path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>', label: 'Stopwatch' },
+      settings: { icon: '<path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>', label: 'System Info' }
     };
 
     function updatePreview(type) {
@@ -630,8 +779,10 @@
       nowPlayingView.style.display = 'none';
       videoView.style.display = 'none';
       photoView.style.display = 'none';
+      wallpaperSettingsView.style.display = 'none';
       eqView.style.display = 'none';
       volumeView.style.display = 'none';
+      stopwatchView.style.display = 'none';
       settingsView.style.display = 'none';
 
       if (view === 'menu') {
@@ -643,9 +794,14 @@
       } else if (view === 'video') {
         headerTitle.textContent = 'Videos';
         videoView.style.display = 'flex';
+        showVideoHud();
       } else if (view === 'photo') {
         headerTitle.textContent = 'Photos';
         photoView.style.display = 'flex';
+      } else if (view === 'wallpaperSettings') {
+        headerTitle.textContent = 'Wallpaper';
+        wallpaperSettingsView.style.display = 'flex';
+        updateWpSettingRow();
       } else if (view === 'equalizer') {
         headerTitle.textContent = 'Equalizer';
         eqView.style.display = 'flex';
@@ -653,6 +809,9 @@
       } else if (view === 'volume') {
         headerTitle.textContent = 'Volume';
         volumeView.style.display = 'flex';
+      } else if (view === 'stopwatch') {
+        headerTitle.textContent = 'Stopwatch';
+        stopwatchView.style.display = 'flex';
       } else if (view === 'settings') {
         headerTitle.textContent = 'About';
         settingsView.style.display = 'flex';
@@ -677,7 +836,12 @@
         triggerHaptic();
         updateMenuSelection(idx);
         const type = item.dataset.type;
-        if (type !== 'offlineMusic' && type !== 'wallpaper' && type !== 'videos' && type !== 'photos') {
+        if (type === 'shuffle') {
+          if (playlist.length > 0) {
+            currentIndex = Math.floor(Math.random() * playlist.length);
+            loadIndexedTrack(currentIndex);
+          }
+        } else if (type !== 'offlineMusic' && type !== 'videos' && type !== 'photos') {
           showView(type);
         }
       });
@@ -688,12 +852,15 @@
         const type = menuItems[currentMenuIndex].dataset.type;
         if (type === 'offlineMusic') {
           audioFileInput.click();
-        } else if (type === 'wallpaper') {
-          wallpaperFileInput.click();
         } else if (type === 'videos') {
           videoFileInput.click();
         } else if (type === 'photos') {
           photoFileInput.click();
+        } else if (type === 'shuffle') {
+          if (playlist.length > 0) {
+            currentIndex = Math.floor(Math.random() * playlist.length);
+            loadIndexedTrack(currentIndex);
+          }
         } else {
           showView(type);
         }
@@ -702,9 +869,15 @@
         audio.paused ? playAudio() : pauseAudio();
       } else if (activeView === 'video') {
         video.paused ? video.play() : video.pause();
+        showVideoHud();
+      } else if (activeView === 'wallpaperSettings') {
+        wpSettingSelected = (wpSettingSelected + 1) % 4;
+        updateWpSettingRow();
       } else if (activeView === 'equalizer') {
         selectedEqBand = (selectedEqBand + 1) % 3;
         updateEqRowHighlight();
+      } else if (activeView === 'stopwatch') {
+        toggleStopwatch();
       }
     }
 
@@ -723,15 +896,18 @@
       }
     });
 
+    // PLAY/PAUSE Button: ONLY affects active Now Playing or Video screens!
     document.getElementById('playPauseBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       triggerHaptic();
-      if (activeView === 'video') {
-        video.paused ? video.play() : video.pause();
-      } else {
+      if (activeView === 'nowPlaying') {
         if (!audio.src) return;
         audio.paused ? playAudio() : pauseAudio();
+      } else if (activeView === 'video') {
+        video.paused ? video.play() : video.pause();
+        showVideoHud();
       }
+      // If user is inside settings, wallpaper, menu, etc. - DO NOTHING!
     });
 
     document.getElementById('nextBtn').addEventListener('click', (e) => {
@@ -899,7 +1075,7 @@
       totalDurationEl.textContent = formatTime(audio.duration);
     });
 
-    // ROTATING CLICK-WHEEL
+    // --- ROTATING CLICK-WHEEL ENGINE ---
     const wheel = document.getElementById('clickWheel');
     let lastAngle = null;
     let accumulatedAngle = 0;
@@ -937,6 +1113,16 @@
           if (nextIndex < 0) nextIndex = menuItems.length - 1;
           if (nextIndex >= menuItems.length) nextIndex = 0;
           updateMenuSelection(nextIndex);
+        } else if (activeView === 'wallpaperSettings') {
+          if (wpSettingSelected === 0) {
+            wpBlurVal = Math.max(0, Math.min(100, wpBlurVal + step * 5));
+            localStorage.setItem('ipod_wp_blur_amount', wpBlurVal);
+            applyWallpaperSettings();
+          } else if (wpSettingSelected === 1) {
+            wpTintVal = Math.max(0, Math.min(80, wpTintVal + step * 5));
+            localStorage.setItem('ipod_wp_tint_amount', wpTintVal);
+            applyWallpaperSettings();
+          }
         } else if (activeView === 'volume') {
           currentVolume = Math.max(0, Math.min(1, currentVolume + step * 0.03));
           audio.volume = currentVolume;
@@ -963,6 +1149,9 @@
           audio.currentTime = Math.max(0, Math.min(audio.duration, audio.currentTime + step * 2));
         } else if (activeView === 'video' && video.duration) {
           video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + step * 2));
+          showVideoHud();
+        } else if (activeView === 'stopwatch') {
+          resetStopwatch();
         }
       }
     }, { passive: false });
