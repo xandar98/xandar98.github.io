@@ -55,19 +55,23 @@
       border-radius: 12px;
       display: inline-block;
     }
-    .file-picker-box {
-      border: 1px dashed #3a4156;
-      border-radius: 16px;
-      padding: 14px;
-      text-align: center;
-      background: #12141c;
-      cursor: pointer;
-    }
-    .file-picker-box span {
+    /* iOS friendly file picker button */
+    .file-btn {
+      width: 100%;
+      padding: 12px;
+      background: #242a3a;
+      border: 1px dashed #4e73df;
+      color: #fff;
+      border-radius: 14px;
       font-size: 0.85rem;
-      color: var(--subtext);
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
-    input[type="file"] {
+    #audioInput {
       display: none;
     }
     .track-title {
@@ -77,6 +81,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       text-align: center;
+      color: #4e73df;
     }
     audio {
       width: 100%;
@@ -120,20 +125,21 @@
   <div class="player-card">
     <div class="header">
       <h2>Offline Equalizer Player</h2>
-      <span class="badge">Offline Ready • Web Audio API</span>
+      <span class="badge">iOS & Offline Ready</span>
     </div>
 
-    <!-- Custom File Picker -->
-    <label class="file-picker-box" for="audioInput">
-      <span id="fileLabel">📁 Tap to Select Local Audio (MP3/M4A)</span>
-      <input type="file" id="audioInput" accept="audio/*">
-    </label>
+    <!-- Clickable Button for iOS Files Picker -->
+    <button type="button" class="file-btn" onclick="document.getElementById('audioInput').click()">
+      📁 <span id="fileBtnText">Choose MP3 / Audio File</span>
+    </button>
+
+    <!-- iOS Fix: Added extensions and common audio MIME types -->
+    <input type="file" id="audioInput" accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*,audio/mpeg,audio/mp4">
 
     <div class="track-title" id="trackName">No track selected</div>
 
-    <audio id="audioElement" controls></audio>
+    <audio id="audioElement" controls playsinline></audio>
 
-    <!-- 3-Band Equalizer -->
     <div class="eq-container">
       <div class="eq-group">
         <div class="eq-label">
@@ -162,36 +168,14 @@
   </div>
 
   <script>
-    // 1. Initialize Telegram Mini App
     if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
     }
 
-    // 2. Service Worker Registration (Offline Caching)
-    if ('serviceWorker' in navigator) {
-      const swCode = `
-        const CACHE_NAME = 'tg-audio-player-v1';
-        self.addEventListener('install', (e) => {
-          e.waitUntil(
-            caches.open(CACHE_NAME).then((cache) => cache.addAll([self.location.href]))
-          );
-          self.skipWaiting();
-        });
-        self.addEventListener('fetch', (e) => {
-          e.respondWith(
-            caches.match(e.request).then((res) => res || fetch(e.request).catch(() => caches.match(self.location.href)))
-          );
-        });
-      `;
-      const blob = new Blob([swCode], { type: 'application/javascript' });
-      navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
-    }
-
-    // 3. Audio & Equalizer Logic
     const audio = document.getElementById('audioElement');
     const audioInput = document.getElementById('audioInput');
-    const fileLabel = document.getElementById('fileLabel');
+    const fileBtnText = document.getElementById('fileBtnText');
     const trackName = document.getElementById('trackName');
 
     const bassSlider = document.getElementById('bassSlider');
@@ -215,44 +199,39 @@
       audioCtx = new AudioContextClass();
       sourceNode = audioCtx.createMediaElementSource(audio);
 
-      // Low Shelf Filter (Bass)
       bassFilter = audioCtx.createBiquadFilter();
       bassFilter.type = 'lowshelf';
       bassFilter.frequency.value = 60;
       bassFilter.gain.value = Number(bassSlider.value);
 
-      // Peaking Filter (Mid)
       midFilter = audioCtx.createBiquadFilter();
       midFilter.type = 'peaking';
       midFilter.frequency.value = 1000;
       midFilter.Q.value = 1.0;
       midFilter.gain.value = Number(midSlider.value);
 
-      // High Shelf Filter (Treble)
       trebleFilter = audioCtx.createBiquadFilter();
       trebleFilter.type = 'highshelf';
       trebleFilter.frequency.value = 3000;
       trebleFilter.gain.value = Number(trebleSlider.value);
 
-      // Routing: Source -> Bass -> Mid -> Treble -> Speaker
       sourceNode.connect(bassFilter);
       bassFilter.connect(midFilter);
       midFilter.connect(trebleFilter);
       trebleFilter.connect(audioCtx.destination);
     }
 
-    // Handle Local File Selection
-    audioInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
+    audioInput.addEventListener('change', function(e) {
+      const file = this.files[0];
       if (file) {
         trackName.textContent = file.name;
-        fileLabel.textContent = "🔄 Change Local Audio";
+        fileBtnText.textContent = "Change Selected Audio";
         audio.src = URL.createObjectURL(file);
+        audio.load();
         audio.play().catch(() => {});
       }
     });
 
-    // Start Web Audio on user play
     audio.addEventListener('play', () => {
       setupEqualizer();
       if (audioCtx && audioCtx.state === 'suspended') {
@@ -260,23 +239,19 @@
       }
     });
 
-    // Slider Event Listeners
     bassSlider.addEventListener('input', (e) => {
-      const val = e.target.value;
-      bassVal.textContent = `${val} dB`;
-      if (bassFilter) bassFilter.gain.value = Number(val);
+      bassVal.textContent = `${e.target.value} dB`;
+      if (bassFilter) bassFilter.gain.value = Number(e.target.value);
     });
 
     midSlider.addEventListener('input', (e) => {
-      const val = e.target.value;
-      midVal.textContent = `${val} dB`;
-      if (midFilter) midFilter.gain.value = Number(val);
+      midVal.textContent = `${e.target.value} dB`;
+      if (midFilter) midFilter.gain.value = Number(e.target.value);
     });
 
     trebleSlider.addEventListener('input', (e) => {
-      const val = e.target.value;
-      trebleVal.textContent = `${val} dB`;
-      if (trebleFilter) trebleFilter.gain.value = Number(val);
+      trebleVal.textContent = `${e.target.value} dB`;
+      if (trebleFilter) trebleFilter.gain.value = Number(e.target.value);
     });
   </script>
 </body>
