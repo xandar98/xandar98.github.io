@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Offline & Chat Equalizer Player</title>
+  <title>TubeTV Neon Equalizer Player</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg: #0b0d13;
-      --card: #151922;
-      --accent: #5865f2;
-      --text: #ffffff;
-      --subtext: #949ba4;
-      --surface: #1e2330;
-      --slider-bg: #2b3142;
+      --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      --accent: #8b5cf6;
+      --card-bg: rgba(22, 27, 46, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --surface: rgba(255, 255, 255, 0.04);
+      --text: #f8fafc;
+      --subtext: #94a3b8;
+      --slider-track: rgba(255, 255, 255, 0.12);
     }
     * {
       box-sizing: border-box;
@@ -23,21 +24,25 @@
     body {
       margin: 0;
       padding: 16px;
-      background-color: var(--bg);
+      min-height: 100vh;
+      background: radial-gradient(circle at 10% 20%, #1e1145 0%, #0b0f19 55%, #05070d 100%);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
+      justify-content: center;
     }
     .player-card {
       width: 100%;
       max-width: 380px;
-      background: var(--card);
-      border-radius: 24px;
-      padding: 20px;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.7);
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 22px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 0 0 40px rgba(99, 102, 241, 0.12);
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -48,22 +53,29 @@
     .header h2 {
       margin: 0 0 4px 0;
       font-size: 1.25rem;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 40%, #c4b5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     .badge {
-      font-size: 0.75rem;
-      background: #1c2438;
-      color: #7289da;
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: rgba(139, 92, 246, 0.15);
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.3);
       padding: 3px 10px;
-      border-radius: 12px;
+      border-radius: 20px;
       display: inline-block;
     }
     .file-btn {
       width: 100%;
       padding: 12px;
-      background: #1a202c;
-      border: 1px dashed var(--accent);
-      color: #fff;
-      border-radius: 14px;
+      background: var(--surface);
+      border: 1px dashed rgba(168, 85, 247, 0.4);
+      color: #e2e8f0;
+      border-radius: 16px;
       font-size: 0.85rem;
       font-weight: 500;
       cursor: pointer;
@@ -71,27 +83,64 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .file-btn:active {
+      transform: scale(0.98);
+      background: rgba(168, 85, 247, 0.1);
     }
     #audioInput {
       display: none;
     }
+
+    /* Track Information with Sliding Animation */
     .track-info {
       text-align: center;
-      padding: 4px 8px;
+      padding: 2px 4px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .marquee-wrapper {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      white-space: nowrap;
+      display: flex;
+      justify-content: center;
     }
     .track-title {
+      display: inline-block;
       font-size: 1.05rem;
       font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
       color: #fff;
-      margin-bottom: 4px;
+      will-change: transform;
     }
+    /* Auto sliding animation when text overflows */
+    .marquee-active {
+      display: inline-flex;
+      animation: marqueeSlide 10s linear infinite;
+    }
+    .marquee-active:hover {
+      animation-play-state: paused;
+    }
+    @keyframes marqueeSlide {
+      0% {
+        transform: translateX(0%);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
     .track-status {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--subtext);
+      margin-top: 4px;
     }
+
+    /* Progress & Timing Bar */
     .progress-area {
       display: flex;
       flex-direction: column;
@@ -100,24 +149,28 @@
     .progress-bar-container {
       width: 100%;
       height: 6px;
-      background: var(--slider-bg);
+      background: var(--slider-track);
       border-radius: 4px;
       cursor: pointer;
+      position: relative;
     }
     .progress-fill {
       height: 100%;
       width: 0%;
-      background: var(--accent);
+      background: var(--primary-gradient);
       border-radius: 4px;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
       pointer-events: none;
     }
     .time-labels {
       display: flex;
       justify-content: space-between;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--subtext);
       font-variant-numeric: tabular-nums;
     }
+
+    /* Modern Vector Action Buttons */
     .controls {
       display: flex;
       align-items: center;
@@ -127,8 +180,8 @@
     }
     .btn-ctrl {
       background: var(--surface);
-      border: none;
-      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
       width: 44px;
       height: 44px;
       border-radius: 50%;
@@ -136,20 +189,74 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 1.1rem;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-ctrl svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
     }
     .btn-ctrl:active {
-      transform: scale(0.92);
+      transform: scale(0.9);
+      background: rgba(255, 255, 255, 0.12);
     }
     .btn-play {
-      width: 56px;
-      height: 56px;
-      background: var(--accent);
-      font-size: 1.4rem;
+      width: 60px;
+      height: 60px;
+      background: var(--primary-gradient);
+      border: none;
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.45);
     }
+    .btn-play svg {
+      width: 24px;
+      height: 24px;
+      fill: #ffffff;
+    }
+    .btn-play:active {
+      transform: scale(0.92);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    }
+
+    /* Volume Slider */
+    .volume-box {
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .vol-icon {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--subtext);
+      transition: color 0.2s;
+    }
+    .vol-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+    .vol-icon:hover {
+      color: #fff;
+    }
+    .vol-percent {
+      font-size: 0.75rem;
+      color: var(--subtext);
+      min-width: 36px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Equalizer Box */
     .eq-container {
       background: var(--surface);
-      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 18px;
       padding: 16px;
       display: flex;
       flex-direction: column;
@@ -161,6 +268,7 @@
       color: var(--text);
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
     .eq-group {
       display: flex;
@@ -174,15 +282,17 @@
       color: var(--subtext);
     }
     .eq-label b {
-      color: var(--text);
+      color: #e2e8f0;
     }
     input[type="range"] {
+      flex: 1;
       width: 100%;
       height: 5px;
-      background: var(--slider-bg);
+      background: var(--slider-track);
       border-radius: 3px;
       outline: none;
       accent-color: var(--accent);
+      cursor: pointer;
     }
   </style>
 </head>
@@ -190,19 +300,24 @@
 
   <div class="player-card">
     <div class="header">
-      <h2>TubeTV Equalizer Player</h2>
-      <span class="badge">Chat Stream + Local Mode</span>
+      <h2>TubeTV Equalizer</h2>
+      <span class="badge">Chat & Local Audio</span>
     </div>
 
     <!-- Local File Picker -->
     <button type="button" class="file-btn" onclick="document.getElementById('audioInput').click()">
-      📂 <span id="fileBtnText">Choose Local Audio</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"></path>
+      </svg>
+      <span id="fileBtnText">Choose Local Audio</span>
     </button>
     <input type="file" id="audioInput" accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*,audio/mpeg,audio/mp4" multiple>
 
-    <!-- Track Details -->
+    <!-- Track Details (With Sliding Support) -->
     <div class="track-info">
-      <div class="track-title" id="trackName">Waiting for audio...</div>
+      <div class="marquee-wrapper" id="marqueeWrapper">
+        <span class="track-title" id="trackName">Waiting for audio...</span>
+      </div>
       <div class="track-status" id="trackIndex">Select file or launch from chat</div>
     </div>
 
@@ -219,19 +334,43 @@
       </div>
     </div>
 
-    <!-- Controls -->
+    <!-- Action Buttons -->
     <div class="controls">
-      <button class="btn-ctrl" id="prevBtn">⏮</button>
-      <button class="btn-ctrl" id="stopBtn">⏹</button>
-      <button class="btn-ctrl btn-play" id="playPauseBtn">▶</button>
-      <button class="btn-ctrl" id="nextBtn">⏭</button>
+      <!-- Previous -->
+      <button class="btn-ctrl" id="prevBtn" title="Previous">
+        <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+      </button>
+
+      <!-- Stop -->
+      <button class="btn-ctrl" id="stopBtn" title="Stop">
+        <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+      </button>
+
+      <!-- Play/Pause -->
+      <button class="btn-ctrl btn-play" id="playPauseBtn" title="Play">
+        <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+
+      <!-- Next -->
+      <button class="btn-ctrl" id="nextBtn" title="Next">
+        <svg viewBox="0 0 24 24"><path d="m6 18 8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+      </button>
+    </div>
+
+    <!-- Volume Control -->
+    <div class="volume-box">
+      <div class="vol-icon" id="volIcon">
+        <svg id="volSvg" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </div>
+      <input type="range" id="volSlider" min="0" max="1" step="0.01" value="1">
+      <span class="vol-percent" id="volText">100%</span>
     </div>
 
     <!-- 3-Band Equalizer -->
     <div class="eq-container">
       <div class="eq-header">
         <span>🎛️ Equalizer</span>
-        <span style="font-size:0.75rem; color:var(--subtext)">Real-time DSP</span>
+        <span style="font-size:0.72rem; color:var(--subtext)">Real-time DSP</span>
       </div>
 
       <div class="eq-group">
@@ -268,6 +407,7 @@
 
     const audio = document.getElementById('audioElement');
     const audioInput = document.getElementById('audioInput');
+    const marqueeWrapper = document.getElementById('marqueeWrapper');
     const trackName = document.getElementById('trackName');
     const trackIndex = document.getElementById('trackIndex');
     const fileBtnText = document.getElementById('fileBtnText');
@@ -278,9 +418,15 @@
     const totalDurationEl = document.getElementById('totalDuration');
 
     const playPauseBtn = document.getElementById('playPauseBtn');
+    const playIcon = document.getElementById('playIcon');
     const stopBtn = document.getElementById('stopBtn');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
+
+    const volSlider = document.getElementById('volSlider');
+    const volIcon = document.getElementById('volIcon');
+    const volSvg = document.getElementById('volSvg');
+    const volText = document.getElementById('volText');
 
     const bassSlider = document.getElementById('bassSlider');
     const midSlider = document.getElementById('midSlider');
@@ -291,12 +437,40 @@
 
     let playlist = [];
     let currentIndex = 0;
+    let lastVolume = 1;
 
     let audioCtx = null;
     let sourceNode = null;
     let bassFilter = null;
     let midFilter = null;
     let trebleFilter = null;
+    let gainNode = null;
+
+    // গানের নাম বড় হলে ডাইনামিক স্লাইড এনিমেশন হ্যান্ডলার
+    function updateTrackTitle(title) {
+      // রিসেট
+      trackName.classList.remove('marquee-active');
+      trackName.style.animationDuration = '10s';
+      trackName.textContent = title;
+
+      // মেপে দেখা নাম কন্টেইনারের চেয়ে বড় কি না
+      setTimeout(() => {
+        const wrapperWidth = marqueeWrapper.offsetWidth;
+        const textWidth = trackName.scrollWidth;
+
+        if (textWidth > wrapperWidth) {
+          // নাম দ্বিগুণ করে দেওয়া যাতে লুপে স্মুথ ট্রানজিশন হয়
+          trackName.innerHTML = `<span>${title}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>${title}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>`;
+          
+          // টাইটেল যত বড় হবে স্পিড সেভাবে ব্যালেন্স হবে
+          const duration = Math.max(8, Math.round(textWidth / 25));
+          trackName.style.animationDuration = `${duration}s`;
+          trackName.classList.add('marquee-active');
+        } else {
+          trackName.textContent = title;
+        }
+      }, 50);
+    }
 
     function setupEqualizer() {
       if (audioCtx) return;
@@ -320,10 +494,14 @@
       trebleFilter.frequency.value = 3000;
       trebleFilter.gain.value = Number(trebleSlider.value);
 
+      gainNode = audioCtx.createGain();
+      gainNode.gain.value = Number(volSlider.value);
+
       sourceNode.connect(bassFilter);
       bassFilter.connect(midFilter);
       midFilter.connect(trebleFilter);
-      trebleFilter.connect(audioCtx.destination);
+      trebleFilter.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
     }
 
     function formatTime(seconds) {
@@ -333,30 +511,40 @@
       return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
     }
 
+    function setPlayButtonIcon(isPlaying) {
+      if (isPlaying) {
+        playIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+      } else {
+        playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+      }
+    }
+
     function playAudio() {
       setupEqualizer();
       if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
       audio.play().then(() => {
-        playPauseBtn.textContent = '⏸';
+        setPlayButtonIcon(true);
       }).catch(() => {});
     }
 
     function pauseAudio() {
       audio.pause();
-      playPauseBtn.textContent = '▶';
+      setPlayButtonIcon(false);
     }
 
-    // চ্যাট থেকে আসা লিংক স্বয়ংক্রিয়ভাবে লোড করা (URL Parameters Check)
+    // চ্যাট থেকে অডিও লিঙ্ক আসা হ্যান্ডল করা
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       const streamUrl = params.get('stream');
       const songTitle = params.get('title');
+      const artist = params.get('artist');
 
       if (streamUrl) {
-        trackName.textContent = songTitle ? decodeURIComponent(songTitle) : "Telegram Audio";
-        trackIndex.textContent = "Streaming directly from Telegram Chat";
+        const fullTitle = songTitle ? decodeURIComponent(songTitle) : "Telegram Audio";
+        updateTrackTitle(fullTitle);
+        trackIndex.textContent = artist ? `From Chat • ${decodeURIComponent(artist)}` : "Playing from Telegram Chat";
         audio.src = streamUrl;
         audio.load();
         playAudio();
@@ -370,7 +558,7 @@
         fileBtnText.textContent = `Loaded ${playlist.length} song(s)`;
         currentIndex = 0;
         const file = playlist[0];
-        trackName.textContent = file.name;
+        updateTrackTitle(file.name);
         trackIndex.textContent = `Track 1 of ${playlist.length} (Local)`;
         audio.src = URL.createObjectURL(file);
         audio.load();
@@ -388,7 +576,7 @@
       if (!audio.src) return;
       audio.pause();
       audio.currentTime = 0;
-      playPauseBtn.textContent = '▶';
+      setPlayButtonIcon(false);
       progressFill.style.width = '0%';
       currentTimeEl.textContent = "00:00";
     });
@@ -397,7 +585,7 @@
       if (playlist.length <= 1) return;
       currentIndex = (currentIndex + 1) % playlist.length;
       const file = playlist[currentIndex];
-      trackName.textContent = file.name;
+      updateTrackTitle(file.name);
       trackIndex.textContent = `Track ${currentIndex + 1} of ${playlist.length}`;
       audio.src = URL.createObjectURL(file);
       audio.load();
@@ -408,7 +596,7 @@
       if (playlist.length <= 1) return;
       currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
       const file = playlist[currentIndex];
-      trackName.textContent = file.name;
+      updateTrackTitle(file.name);
       trackIndex.textContent = `Track ${currentIndex + 1} of ${playlist.length}`;
       audio.src = URL.createObjectURL(file);
       audio.load();
@@ -434,6 +622,39 @@
       audio.currentTime = clickPos * audio.duration;
     });
 
+    // ভলিউম আপডেট
+    function updateVolume(val) {
+      val = Math.max(0, Math.min(1, val));
+      audio.volume = val;
+      if (gainNode) gainNode.gain.value = val;
+      volSlider.value = val;
+      volText.textContent = `${Math.round(val * 100)}%`;
+
+      if (val === 0) {
+        volSvg.innerHTML = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4 9.91 6.09 12 8.18V4z"/>';
+      } else if (val < 0.5) {
+        volSvg.innerHTML = '<path d="M7 9v6h4l5 5V4L11 9H7zm11.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>';
+      } else {
+        volSvg.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
+      }
+    }
+
+    volSlider.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      if (val > 0) lastVolume = val;
+      updateVolume(val);
+    });
+
+    volIcon.addEventListener('click', () => {
+      if (audio.volume > 0) {
+        lastVolume = audio.volume;
+        updateVolume(0);
+      } else {
+        updateVolume(lastVolume > 0 ? lastVolume : 1);
+      }
+    });
+
+    // EQ Sliders
     bassSlider.addEventListener('input', (e) => {
       bassVal.textContent = `${e.target.value} dB`;
       if (bassFilter) bassFilter.gain.value = Number(e.target.value);
