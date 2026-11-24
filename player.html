@@ -13,26 +13,30 @@
       margin: 0;
       padding: 0;
     }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none; /* Prevents Telegram swipe-to-close bounce */
+      touch-action: none;
+    }
     body {
-      background-color: #0d0d0d;
+      background-color: #0a0a0a;
       font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      width: 100vw;
-      overflow: hidden;
     }
 
     /* iPod Classic Metallic Chassis */
     .ipod-body {
       width: 100%;
       max-width: 380px;
-      height: 96vh;
+      height: 98vh;
       max-height: 780px;
-      background: linear-gradient(145deg, #e6e6e6, #c5c5c5);
-      border-radius: 40px;
-      padding: 22px 20px 26px;
+      background: linear-gradient(145deg, #e4e4e4, #c0c0c0);
+      border-radius: 36px;
+      padding: 16px 16px 22px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -48,8 +52,8 @@
       width: 100%;
       height: 48%;
       background: #000;
-      border-radius: 18px;
-      padding: 10px;
+      border-radius: 16px;
+      padding: 8px;
       box-shadow: inset 0 2px 8px rgba(0,0,0,0.8), 0 1px 2px rgba(255,255,255,0.4);
       display: flex;
     }
@@ -86,7 +90,7 @@
       font-size: 10px;
     }
 
-    /* Menu Split Screen Layout */
+    /* Screen Views Area */
     .lcd-content {
       flex: 1;
       display: flex;
@@ -95,7 +99,7 @@
       overflow: hidden;
     }
 
-    /* Menu View */
+    /* 1. Menu View */
     .menu-view {
       width: 100%;
       height: 100%;
@@ -108,7 +112,7 @@
       overflow-y: auto;
     }
     .menu-item {
-      padding: 7px 12px;
+      padding: 8px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -125,7 +129,7 @@
       opacity: 0.7;
     }
 
-    /* Now Playing View */
+    /* 2. Now Playing View */
     .now-playing-view {
       position: absolute;
       top: 0;
@@ -178,16 +182,15 @@
       text-overflow: ellipsis;
     }
 
-    /* iPod Scrubber Progress Bar */
+    /* Progress Scrubber */
     .progress-box {
       display: flex;
       flex-direction: column;
       gap: 4px;
-      padding-top: 4px;
     }
     .progress-track-wrapper {
       width: 100%;
-      height: 14px;
+      height: 16px;
       display: flex;
       align-items: center;
       cursor: pointer;
@@ -215,7 +218,7 @@
       color: #555;
     }
 
-    /* Equalizer View */
+    /* 3. Equalizer View */
     .eq-view {
       position: absolute;
       top: 0;
@@ -249,7 +252,7 @@
       height: 4px;
     }
 
-    /* Volume View */
+    /* 4. Volume View */
     .volume-view {
       position: absolute;
       top: 0;
@@ -265,11 +268,11 @@
       gap: 12px;
     }
 
-    /* iPod Click Wheel */
-    .click-wheel {
+    /* Pure Touch Keypad (No Accidental Gestures) */
+    .touch-wheel-pad {
       width: 220px;
       height: 220px;
-      background: #f7f7f7;
+      background: #f4f4f4;
       border-radius: 50%;
       box-shadow: inset 0 2px 5px rgba(0,0,0,0.1),
                   0 4px 10px rgba(0,0,0,0.25),
@@ -278,35 +281,85 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      touch-action: none;
     }
-    .wheel-label {
-      position: absolute;
-      font-weight: 700;
-      font-size: 12px;
-      color: #8c8c8c;
-      letter-spacing: 0.5px;
-      pointer-events: auto;
-      cursor: pointer;
-    }
-    .wheel-menu { top: 16px; }
-    .wheel-prev { left: 16px; display: flex; align-items: center; }
-    .wheel-next { right: 16px; display: flex; align-items: center; }
-    .wheel-play { bottom: 16px; display: flex; align-items: center; }
 
-    /* Center Select Button */
-    .center-btn {
-      width: 82px;
-      height: 82px;
-      background: linear-gradient(145deg, #e6e6e6, #d1d1d1);
+    /* Direct Touch Buttons */
+    .pad-btn {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #777;
+      cursor: pointer;
+      user-select: none;
+    }
+    .pad-btn:active {
+      color: #1562b3;
+      transform: scale(0.92);
+    }
+
+    /* Button Positions */
+    .btn-menu {
+      top: 10px;
+      width: 80px;
+      height: 36px;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+    }
+    .btn-play {
+      bottom: 10px;
+      width: 80px;
+      height: 36px;
+      font-size: 13px;
+    }
+    .btn-prev {
+      left: 10px;
+      width: 44px;
+      height: 80px;
+      font-size: 12px;
+    }
+    .btn-next {
+      right: 10px;
+      width: 44px;
+      height: 80px;
+      font-size: 12px;
+    }
+
+    /* Up / Down Navigation Buttons */
+    .btn-up {
+      top: 48px;
+      width: 40px;
+      height: 24px;
+      font-size: 11px;
+    }
+    .btn-down {
+      bottom: 48px;
+      width: 40px;
+      height: 24px;
+      font-size: 11px;
+    }
+
+    /* Center Select Touch Button */
+    .center-touch-btn {
+      width: 78px;
+      height: 78px;
+      background: linear-gradient(145deg, #e8e8e8, #cecece);
       border-radius: 50%;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.18), inset 0 1px 2px rgba(255,255,255,0.9);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.15), inset 0 1px 2px rgba(255,255,255,0.9);
       border: 1px solid #bfbfbf;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #666;
     }
-    .center-btn:active {
-      background: #c8c8c8;
+    .center-touch-btn:active {
+      background: #c2c2c2;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.25);
+      transform: scale(0.96);
     }
 
     #fileInput {
@@ -320,7 +373,7 @@
     <!-- LCD Bezel Screen -->
     <div class="screen-bezel">
       <div class="ipod-lcd">
-        <!-- Title Bar -->
+        <!-- Status Header -->
         <div class="lcd-header">
           <span id="headerTitle">iPod</span>
           <div class="header-icons">
@@ -329,7 +382,7 @@
           </div>
         </div>
 
-        <!-- Main Screen Content Area -->
+        <!-- Main Screen Views -->
         <div class="lcd-content">
           <!-- 1. OS Menu -->
           <div class="menu-view" id="menuView">
@@ -346,7 +399,7 @@
             <div class="np-top">
               <div class="album-art" id="npArt">🎵</div>
               <div class="track-details">
-                <div class="np-title" id="trackName">No song selected</div>
+                <div class="np-title" id="trackName">No song loaded</div>
                 <div class="np-artist" id="artistName">Apple iPod</div>
                 <div class="np-album" id="sourceMeta">Tap Menu to load files</div>
               </div>
@@ -391,13 +444,28 @@
       </div>
     </div>
 
-    <!-- Click Wheel Area -->
-    <div class="click-wheel" id="clickWheel">
-      <div class="wheel-label wheel-menu" id="menuBtn">MENU</div>
-      <div class="wheel-label wheel-prev" id="prevBtn">|◀◀</div>
-      <div class="wheel-label wheel-next" id="nextBtn">▶▶|</div>
-      <div class="wheel-label wheel-play" id="playPauseBtn">▶||</div>
-      <div class="center-btn" id="centerBtn"></div>
+    <!-- Touch Button Pad (No Rotating Wheel Glitches) -->
+    <div class="touch-wheel-pad">
+      <!-- Menu Button -->
+      <div class="pad-btn btn-menu" id="menuBtn">MENU</div>
+      
+      <!-- Up Navigation Arrow -->
+      <div class="pad-btn btn-up" id="upBtn">▲</div>
+
+      <!-- Left / Previous Button -->
+      <div class="pad-btn btn-prev" id="prevBtn">|◀◀</div>
+
+      <!-- Center Select Touch Button -->
+      <div class="center-touch-btn" id="centerBtn">SELECT</div>
+
+      <!-- Right / Next Button -->
+      <div class="pad-btn btn-next" id="nextBtn">▶▶|</div>
+
+      <!-- Down Navigation Arrow -->
+      <div class="pad-btn btn-down" id="downBtn">▼</div>
+
+      <!-- Play / Pause Button -->
+      <div class="pad-btn btn-play" id="playPauseBtn">▶||</div>
     </div>
 
     <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
@@ -405,16 +473,21 @@
   </div>
 
   <script>
-    // Expand Telegram Mini App Fullscreen
+    // 1. Prevent Telegram App Closing Glitch
     if (window.Telegram && window.Telegram.WebApp) {
-      window.Telegram.WebApp.ready();
-      window.Telegram.WebApp.expand();
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      tg.expand();
+      // Disable vertical swipe to close so the mini-app stays open permanently
+      if (typeof tg.isVerticalSwipesEnabled !== 'undefined') {
+        tg.isVerticalSwipesEnabled = false;
+      }
+      tg.enableClosingConfirmation && tg.enableClosingConfirmation();
     }
 
     const audio = document.getElementById('audioElement');
     const fileInput = document.getElementById('fileInput');
 
-    // LCD Views
     const headerTitle = document.getElementById('headerTitle');
     const playStateIcon = document.getElementById('playStateIcon');
     const menuView = document.getElementById('menuView');
@@ -422,12 +495,10 @@
     const eqView = document.getElementById('eqView');
     const volumeView = document.getElementById('volumeView');
 
-    // Menu list
     const menuItems = Array.from(document.querySelectorAll('.menu-item'));
     let currentMenuIndex = 0;
-    let activeView = 'menu'; // 'menu', 'nowPlaying', 'equalizer', 'volume'
+    let activeView = 'menu';
 
-    // Track Display
     const trackName = document.getElementById('trackName');
     const artistName = document.getElementById('artistName');
     const sourceMeta = document.getElementById('sourceMeta');
@@ -436,7 +507,6 @@
     const currentTimeEl = document.getElementById('currentTime');
     const totalDurationEl = document.getElementById('totalDuration');
 
-    // Equalizer & Volume
     const bassSlider = document.getElementById('bassSlider');
     const midSlider = document.getElementById('midSlider');
     const trebleSlider = document.getElementById('trebleSlider');
@@ -450,7 +520,6 @@
     let currentIndex = 0;
     let audioCtx = null, sourceNode = null, bassFilter = null, midFilter = null, trebleFilter = null, gainNode = null;
 
-    // Switch Screens Function
     function showView(view) {
       activeView = view;
       menuView.style.display = 'none';
@@ -473,13 +542,84 @@
       }
     }
 
-    // Menu Item Selection Update
     function updateMenuSelection(index) {
       menuItems.forEach((item, idx) => {
         item.classList.toggle('active', idx === index);
       });
       currentMenuIndex = index;
     }
+
+    // Touch Up / Down Buttons
+    document.getElementById('upBtn').addEventListener('click', () => {
+      if (activeView === 'menu') {
+        currentMenuIndex = (currentMenuIndex - 1 + menuItems.length) % menuItems.length;
+        updateMenuSelection(currentMenuIndex);
+      } else if (activeView === 'volume') {
+        adjustVolume(0.05);
+      } else if (activeView === 'nowPlaying' && audio.duration) {
+        audio.currentTime = Math.min(audio.duration, audio.currentTime + 10);
+      }
+    });
+
+    document.getElementById('downBtn').addEventListener('click', () => {
+      if (activeView === 'menu') {
+        currentMenuIndex = (currentMenuIndex + 1) % menuItems.length;
+        updateMenuSelection(currentMenuIndex);
+      } else if (activeView === 'volume') {
+        adjustVolume(-0.05);
+      } else if (activeView === 'nowPlaying' && audio.duration) {
+        audio.currentTime = Math.max(0, audio.currentTime - 10);
+      }
+    });
+
+    function adjustVolume(delta) {
+      let v = Math.max(0, Math.min(1, Number(volSlider.value) + delta));
+      volSlider.value = v;
+      audio.volume = v;
+      if (gainNode) gainNode.gain.value = v;
+      volText.textContent = `${Math.round(v * 100)}%`;
+    }
+
+    // Center Select Touch Button
+    document.getElementById('centerBtn').addEventListener('click', () => {
+      if (activeView === 'menu') {
+        const selected = menuItems[currentMenuIndex].dataset.view;
+        if (selected === 'openFile') {
+          fileInput.click();
+        } else {
+          showView(selected);
+        }
+      } else if (activeView === 'nowPlaying') {
+        if (!audio.src) return;
+        audio.paused ? playAudio() : pauseAudio();
+      }
+    });
+
+    // Touch Menu (Back)
+    document.getElementById('menuBtn').addEventListener('click', () => {
+      if (activeView !== 'menu') {
+        showView('menu');
+      }
+    });
+
+    // Play/Pause Touch
+    document.getElementById('playPauseBtn').addEventListener('click', () => {
+      if (!audio.src) return;
+      audio.paused ? playAudio() : pauseAudio();
+    });
+
+    // Next / Prev Touch
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      if (playlist.length <= 1) return;
+      currentIndex = (currentIndex + 1) % playlist.length;
+      loadLocalTrack(currentIndex);
+    });
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      if (playlist.length <= 1) return;
+      currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+      loadLocalTrack(currentIndex);
+    });
 
     // Audio Equalizer setup
     function setupEqualizer() {
@@ -534,48 +674,6 @@
       playStateIcon.textContent = '⏸';
     }
 
-    // Center Button Click Action
-    document.getElementById('centerBtn').addEventListener('click', () => {
-      if (activeView === 'menu') {
-        const selected = menuItems[currentMenuIndex].dataset.view;
-        if (selected === 'openFile') {
-          fileInput.click();
-        } else {
-          showView(selected);
-        }
-      } else if (activeView === 'nowPlaying') {
-        if (!audio.src) return;
-        audio.paused ? playAudio() : pauseAudio();
-      }
-    });
-
-    // MENU Button Action (Back key)
-    document.getElementById('menuBtn').addEventListener('click', () => {
-      if (activeView !== 'menu') {
-        showView('menu');
-      }
-    });
-
-    // Play/Pause button
-    document.getElementById('playPauseBtn').addEventListener('click', () => {
-      if (!audio.src) return;
-      audio.paused ? playAudio() : pauseAudio();
-    });
-
-    // Next / Prev Buttons
-    document.getElementById('nextBtn').addEventListener('click', () => {
-      if (playlist.length <= 1) return;
-      currentIndex = (currentIndex + 1) % playlist.length;
-      loadLocalTrack(currentIndex);
-    });
-
-    document.getElementById('prevBtn').addEventListener('click', () => {
-      if (playlist.length <= 1) return;
-      currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-      loadLocalTrack(currentIndex);
-    });
-
-    // Load Local Track
     function loadLocalTrack(index) {
       const file = playlist[index];
       trackName.textContent = file.name;
@@ -595,7 +693,7 @@
       }
     });
 
-    // Telegram chat direct stream support
+    // Chat link receiver
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       const streamUrl = params.get('stream');
@@ -613,7 +711,7 @@
       }
     });
 
-    // Progress bar touch seeking
+    // Direct Time Seek on touch
     progressContainer.addEventListener('click', (e) => {
       if (!audio.src || isNaN(audio.duration)) return;
       const rect = progressContainer.getBoundingClientRect();
@@ -654,60 +752,6 @@
       audio.volume = v;
       if (gainNode) gainNode.gain.value = v;
       volText.textContent = `${Math.round(v * 100)}%`;
-    });
-
-    // Click Wheel Rotation Detection (Virtual Scroll Wheel)
-    const wheel = document.getElementById('clickWheel');
-    let lastAngle = null;
-    let accumulatedAngle = 0;
-
-    function getAngle(touch, elem) {
-      const rect = elem.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      return Math.atan2(touch.clientY - cy, touch.clientX - cx) * (180 / Math.PI);
-    }
-
-    wheel.addEventListener('touchstart', (e) => {
-      lastAngle = getAngle(e.touches[0], wheel);
-      accumulatedAngle = 0;
-    }, { passive: true });
-
-    wheel.addEventListener('touchmove', (e) => {
-      if (lastAngle === null) return;
-      const currentAngle = getAngle(e.touches[0], wheel);
-      let diff = currentAngle - lastAngle;
-
-      if (diff > 180) diff -= 360;
-      if (diff < -180) diff += 360;
-
-      accumulatedAngle += diff;
-      lastAngle = currentAngle;
-
-      // Every 30 degrees of circular rotation moves the menu/volume
-      if (Math.abs(accumulatedAngle) >= 28) {
-        const step = accumulatedAngle > 0 ? 1 : -1;
-        accumulatedAngle = 0;
-
-        if (activeView === 'menu') {
-          let nextIndex = currentMenuIndex + step;
-          if (nextIndex < 0) nextIndex = menuItems.length - 1;
-          if (nextIndex >= menuItems.length) nextIndex = 0;
-          updateMenuSelection(nextIndex);
-        } else if (activeView === 'volume') {
-          let v = Math.max(0, Math.min(1, Number(volSlider.value) + step * 0.05));
-          volSlider.value = v;
-          audio.volume = v;
-          if (gainNode) gainNode.gain.value = v;
-          volText.textContent = `${Math.round(v * 100)}%`;
-        } else if (activeView === 'nowPlaying' && audio.duration) {
-          audio.currentTime = Math.max(0, Math.min(audio.duration, audio.currentTime + step * 5));
-        }
-      }
-    }, { passive: true });
-
-    wheel.addEventListener('touchend', () => {
-      lastAngle = null;
     });
   </script>
 </body>
