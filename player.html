@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>iPod Classic OS</title>
+  <title>iPod Classic Dark U2 Edition</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
   <style>
@@ -22,34 +22,40 @@
       overscroll-behavior: none;
     }
     body {
-      background-color: #050505;
+      background-color: #000000;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
     }
+
+    /* U2 Special Edition Matte Black Chassis */
     .ipod-body {
       width: 100%;
       max-width: 380px;
       height: 98vh;
       max-height: 780px;
-      background: linear-gradient(145deg, #e7e7e7, #bfbfbf);
+      background: linear-gradient(145deg, #1f2022, #111214);
       border-radius: 36px;
       padding: 16px 16px 22px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.9), inset 0 -3px 6px rgba(0, 0, 0, 0.45), 0 20px 50px rgba(0, 0, 0, 0.95);
-      border: 1px solid #b2b2b2;
+      box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.15),
+                  inset 0 -3px 6px rgba(0, 0, 0, 0.9),
+                  0 20px 50px rgba(0, 0, 0, 0.98);
+      border: 1px solid #2d2f33;
     }
+
+    /* Glossy Black Bezel */
     .screen-bezel {
       width: 100%;
       height: 48%;
       background: #000;
       border-radius: 16px;
       padding: 8px;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.85), 0 1px 2px rgba(255,255,255,0.4);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.9), 0 1px 2px rgba(255,255,255,0.08);
       display: flex;
     }
     .ipod-lcd {
@@ -68,7 +74,6 @@
       position: relative;
     }
 
-    /* Dim Tint Overlay for Clean Readability */
     .lcd-tint-overlay {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -103,7 +108,7 @@
     .battery-fill { width: 80%; height: 100%; background: #27ae60; border-radius: 1px; }
     .lcd-content { flex: 1; display: flex; position: relative; overflow: hidden; z-index: 2; }
 
-    /* 50/50 Glass Split View */
+    /* Split Screen Layout */
     .split-menu { width: 100%; height: 100%; display: flex; }
     .menu-left {
       width: 55%;
@@ -126,7 +131,7 @@
       text-shadow: 0 0.5px 1px rgba(255,255,255,0.8);
     }
     .menu-item.active {
-      background: linear-gradient(180deg, #378fe6 0%, #175bb3 100%);
+      background: linear-gradient(180deg, #d32f2f 0%, #9a0007 100%); /* U2 Classic Red Accent */
       color: #fff;
       text-shadow: none;
     }
@@ -145,7 +150,7 @@
     .preview-box svg { width: 44px; height: 44px; fill: #1e293b; }
     .preview-text { font-size: 10px; font-weight: 700; text-shadow: 0 1px 2px rgba(255,255,255,0.7); }
 
-    /* Screen Views */
+    /* Views */
     .view-container {
       position: absolute;
       top: 0;
@@ -156,6 +161,34 @@
       display: none;
       flex-direction: column;
     }
+
+    /* Playlist Screen */
+    .playlist-view {
+      overflow-y: auto;
+    }
+    .playlist-row {
+      padding: 7px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      font-size: 11px;
+      font-weight: 600;
+      color: #111;
+      cursor: pointer;
+    }
+    .playlist-row.active {
+      background: linear-gradient(180deg, #d32f2f 0%, #9a0007 100%);
+      color: #fff;
+    }
+    .playlist-row-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+      padding-right: 6px;
+    }
+
     .np-view { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
     .np-top { display: flex; gap: 10px; flex: 1; align-items: center; }
     
@@ -171,23 +204,23 @@
     .progress-box { display: flex; flex-direction: column; gap: 4px; }
     .progress-track-wrapper { width: 100%; height: 14px; display: flex; align-items: center; cursor: pointer; }
     .progress-track { width: 100%; height: 6px; background: rgba(200, 206, 214, 0.8); border-radius: 3px; border: 1px solid #88929e; position: relative; overflow: hidden; }
-    .progress-fill { height: 100%; width: 0%; background: linear-gradient(180deg, #4da4f7 0%, #1566be 100%); pointer-events: none; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(180deg, #e53935 0%, #b71c1c 100%); pointer-events: none; }
     .time-labels { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; color: #111; }
 
     /* Equalizer */
     .eq-view { padding: 10px 14px; gap: 8px; }
     .eq-row { display: flex; flex-direction: column; gap: 2px; padding: 4px 6px; border-radius: 6px; border: 1px solid transparent; }
-    .eq-row.active { background: rgba(55, 143, 230, 0.3); border: 1px solid #175bb3; }
+    .eq-row.active { background: rgba(211, 47, 47, 0.25); border: 1px solid #d32f2f; }
     .eq-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #111; }
-    .eq-info span.val { color: #0a4da3; font-family: monospace; font-weight: 800; }
+    .eq-info span.val { color: #b71c1c; font-family: monospace; font-weight: 800; }
     .eq-hint { font-size: 9px; color: #111; text-align: center; margin-top: auto; font-weight: 700; }
 
     /* Volume */
     .volume-view { justify-content: center; align-items: center; padding: 20px; gap: 12px; }
     .vol-track { width: 85%; height: 8px; background: rgba(200, 206, 214, 0.8); border: 1px solid #7c8896; border-radius: 4px; overflow: hidden; }
-    .vol-fill { width: 100%; height: 100%; background: linear-gradient(180deg, #4da4f7 0%, #1566be 100%); }
+    .vol-fill { width: 100%; height: 100%; background: linear-gradient(180deg, #e53935 0%, #b71c1c 100%); }
 
-    /* Video Player with iPod Auto-hiding HUD */
+    /* Video Player */
     .video-view { background: #000; display: flex; align-items: center; justify-content: center; position: relative; }
     video { width: 100%; height: 100%; object-fit: contain; }
     .video-hud {
@@ -204,40 +237,70 @@
     .video-hud.hidden { opacity: 0; pointer-events: none; }
     .video-time-labels { display: flex; justify-content: space-between; color: #fff; font-size: 9px; font-weight: 700; font-family: monospace; }
     .video-track-bar { width: 100%; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden; cursor: pointer; }
-    .video-track-fill { height: 100%; width: 0%; background: #378fe6; }
+    .video-track-fill { height: 100%; width: 0%; background: #e53935; }
 
-    /* Photo View */
     .photo-view { background: #000; display: flex; align-items: center; justify-content: center; }
     .photo-view img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
     /* Settings View */
     .settings-view { padding: 10px; font-size: 11px; color: #111; font-weight: 600; display: flex; flex-direction: column; gap: 6px; }
-    .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 4px; border-bottom: 1px solid rgba(0,0,0,0.1); }
-    .settings-row.active { background: rgba(55, 143, 230, 0.25); border-radius: 4px; color: #0a4da3; font-weight: 700; }
+    .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 4px; border-bottom: 1px solid rgba(0,0,0,0.1); cursor: pointer; }
+    .settings-row.active { background: rgba(211, 47, 47, 0.25); border-radius: 4px; color: #b71c1c; font-weight: 700; }
     .settings-btn { padding: 4px 8px; font-size: 10px; font-weight: 700; border-radius: 4px; border: 1px solid #7c8896; background: rgba(255,255,255,0.8); cursor: pointer; }
 
-    /* Stopwatch View */
-    .stopwatch-view { padding: 16px; align-items: center; justify-content: center; gap: 12px; }
-    .sw-display { font-size: 28px; font-weight: 800; font-family: monospace; color: #111; }
-    .sw-sub { font-size: 10px; color: #444; font-weight: 700; }
-
-    /* Click Wheel */
+    /* U2 Special Edition Iconic Red Click-Wheel */
     .click-wheel {
-      width: 220px; height: 220px; background: #f7f7f7; border-radius: 50%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.25), 0 0 0 1px #d6d6d6; position: relative; display: flex; justify-content: center; align-items: center; touch-action: none;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle at 50% 50%, #d32f2f 0%, #b71c1c 70%, #8b0000 100%);
+      border-radius: 50%;
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.3),
+                  0 4px 12px rgba(0,0,0,0.6),
+                  0 0 0 1px #590000;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      touch-action: none;
     }
     .wheel-label {
-      position: absolute; font-weight: 700; font-size: 12px; color: #8c8c8c; letter-spacing: 0.5px; padding: 14px; z-index: 2; display: flex; align-items: center; justify-content: center; cursor: pointer;
+      position: absolute;
+      font-weight: 800;
+      font-size: 12px;
+      color: #0d0d0d;
+      letter-spacing: 0.5px;
+      padding: 14px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
-    .wheel-label:active { color: #175bb3; transform: scale(0.92); }
+    .wheel-label:active { color: #ffffff; transform: scale(0.92); }
     .wheel-menu { top: 4px; }
     .wheel-prev { left: 4px; }
     .wheel-next { right: 4px; }
     .wheel-play { bottom: 4px; }
     .wheel-label svg { width: 16px; height: 16px; fill: currentColor; }
+
+    /* Center Select Button: Matte Black */
     .center-btn {
-      width: 80px; height: 80px; background: linear-gradient(145deg, #e6e6e6, #d1d1d1); border-radius: 50%; box-shadow: 0 3px 6px rgba(0,0,0,0.18), inset 0 1px 2px rgba(255,255,255,0.9); border: 1px solid #bfbfbf; cursor: pointer; z-index: 3; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #777;
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(145deg, #2a2a2a, #161616);
+      border-radius: 50%;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.2);
+      border: 1px solid #333333;
+      cursor: pointer;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: #999;
     }
-    .center-btn:active { background: #c8c8c8; box-shadow: inset 0 2px 4px rgba(0,0,0,0.25); transform: scale(0.96); }
+    .center-btn:active { background: #111; box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); transform: scale(0.96); }
 
     .hidden-file-input { display: none; }
   </style>
@@ -261,16 +324,20 @@
           <div class="split-menu" id="splitMenuView">
             <div class="menu-left">
               <ul class="menu-list" id="menuList">
-                <label for="audioFileInput">
-                  <li class="menu-item active" data-type="offlineMusic">
-                    <span>Add Offline Songs</span>
-                    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                  </li>
-                </label>
+                <li class="menu-item active" data-type="playlist">
+                  <span>Songs Playlist</span>
+                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </li>
                 <li class="menu-item" data-type="nowPlaying">
                   <span>Now Playing</span>
                   <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 </li>
+                <label for="audioFileInput">
+                  <li class="menu-item" data-type="offlineMusic">
+                    <span>Add Local Songs</span>
+                    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  </li>
+                </label>
                 <li class="menu-item" data-type="shuffle">
                   <span>Shuffle Songs</span>
                   <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -299,10 +366,6 @@
                   <span>Volume</span>
                   <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 </li>
-                <li class="menu-item" data-type="stopwatch">
-                  <span>Stopwatch</span>
-                  <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                </li>
                 <li class="menu-item" data-type="settings">
                   <span>Settings / About</span>
                   <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -312,12 +375,17 @@
             <div class="menu-right">
               <div class="preview-box" id="previewBox">
                 <svg id="previewIcon" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                <span class="preview-text" id="previewText">Offline Storage</span>
+                <span class="preview-text" id="previewText">Playlist</span>
               </div>
             </div>
           </div>
 
-          <!-- 2. Now Playing -->
+          <!-- 2. Playlist View -->
+          <div class="view-container playlist-view" id="playlistView">
+            <div id="playlistContainer"></div>
+          </div>
+
+          <!-- 3. Now Playing -->
           <div class="view-container np-view" id="nowPlayingView">
             <div class="np-top">
               <div class="album-art-container">
@@ -327,7 +395,7 @@
               <div class="track-details">
                 <div class="np-title" id="trackName">No track playing</div>
                 <div class="np-artist" id="artistName">Apple iPod</div>
-                <div class="np-album" id="sourceMeta">Offline Storage</div>
+                <div class="np-album" id="sourceMeta">Offline Library</div>
               </div>
             </div>
 
@@ -342,7 +410,7 @@
             </div>
           </div>
 
-          <!-- 3. Video Player with Auto-hiding HUD -->
+          <!-- 4. Video Player -->
           <div class="view-container video-view" id="videoView">
             <video id="videoElement" playsinline></video>
             <div class="video-hud" id="videoHud">
@@ -356,36 +424,35 @@
             </div>
           </div>
 
-          <!-- 4. Photo Viewer -->
+          <!-- 5. Photo Viewer -->
           <div class="view-container photo-view" id="photoView">
             <img id="photoElement" src="" alt="Photo Viewer">
           </div>
 
-          <!-- 5. Wallpaper Settings Menu -->
+          <!-- 6. Wallpaper Settings -->
           <div class="view-container settings-view" id="wallpaperSettingsView">
             <div style="font-weight:700; color:#000; margin-bottom:4px;">Wallpaper Tuning</div>
-            <div class="settings-row active" id="wpRowBlur">
+            <div class="settings-row active" id="wpRowBlur" onclick="selectWpRow(0)">
               <span>Blur Level</span>
               <span id="wpBlurVal" style="font-family:monospace; font-weight:700;">10%</span>
             </div>
-            <div class="settings-row" id="wpRowTint">
+            <div class="settings-row" id="wpRowTint" onclick="selectWpRow(1)">
               <span>Dim / Tint</span>
               <span id="wpTintVal" style="font-family:monospace; font-weight:700;">20%</span>
             </div>
             <label for="wallpaperFileInput" style="width:100%;">
-              <div class="settings-row" id="wpRowImage">
+              <div class="settings-row" id="wpRowImage" onclick="selectWpRow(2)">
                 <span>Choose New Image</span>
-                <span style="color:#0a4da3;">Browse ▶</span>
+                <span style="color:#b71c1c;">Browse ▶</span>
               </div>
             </label>
-            <div class="settings-row" id="wpRowReset">
+            <div class="settings-row" id="wpRowReset" onclick="selectWpRow(3)">
               <span>Reset Wallpaper</span>
               <button class="settings-btn" onclick="resetWallpaper()">Reset</button>
             </div>
-            <div style="font-size:9px; color:#444; margin-top:auto; text-align:center;">Center: Switch Setting • Wheel: Change Value</div>
           </div>
 
-          <!-- 6. Equalizer -->
+          <!-- 7. Equalizer -->
           <div class="view-container eq-view" id="eqView">
             <div class="eq-row active" id="eqRowBass">
               <div class="eq-info"><span>Bass (60Hz)</span><span class="val" id="bassVal">0dB</span></div>
@@ -399,29 +466,20 @@
             <div class="eq-hint">Center: Switch Band • Wheel: Fast Gain</div>
           </div>
 
-          <!-- 7. Volume -->
+          <!-- 8. Volume -->
           <div class="view-container volume-view" id="volumeView">
             <div style="font-weight:700; color:#111; font-size:12px;">Headphone Volume</div>
             <div class="vol-track"><div class="vol-fill" id="volFill"></div></div>
-            <div style="font-size:11px; font-weight:700; color:#175bb3;" id="volText">100%</div>
+            <div style="font-size:11px; font-weight:700; color:#b71c1c;" id="volText">100%</div>
           </div>
 
-          <!-- 8. Stopwatch -->
-          <div class="view-container stopwatch-view" id="stopwatchView">
-            <div class="sw-display" id="swDisplay">00:00.0</div>
-            <div class="sw-sub">Center: Start / Stop • Wheel: Reset</div>
-          </div>
-
-          <!-- 9. Settings / About -->
+          <!-- 9. Settings -->
           <div class="view-container settings-view" id="settingsView">
             <div style="font-weight:700; color:#000; margin-bottom:4px;">iPod Settings</div>
-            <div class="settings-row">
-              <span>Sleep Timer</span>
-              <span id="sleepTimerStatus" style="font-family:monospace; font-weight:700; cursor:pointer;" onclick="cycleSleepTimer()">OFF</span>
-            </div>
             <div class="settings-row"><span>IndexedDB Storage</span><span id="storageCount">0 Songs</span></div>
+            <div class="settings-row"><span>Chat Tracks</span><span id="chatTracksCount">0 Cached</span></div>
             <div class="settings-row"><span>DSP Engine</span><span>3-Band Active</span></div>
-            <div class="settings-row"><span>Software Version</span><span>2.0.5 iPod OS</span></div>
+            <div class="settings-row"><span>Theme</span><span>U2 Special Edition</span></div>
           </div>
         </div>
       </div>
@@ -444,7 +502,7 @@
 
     <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
 
-    <!-- Native Inputs -->
+    <!-- Inputs -->
     <input type="file" id="audioFileInput" class="hidden-file-input" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg,audio/mpeg,audio/mp4" multiple>
     <input type="file" id="videoFileInput" class="hidden-file-input" accept="video/*,.mp4,.webm,.mov">
     <input type="file" id="photoFileInput" class="hidden-file-input" accept="image/*,.jpg,.jpeg,.png,.webp" multiple>
@@ -481,16 +539,16 @@
 
     // Views
     const splitMenuView = document.getElementById('splitMenuView');
+    const playlistView = document.getElementById('playlistView');
+    const playlistContainer = document.getElementById('playlistContainer');
     const nowPlayingView = document.getElementById('nowPlayingView');
     const videoView = document.getElementById('videoView');
     const photoView = document.getElementById('photoView');
     const wallpaperSettingsView = document.getElementById('wallpaperSettingsView');
     const eqView = document.getElementById('eqView');
     const volumeView = document.getElementById('volumeView');
-    const stopwatchView = document.getElementById('stopwatchView');
     const settingsView = document.getElementById('settingsView');
 
-    // Video HUD Elements
     const videoHud = document.getElementById('videoHud');
     const videoTrackBar = document.getElementById('videoTrackBar');
     const videoTrackFill = document.getElementById('videoTrackFill');
@@ -503,6 +561,7 @@
 
     const menuItems = Array.from(document.querySelectorAll('.menu-item'));
     let currentMenuIndex = 0;
+    let currentPlaylistIndex = 0;
     let activeView = 'menu';
 
     const trackName = document.getElementById('trackName');
@@ -516,16 +575,22 @@
     const albumArtImg = document.getElementById('albumArtImg');
     const albumArtFallback = document.getElementById('albumArtFallback');
 
-    // Wallpaper Tuning Variables
+    // Wallpaper Tuning
     let wpBlurVal = parseInt(localStorage.getItem('ipod_wp_blur_amount') || '10');
     let wpTintVal = parseInt(localStorage.getItem('ipod_wp_tint_amount') || '20');
-    let wpSettingSelected = 0; // 0 = Blur, 1 = Tint
+    let wpSettingSelected = 0;
     const wpRows = [
       document.getElementById('wpRowBlur'),
       document.getElementById('wpRowTint'),
       document.getElementById('wpRowImage'),
       document.getElementById('wpRowReset')
     ];
+
+    function selectWpRow(idx) {
+      wpSettingSelected = idx;
+      updateWpSettingRow();
+      triggerHaptic();
+    }
 
     // Equalizer
     const eqRows = [
@@ -542,7 +607,7 @@
     const volText = document.getElementById('volText');
 
     let currentVolume = 1;
-    let playlist = [];
+    let playlist = []; // Array of unified items: { name, artist, url, blob, isTelegram }
     let photoList = [];
     let currentPhotoIndex = 0;
     let currentIndex = 0;
@@ -572,7 +637,7 @@
       const tx = db.transaction(STORE_NAME, 'readwrite');
       const store = tx.objectStore(STORE_NAME);
       Array.from(files).forEach((file) => {
-        store.add({ name: file.name, blob: file });
+        store.add({ name: file.name, artist: 'Local File', blob: file, isTelegram: false });
       });
       tx.oncomplete = () => loadSongsFromDB();
     }
@@ -583,15 +648,121 @@
       const store = tx.objectStore(STORE_NAME);
       const req = store.getAll();
       req.onsuccess = () => {
-        if (req.result && req.result.length > 0) {
-          playlist = req.result;
-          document.getElementById('storageCount').textContent = `${playlist.length} Songs`;
-        }
+        const localSongs = req.result || [];
+        // Merge with saved Telegram songs from localStorage
+        const telegramSongs = JSON.parse(localStorage.getItem('ipod_telegram_tracks') || '[]');
+        playlist = [...telegramSongs, ...localSongs];
+        document.getElementById('storageCount').textContent = `${localSongs.length} Local`;
+        document.getElementById('chatTracksCount').textContent = `${telegramSongs.length} Chat`;
+        renderPlaylistView();
       };
     }
     initDB();
 
-    // --- WALLPAPER TUNING ENGINE ---
+    // --- TELEGRAM STREAM DETECTOR & CACHE FIX ---
+    function checkTelegramIncomingAudio() {
+      let streamUrl = null;
+      let songTitle = null;
+      let songArtist = null;
+
+      // 1. Check Standard URL query parameters
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('stream')) {
+        streamUrl = params.get('stream');
+        songTitle = params.get('title');
+        songArtist = params.get('artist');
+      }
+
+      // 2. Check Telegram start_param or initDataUnsafe if sent via deep link
+      if (!streamUrl && tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) {
+        try {
+          const decoded = atob(tg.initDataUnsafe.start_param);
+          const parsed = JSON.parse(decoded);
+          streamUrl = parsed.stream;
+          songTitle = parsed.title;
+          songArtist = parsed.artist;
+        } catch(e) {}
+      }
+
+      if (streamUrl) {
+        const newTrack = {
+          name: songTitle ? decodeURIComponent(songTitle) : "Telegram Audio",
+          artist: songArtist ? decodeURIComponent(songArtist) : "Telegram Chat",
+          url: streamUrl,
+          isTelegram: true
+        };
+
+        // Save to cached Telegram tracks list
+        let tgTracks = JSON.parse(localStorage.getItem('ipod_telegram_tracks') || '[]');
+        if (!tgTracks.some(t => t.url === streamUrl)) {
+          tgTracks.unshift(newTrack);
+          localStorage.setItem('ipod_telegram_tracks', JSON.stringify(tgTracks));
+        }
+
+        loadSongsFromDB();
+
+        // Immediately Play
+        setTimeout(() => {
+          playSpecificTrack(newTrack, 0);
+        }, 300);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      checkTelegramIncomingAudio();
+    });
+
+    // --- PLAYLIST RENDERER ---
+    function renderPlaylistView() {
+      playlistContainer.innerHTML = '';
+      if (playlist.length === 0) {
+        playlistContainer.innerHTML = '<div style="padding:16px; text-align:center; color:#666;">No songs loaded. Add local files or stream from Telegram.</div>';
+        return;
+      }
+
+      playlist.forEach((song, idx) => {
+        const row = document.createElement('div');
+        row.className = `playlist-row ${idx === currentPlaylistIndex ? 'active' : ''}`;
+        row.innerHTML = `
+          <div class="playlist-row-title">${idx + 1}. ${song.name}</div>
+          <span style="font-size:9px; opacity:0.75;">${song.isTelegram ? 'Chat' : 'Disk'}</span>
+        `;
+        row.addEventListener('click', () => {
+          currentPlaylistIndex = idx;
+          updatePlaylistHighlight();
+          playSpecificTrack(playlist[idx], idx);
+        });
+        playlistContainer.appendChild(row);
+      });
+    }
+
+    function updatePlaylistHighlight() {
+      const rows = document.querySelectorAll('.playlist-row');
+      rows.forEach((r, idx) => {
+        r.classList.toggle('active', idx === currentPlaylistIndex);
+      });
+    }
+
+    function playSpecificTrack(track, idx) {
+      currentIndex = idx;
+      trackName.textContent = track.name;
+      artistName.textContent = track.artist || 'iPod Library';
+      sourceMeta.textContent = track.isTelegram ? 'Telegram Stream' : 'Local Disk';
+
+      if (track.isTelegram && track.url) {
+        audio.src = track.url;
+        albumArtImg.style.display = 'none';
+        albumArtFallback.style.display = 'block';
+      } else if (track.blob) {
+        audio.src = URL.createObjectURL(track.blob);
+        extractAlbumArt(track.blob);
+      }
+      audio.load();
+      showView('nowPlaying');
+      playAudio();
+    }
+
+    // --- WALLPAPER ENGINE ---
     function applyWallpaperSettings() {
       const savedWp = localStorage.getItem('ipod_wallpaper');
       if (savedWp) {
@@ -636,7 +807,7 @@
       }
     });
 
-    // --- ALBUM ART EXTRACTOR ---
+    // --- ID3 ALBUM ART EXTRACTOR ---
     function extractAlbumArt(fileBlob) {
       albumArtImg.style.display = 'none';
       albumArtFallback.style.display = 'block';
@@ -662,7 +833,7 @@
       }
     }
 
-    // --- AUTO-HIDING VIDEO HUD SYSTEM ---
+    // --- VIDEO HUD ---
     function showVideoHud() {
       videoHud.classList.remove('hidden');
       clearTimeout(videoHudTimeout);
@@ -682,9 +853,7 @@
       }
     });
 
-    videoView.addEventListener('click', () => {
-      showVideoHud();
-    });
+    videoView.addEventListener('click', () => showVideoHud());
 
     videoTrackBar.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -695,74 +864,16 @@
       showVideoHud();
     });
 
-    // --- STOPWATCH SYSTEM ---
-    let swRunning = false;
-    let swTime = 0;
-    let swInterval = null;
-    function updateSw() {
-      const ms = Math.floor((swTime % 1000) / 100);
-      const totalSecs = Math.floor(swTime / 1000);
-      const s = totalSecs % 60;
-      const m = Math.floor(totalSecs / 60);
-      document.getElementById('swDisplay').textContent = 
-        `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}.${ms}`;
-    }
-    function toggleStopwatch() {
-      if (!swRunning) {
-        swRunning = true;
-        const startT = performance.now() - swTime;
-        swInterval = setInterval(() => {
-          swTime = performance.now() - startT;
-          updateSw();
-        }, 100);
-      } else {
-        swRunning = false;
-        clearInterval(swInterval);
-      }
-      triggerHaptic();
-    }
-    function resetStopwatch() {
-      swRunning = false;
-      clearInterval(swInterval);
-      swTime = 0;
-      updateSw();
-      triggerHaptic();
-    }
-
-    // --- SLEEP TIMER SYSTEM ---
-    let sleepTimer = null;
-    let sleepMinutes = 0;
-    function cycleSleepTimer() {
-      if (sleepMinutes === 0) sleepMinutes = 15;
-      else if (sleepMinutes === 15) sleepMinutes = 30;
-      else if (sleepMinutes === 30) sleepMinutes = 60;
-      else sleepMinutes = 0;
-
-      clearTimeout(sleepTimer);
-      if (sleepMinutes > 0) {
-        document.getElementById('sleepTimerStatus').textContent = `${sleepMinutes} Min`;
-        sleepTimer = setTimeout(() => {
-          pauseAudio();
-          video.pause();
-          sleepMinutes = 0;
-          document.getElementById('sleepTimerStatus').textContent = 'OFF';
-        }, sleepMinutes * 60 * 1000);
-      } else {
-        document.getElementById('sleepTimerStatus').textContent = 'OFF';
-      }
-      triggerHaptic();
-    }
-
     const previewDetails = {
-      offlineMusic: { icon: '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>', label: 'Offline Storage' },
+      playlist: { icon: '<path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/>', label: 'All Songs' },
       nowPlaying: { icon: '<path d="M8 5v14l11-7z"/>', label: 'Now Playing' },
+      offlineMusic: { icon: '<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>', label: 'Disk Storage' },
       shuffle: { icon: '<path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>', label: 'Shuffle All' },
-      wallpaperSettings: { icon: '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>', label: 'Wallpaper Tuning' },
       videos: { icon: '<path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>', label: 'iPod Videos' },
       photos: { icon: '<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>', label: 'Photo Viewer' },
+      wallpaperSettings: { icon: '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>', label: 'Wallpaper Tuning' },
       equalizer: { icon: '<path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>', label: 'DSP Equalizer' },
       volume: { icon: '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>', label: 'Volume Master' },
-      stopwatch: { icon: '<path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>', label: 'Stopwatch' },
       settings: { icon: '<path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>', label: 'System Info' }
     };
 
@@ -776,18 +887,22 @@
     function showView(view) {
       activeView = view;
       splitMenuView.style.display = 'none';
+      playlistView.style.display = 'none';
       nowPlayingView.style.display = 'none';
       videoView.style.display = 'none';
       photoView.style.display = 'none';
       wallpaperSettingsView.style.display = 'none';
       eqView.style.display = 'none';
       volumeView.style.display = 'none';
-      stopwatchView.style.display = 'none';
       settingsView.style.display = 'none';
 
       if (view === 'menu') {
         headerTitle.textContent = 'iPod';
         splitMenuView.style.display = 'flex';
+      } else if (view === 'playlist') {
+        headerTitle.textContent = 'Playlist';
+        playlistView.style.display = 'flex';
+        renderPlaylistView();
       } else if (view === 'nowPlaying') {
         headerTitle.textContent = 'Now Playing';
         nowPlayingView.style.display = 'flex';
@@ -809,9 +924,6 @@
       } else if (view === 'volume') {
         headerTitle.textContent = 'Volume';
         volumeView.style.display = 'flex';
-      } else if (view === 'stopwatch') {
-        headerTitle.textContent = 'Stopwatch';
-        stopwatchView.style.display = 'flex';
       } else if (view === 'settings') {
         headerTitle.textContent = 'About';
         settingsView.style.display = 'flex';
@@ -839,7 +951,7 @@
         if (type === 'shuffle') {
           if (playlist.length > 0) {
             currentIndex = Math.floor(Math.random() * playlist.length);
-            loadIndexedTrack(currentIndex);
+            playSpecificTrack(playlist[currentIndex], currentIndex);
           }
         } else if (type !== 'offlineMusic' && type !== 'videos' && type !== 'photos') {
           showView(type);
@@ -859,10 +971,14 @@
         } else if (type === 'shuffle') {
           if (playlist.length > 0) {
             currentIndex = Math.floor(Math.random() * playlist.length);
-            loadIndexedTrack(currentIndex);
+            playSpecificTrack(playlist[currentIndex], currentIndex);
           }
         } else {
           showView(type);
+        }
+      } else if (activeView === 'playlist') {
+        if (playlist.length > 0) {
+          playSpecificTrack(playlist[currentPlaylistIndex], currentPlaylistIndex);
         }
       } else if (activeView === 'nowPlaying') {
         if (!audio.src) return;
@@ -871,13 +987,17 @@
         video.paused ? video.play() : video.pause();
         showVideoHud();
       } else if (activeView === 'wallpaperSettings') {
-        wpSettingSelected = (wpSettingSelected + 1) % 4;
-        updateWpSettingRow();
+        if (wpSettingSelected === 2) {
+          wallpaperFileInput.click();
+        } else if (wpSettingSelected === 3) {
+          resetWallpaper();
+        } else {
+          wpSettingSelected = (wpSettingSelected + 1) % 4;
+          updateWpSettingRow();
+        }
       } else if (activeView === 'equalizer') {
         selectedEqBand = (selectedEqBand + 1) % 3;
         updateEqRowHighlight();
-      } else if (activeView === 'stopwatch') {
-        toggleStopwatch();
       }
     }
 
@@ -896,7 +1016,6 @@
       }
     });
 
-    // PLAY/PAUSE Button: ONLY affects active Now Playing or Video screens!
     document.getElementById('playPauseBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       triggerHaptic();
@@ -907,30 +1026,31 @@
         video.paused ? video.play() : video.pause();
         showVideoHud();
       }
-      // If user is inside settings, wallpaper, menu, etc. - DO NOTHING!
     });
 
+    // NEXT BUTTON (Strictly Guarded)
     document.getElementById('nextBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       triggerHaptic();
       if (activeView === 'photo' && photoList.length > 1) {
         currentPhotoIndex = (currentPhotoIndex + 1) % photoList.length;
         photo.src = URL.createObjectURL(photoList[currentPhotoIndex]);
-      } else if (playlist.length > 1) {
+      } else if (activeView === 'nowPlaying' && playlist.length > 1) {
         currentIndex = (currentIndex + 1) % playlist.length;
-        loadIndexedTrack(currentIndex);
+        playSpecificTrack(playlist[currentIndex], currentIndex);
       }
     });
 
+    // PREV BUTTON (Strictly Guarded)
     document.getElementById('prevBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       triggerHaptic();
       if (activeView === 'photo' && photoList.length > 1) {
         currentPhotoIndex = (currentPhotoIndex - 1 + photoList.length) % photoList.length;
         photo.src = URL.createObjectURL(photoList[currentPhotoIndex]);
-      } else if (playlist.length > 1) {
+      } else if (activeView === 'nowPlaying' && playlist.length > 1) {
         currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-        loadIndexedTrack(currentIndex);
+        playSpecificTrack(playlist[currentIndex], currentIndex);
       }
     });
 
@@ -986,29 +1106,9 @@
       playStateSvg.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
     }
 
-    function loadIndexedTrack(index) {
-      const track = playlist[index];
-      trackName.textContent = track.name;
-      artistName.textContent = 'Offline Library';
-      sourceMeta.textContent = `Song ${index + 1} of ${playlist.length}`;
-      audio.src = URL.createObjectURL(track.blob);
-      audio.load();
-      extractAlbumArt(track.blob);
-      showView('nowPlaying');
-      playAudio();
-    }
-
     audioFileInput.addEventListener('change', function() {
       if (this.files && this.files.length > 0) {
         saveSongsToDB(this.files);
-        const firstFile = this.files[0];
-        trackName.textContent = firstFile.name;
-        artistName.textContent = 'Offline Library';
-        audio.src = URL.createObjectURL(firstFile);
-        audio.load();
-        extractAlbumArt(firstFile);
-        showView('nowPlaying');
-        playAudio();
       }
     });
 
@@ -1027,23 +1127,6 @@
         currentPhotoIndex = 0;
         photo.src = URL.createObjectURL(photoList[0]);
         showView('photo');
-      }
-    });
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const params = new URLSearchParams(window.location.search);
-      const streamUrl = params.get('stream');
-      const songTitle = params.get('title');
-      const artist = params.get('artist');
-
-      if (streamUrl) {
-        trackName.textContent = songTitle ? decodeURIComponent(songTitle) : "Telegram Audio";
-        artistName.textContent = artist ? decodeURIComponent(artist) : "Telegram";
-        sourceMeta.textContent = "Streaming from chat";
-        audio.src = streamUrl;
-        audio.load();
-        showView('nowPlaying');
-        playAudio();
       }
     });
 
@@ -1113,6 +1196,14 @@
           if (nextIndex < 0) nextIndex = menuItems.length - 1;
           if (nextIndex >= menuItems.length) nextIndex = 0;
           updateMenuSelection(nextIndex);
+        } else if (activeView === 'playlist') {
+          // Scroll through playlist rows via Wheel
+          if (playlist.length > 0) {
+            currentPlaylistIndex = (currentPlaylistIndex + step + playlist.length) % playlist.length;
+            updatePlaylistHighlight();
+            const activeRow = document.querySelectorAll('.playlist-row')[currentPlaylistIndex];
+            if (activeRow) activeRow.scrollIntoView({ block: 'nearest' });
+          }
         } else if (activeView === 'wallpaperSettings') {
           if (wpSettingSelected === 0) {
             wpBlurVal = Math.max(0, Math.min(100, wpBlurVal + step * 5));
@@ -1122,6 +1213,9 @@
             wpTintVal = Math.max(0, Math.min(80, wpTintVal + step * 5));
             localStorage.setItem('ipod_wp_tint_amount', wpTintVal);
             applyWallpaperSettings();
+          } else {
+            wpSettingSelected = (wpSettingSelected + step + 4) % 4;
+            updateWpSettingRow();
           }
         } else if (activeView === 'volume') {
           currentVolume = Math.max(0, Math.min(1, currentVolume + step * 0.03));
@@ -1150,8 +1244,6 @@
         } else if (activeView === 'video' && video.duration) {
           video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + step * 2));
           showVideoHud();
-        } else if (activeView === 'stopwatch') {
-          resetStopwatch();
         }
       }
     }, { passive: false });
