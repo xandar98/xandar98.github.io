@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>iPod Classic Wheel OS</title>
+  <title>iPod Classic Ultra Fast</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+      -webkit-user-select: none;
       margin: 0;
       padding: 0;
     }
@@ -21,30 +22,31 @@
       touch-action: none;
     }
     body {
-      background-color: #0a0a0a;
-      font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+      background-color: #050505;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    /* Metallic iPod Chassis */
+    /* Metallic Chassis */
     .ipod-body {
       width: 100%;
       max-width: 380px;
       height: 98vh;
       max-height: 780px;
-      background: linear-gradient(145deg, #e4e4e4, #c0c0c0);
+      background: linear-gradient(145deg, #e7e7e7, #bfbfbf);
       border-radius: 36px;
       padding: 16px 16px 22px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8),
-                  inset 0 -3px 6px rgba(0, 0, 0, 0.4),
-                  0 20px 50px rgba(0, 0, 0, 0.9);
-      border: 1px solid #b8b8b8;
+      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.9),
+                  inset 0 -3px 6px rgba(0, 0, 0, 0.45),
+                  0 20px 50px rgba(0, 0, 0, 0.95);
+      border: 1px solid #b2b2b2;
+      will-change: transform;
     }
 
     /* Screen Bezel & Display */
@@ -54,49 +56,78 @@
       background: #000;
       border-radius: 16px;
       padding: 8px;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.8), 0 1px 2px rgba(255,255,255,0.4);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.85), 0 1px 2px rgba(255,255,255,0.4);
       display: flex;
     }
     .ipod-lcd {
       width: 100%;
       height: 100%;
-      background: #fff;
+      background: linear-gradient(180deg, #f8f9fa 0%, #eef1f5 100%);
       border-radius: 8px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
       font-size: 13px;
       color: #1a1a1a;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.15);
+      border: 1px solid #c2c8d0;
     }
 
     /* Header Bar */
     .lcd-header {
-      height: 24px;
-      background: linear-gradient(180deg, #d8d8d8 0%, #b8b8b8 50%, #9e9e9e 51%, #c4c4c4 100%);
-      border-bottom: 1px solid #7c7c7c;
+      height: 22px;
+      background: linear-gradient(180deg, #d3d8df 0%, #b2bac5 50%, #9ba5b2 51%, #bac2cd 100%);
+      border-bottom: 1px solid #7c8896;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 8px;
       font-weight: 700;
       font-size: 11px;
-      color: #222;
-      text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+      color: #1e252d;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.7);
     }
     .header-icons {
       display: flex;
+      align-items: center;
       gap: 6px;
-      font-size: 10px;
+    }
+    .apple-icon {
+      width: 12px;
+      height: 12px;
+      fill: #222;
+    }
+    .battery-icon {
+      width: 18px;
+      height: 10px;
+      border: 1px solid #333;
+      border-radius: 2px;
+      position: relative;
+      padding: 1px;
+    }
+    .battery-icon::after {
+      content: '';
+      position: absolute;
+      right: -3px;
+      top: 2px;
+      width: 2px;
+      height: 4px;
+      background: #333;
+      border-radius: 0 1px 1px 0;
+    }
+    .battery-fill {
+      width: 80%;
+      height: 100%;
+      background: #27ae60;
+      border-radius: 1px;
     }
 
-    /* Views Layout */
+    /* Screen Views Area */
     .lcd-content {
       flex: 1;
       display: flex;
       position: relative;
-      background: #fff;
       overflow: hidden;
+      background: linear-gradient(180deg, #ffffff 0%, #edf0f5 100%);
     }
 
     /* 1. Menu */
@@ -117,16 +148,17 @@
       justify-content: space-between;
       align-items: center;
       font-weight: 600;
-      border-bottom: 1px solid #f0f0f0;
+      border-bottom: 1px solid #e2e6eb;
       cursor: pointer;
     }
     .menu-item.active {
-      background: linear-gradient(180deg, #3895e8 0%, #1562b3 100%);
+      background: linear-gradient(180deg, #378fe6 0%, #175bb3 100%);
       color: #fff;
     }
-    .menu-item .arrow {
-      font-size: 10px;
-      opacity: 0.7;
+    .menu-item .arrow-svg {
+      width: 8px;
+      height: 8px;
+      fill: currentColor;
     }
 
     /* 2. Now Playing */
@@ -136,7 +168,6 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: #fff;
       display: none;
       flex-direction: column;
       padding: 12px;
@@ -151,21 +182,25 @@
     .album-art {
       width: 84px;
       height: 84px;
-      background: linear-gradient(135deg, #1c1c1c, #444);
-      border-radius: 6px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      background: linear-gradient(135deg, #1b2430 0%, #3a4b61 100%);
+      border-radius: 4px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.25);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
-      font-size: 28px;
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+    .album-art svg {
+      width: 36px;
+      height: 36px;
+      fill: #a0aec0;
     }
     .track-details {
       flex: 1;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
     }
     .np-title {
       font-size: 13px;
@@ -173,15 +208,17 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: #111;
     }
     .np-artist, .np-album {
       font-size: 11px;
-      color: #666;
+      color: #555;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
+    /* Scrubber */
     .progress-box {
       display: flex;
       flex-direction: column;
@@ -197,16 +234,16 @@
     .progress-track {
       width: 100%;
       height: 6px;
-      background: #d4d4d4;
+      background: #c8ced6;
       border-radius: 3px;
-      border: 1px solid #b8b8b8;
+      border: 1px solid #a8b0ba;
       position: relative;
       overflow: hidden;
     }
     .progress-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(180deg, #4fa5f5 0%, #176dc7 100%);
+      background: linear-gradient(180deg, #4da4f7 0%, #1566be 100%);
       pointer-events: none;
     }
     .time-labels {
@@ -214,7 +251,7 @@
       justify-content: space-between;
       font-size: 10px;
       font-weight: 600;
-      color: #555;
+      color: #444;
     }
 
     /* 3. Equalizer */
@@ -224,31 +261,41 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: #fff;
       display: none;
       flex-direction: column;
-      padding: 12px;
-      gap: 12px;
+      padding: 10px 14px;
+      gap: 10px;
     }
     .eq-row {
       display: flex;
       flex-direction: column;
       gap: 3px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      transition: background 0.05s ease;
+    }
+    .eq-row.active {
+      background: rgba(55, 143, 230, 0.16);
+      border: 1px solid #378fe6;
     }
     .eq-info {
       display: flex;
       justify-content: space-between;
       font-size: 11px;
       font-weight: 700;
-      color: #333;
+      color: #222;
     }
     .eq-info span.val {
-      color: #176dc7;
+      color: #175bb3;
+      font-family: monospace;
     }
-    input[type=range] {
-      width: 100%;
-      accent-color: #1562b3;
-      height: 4px;
+    .eq-hint {
+      font-size: 9px;
+      color: #666;
+      text-align: center;
+      margin-top: auto;
+      font-weight: 600;
     }
 
     /* 4. Volume */
@@ -258,7 +305,6 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: #fff;
       display: none;
       flex-direction: column;
       justify-content: center;
@@ -266,8 +312,21 @@
       padding: 20px;
       gap: 12px;
     }
+    .vol-track {
+      width: 85%;
+      height: 8px;
+      background: #c8ced6;
+      border: 1px solid #a8b0ba;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .vol-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #4da4f7 0%, #1566be 100%);
+    }
 
-    /* iPod Rotating Click-Wheel with Anti-Gesture Protection */
+    /* Ultra-Responsive Click-Wheel */
     .click-wheel {
       width: 220px;
       height: 220px;
@@ -282,26 +341,32 @@
       align-items: center;
       touch-action: none;
     }
-
     .wheel-label {
       position: absolute;
       font-weight: 700;
       font-size: 12px;
       color: #8c8c8c;
       letter-spacing: 0.5px;
-      pointer-events: auto;
-      cursor: pointer;
-      padding: 10px;
+      padding: 14px;
       z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
     .wheel-label:active {
-      color: #1562b3;
+      color: #175bb3;
       transform: scale(0.92);
     }
-    .wheel-menu { top: 6px; }
-    .wheel-prev { left: 8px; display: flex; align-items: center; }
-    .wheel-next { right: 8px; display: flex; align-items: center; }
-    .wheel-play { bottom: 6px; display: flex; align-items: center; }
+    .wheel-menu { top: 4px; }
+    .wheel-prev { left: 4px; }
+    .wheel-next { right: 4px; }
+    .wheel-play { bottom: 4px; }
+    .wheel-label svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
 
     /* Center Select Button */
     .center-btn {
@@ -316,9 +381,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      color: #666;
+      color: #777;
     }
     .center-btn:active {
       background: #c8c8c8;
@@ -334,32 +399,45 @@
 <body>
 
   <div class="ipod-body">
-    <!-- LCD Bezel Screen -->
     <div class="screen-bezel">
       <div class="ipod-lcd">
         <div class="lcd-header">
           <span id="headerTitle">iPod</span>
           <div class="header-icons">
-            <span id="playStateIcon">⏸</span>
-            <span>🔋</span>
+            <svg id="playStateSvg" class="apple-icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            <div class="battery-icon"><div class="battery-fill"></div></div>
           </div>
         </div>
 
         <div class="lcd-content">
-          <!-- 1. OS Menu -->
+          <!-- 1. Menu Screen -->
           <div class="menu-view" id="menuView">
             <ul class="menu-list" id="menuList">
-              <li class="menu-item active" data-view="nowPlaying">Now Playing <span class="arrow">▶</span></li>
-              <li class="menu-item" data-view="openFile">Choose Local Songs <span class="arrow">▶</span></li>
-              <li class="menu-item" data-view="equalizer">Equalizer (DSP) <span class="arrow">▶</span></li>
-              <li class="menu-item" data-view="volume">Volume Control <span class="arrow">▶</span></li>
+              <li class="menu-item active" data-view="nowPlaying">
+                <span>Now Playing</span>
+                <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </li>
+              <li class="menu-item" data-view="openFile">
+                <span>Choose Local Songs</span>
+                <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </li>
+              <li class="menu-item" data-view="equalizer">
+                <span>Equalizer (DSP)</span>
+                <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </li>
+              <li class="menu-item" data-view="volume">
+                <span>Volume Control</span>
+                <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </li>
             </ul>
           </div>
 
-          <!-- 2. Now Playing -->
+          <!-- 2. Now Playing Screen -->
           <div class="now-playing-view" id="nowPlayingView">
             <div class="np-top">
-              <div class="album-art" id="npArt">🎵</div>
+              <div class="album-art" id="npArt">
+                <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+              </div>
               <div class="track-details">
                 <div class="np-title" id="trackName">No song loaded</div>
                 <div class="np-artist" id="artistName">Apple iPod</div>
@@ -369,9 +447,7 @@
 
             <div class="progress-box">
               <div class="progress-track-wrapper" id="progressContainer">
-                <div class="progress-track">
-                  <div class="progress-fill" id="progressFill"></div>
-                </div>
+                <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
               </div>
               <div class="time-labels">
                 <span id="currentTime">0:00</span>
@@ -382,36 +458,40 @@
 
           <!-- 3. Equalizer Screen -->
           <div class="eq-view" id="eqView">
-            <div class="eq-row">
+            <div class="eq-row active" id="eqRowBass">
               <div class="eq-info"><span>Bass (60Hz)</span><span class="val" id="bassVal">0dB</span></div>
-              <input type="range" id="bassSlider" min="-12" max="12" value="0">
             </div>
-            <div class="eq-row">
+            <div class="eq-row" id="eqRowMid">
               <div class="eq-info"><span>Mid (1kHz)</span><span class="val" id="midVal">0dB</span></div>
-              <input type="range" id="midSlider" min="-12" max="12" value="0">
             </div>
-            <div class="eq-row">
+            <div class="eq-row" id="eqRowTreble">
               <div class="eq-info"><span>Treble (3kHz)</span><span class="val" id="trebleVal">0dB</span></div>
-              <input type="range" id="trebleSlider" min="-12" max="12" value="0">
             </div>
+            <div class="eq-hint">Center: Switch Band • Wheel: Fast Gain</div>
           </div>
 
           <!-- 4. Volume Screen -->
           <div class="volume-view" id="volumeView">
             <div style="font-weight:700; color:#333; font-size:12px;">Headphone Volume</div>
-            <input type="range" id="volSlider" min="0" max="1" step="0.01" value="1" style="width:85%;">
-            <div style="font-size:11px; font-weight:700; color:#176dc7;" id="volText">100%</div>
+            <div class="vol-track"><div class="vol-fill" id="volFill"></div></div>
+            <div style="font-size:11px; font-weight:700; color:#175bb3;" id="volText">100%</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- iPod Click Wheel with Touch Rotation -->
+    <!-- Ultra Sensitive Click Wheel -->
     <div class="click-wheel" id="clickWheel">
       <div class="wheel-label wheel-menu" id="menuBtn">MENU</div>
-      <div class="wheel-label wheel-prev" id="prevBtn">|◀◀</div>
-      <div class="wheel-label wheel-next" id="nextBtn">▶▶|</div>
-      <div class="wheel-label wheel-play" id="playPauseBtn">▶||</div>
+      <div class="wheel-label wheel-prev" id="prevBtn">
+        <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+      </div>
+      <div class="wheel-label wheel-next" id="nextBtn">
+        <svg viewBox="0 0 24 24"><path d="m6 18 8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+      </div>
+      <div class="wheel-label wheel-play" id="playPauseBtn">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7zM6 19h2V5H6v14zm10-14v14h2V5h-2z"/></svg>
+      </div>
       <div class="center-btn" id="centerBtn">SELECT</div>
     </div>
 
@@ -420,9 +500,8 @@
   </div>
 
   <script>
-    // 1. Prevent Telegram Close on Swipe
-    if (window.Telegram && window.Telegram.WebApp) {
-      const tg = window.Telegram.WebApp;
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    if (tg) {
       tg.ready();
       tg.expand();
       if (typeof tg.isVerticalSwipesEnabled !== 'undefined') {
@@ -431,7 +510,13 @@
       tg.enableClosingConfirmation && tg.enableClosingConfirmation();
     }
 
-    // Stop all page-level pull-down bounces
+    // High performance Click / Haptic feedback generator
+    function triggerHaptic() {
+      if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+      }
+    }
+
     document.body.addEventListener('touchmove', (e) => {
       e.preventDefault();
     }, { passive: false });
@@ -440,7 +525,7 @@
     const fileInput = document.getElementById('fileInput');
 
     const headerTitle = document.getElementById('headerTitle');
-    const playStateIcon = document.getElementById('playStateIcon');
+    const playStateSvg = document.getElementById('playStateSvg');
     const menuView = document.getElementById('menuView');
     const nowPlayingView = document.getElementById('nowPlayingView');
     const eqView = document.getElementById('eqView');
@@ -458,15 +543,21 @@
     const currentTimeEl = document.getElementById('currentTime');
     const totalDurationEl = document.getElementById('totalDuration');
 
-    const bassSlider = document.getElementById('bassSlider');
-    const midSlider = document.getElementById('midSlider');
-    const trebleSlider = document.getElementById('trebleSlider');
+    const eqRows = [
+      document.getElementById('eqRowBass'),
+      document.getElementById('eqRowMid'),
+      document.getElementById('eqRowTreble')
+    ];
+    let selectedEqBand = 0;
+    let eqGains = { bass: 0, mid: 0, treble: 0 };
+
     const bassVal = document.getElementById('bassVal');
     const midVal = document.getElementById('midVal');
     const trebleVal = document.getElementById('trebleVal');
-    const volSlider = document.getElementById('volSlider');
+    const volFill = document.getElementById('volFill');
     const volText = document.getElementById('volText');
 
+    let currentVolume = 1;
     let playlist = [];
     let currentIndex = 0;
     let audioCtx = null, sourceNode = null, bassFilter = null, midFilter = null, trebleFilter = null, gainNode = null;
@@ -487,6 +578,7 @@
       } else if (view === 'equalizer') {
         headerTitle.textContent = 'Equalizer';
         eqView.style.display = 'flex';
+        updateEqRowHighlight();
       } else if (view === 'volume') {
         headerTitle.textContent = 'Volume';
         volumeView.style.display = 'flex';
@@ -494,15 +586,36 @@
     }
 
     function updateMenuSelection(index) {
-      menuItems.forEach((item, idx) => {
-        item.classList.toggle('active', idx === index);
-      });
+      menuItems[currentMenuIndex].classList.remove('active');
+      menuItems[index].classList.add('active');
       currentMenuIndex = index;
     }
 
-    // Center Button Action
-    document.getElementById('centerBtn').addEventListener('click', (e) => {
-      e.stopPropagation();
+    function updateEqRowHighlight() {
+      eqRows.forEach((row, idx) => {
+        row.classList.toggle('active', idx === selectedEqBand);
+      });
+    }
+
+    // Helper for ZERO-LATENCY TOUCH HANDLING (No 300ms click delay)
+    function bindInstantTouch(element, callback) {
+      let triggered = false;
+      element.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        triggered = true;
+        triggerHaptic();
+        callback();
+      });
+      element.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!triggered) callback();
+        triggered = false;
+      });
+    }
+
+    // Instant Center Button Action
+    bindInstantTouch(document.getElementById('centerBtn'), () => {
       if (activeView === 'menu') {
         const selected = menuItems[currentMenuIndex].dataset.view;
         if (selected === 'openFile') {
@@ -513,34 +626,33 @@
       } else if (activeView === 'nowPlaying') {
         if (!audio.src) return;
         audio.paused ? playAudio() : pauseAudio();
+      } else if (activeView === 'equalizer') {
+        selectedEqBand = (selectedEqBand + 1) % 3;
+        updateEqRowHighlight();
       }
     });
 
-    // MENU Button Action (Back)
-    document.getElementById('menuBtn').addEventListener('click', (e) => {
-      e.stopPropagation();
+    // Instant Menu Button (Back)
+    bindInstantTouch(document.getElementById('menuBtn'), () => {
       if (activeView !== 'menu') {
         showView('menu');
       }
     });
 
-    // Play/Pause Button
-    document.getElementById('playPauseBtn').addEventListener('click', (e) => {
-      e.stopPropagation();
+    // Instant Play / Pause
+    bindInstantTouch(document.getElementById('playPauseBtn'), () => {
       if (!audio.src) return;
       audio.paused ? playAudio() : pauseAudio();
     });
 
-    // Next / Prev Buttons
-    document.getElementById('nextBtn').addEventListener('click', (e) => {
-      e.stopPropagation();
+    // Instant Next / Prev
+    bindInstantTouch(document.getElementById('nextBtn'), () => {
       if (playlist.length <= 1) return;
       currentIndex = (currentIndex + 1) % playlist.length;
       loadLocalTrack(currentIndex);
     });
 
-    document.getElementById('prevBtn').addEventListener('click', (e) => {
-      e.stopPropagation();
+    bindInstantTouch(document.getElementById('prevBtn'), () => {
       if (playlist.length <= 1) return;
       currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
       loadLocalTrack(currentIndex);
@@ -556,21 +668,21 @@
       bassFilter = audioCtx.createBiquadFilter();
       bassFilter.type = 'lowshelf';
       bassFilter.frequency.value = 60;
-      bassFilter.gain.value = Number(bassSlider.value);
+      bassFilter.gain.value = eqGains.bass;
 
       midFilter = audioCtx.createBiquadFilter();
       midFilter.type = 'peaking';
       midFilter.frequency.value = 1000;
       midFilter.Q.value = 1.0;
-      midFilter.gain.value = Number(midSlider.value);
+      midFilter.gain.value = eqGains.mid;
 
       trebleFilter = audioCtx.createBiquadFilter();
       trebleFilter.type = 'highshelf';
       trebleFilter.frequency.value = 3000;
-      trebleFilter.gain.value = Number(trebleSlider.value);
+      trebleFilter.gain.value = eqGains.treble;
 
       gainNode = audioCtx.createGain();
-      gainNode.gain.value = Number(volSlider.value);
+      gainNode.gain.value = currentVolume;
 
       sourceNode.connect(bassFilter);
       bassFilter.connect(midFilter);
@@ -590,13 +702,13 @@
       setupEqualizer();
       if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
       audio.play().then(() => {
-        playStateIcon.textContent = '▶';
+        playStateSvg.innerHTML = '<path d="M8 5v14l11-7z"/>';
       }).catch(() => {});
     }
 
     function pauseAudio() {
       audio.pause();
-      playStateIcon.textContent = '⏸';
+      playStateSvg.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
     }
 
     function loadLocalTrack(index) {
@@ -618,7 +730,6 @@
       }
     });
 
-    // Chat link receiver
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       const streamUrl = params.get('stream');
@@ -636,12 +747,21 @@
       }
     });
 
-    progressContainer.addEventListener('click', (e) => {
+    // Ultra Fast Scrubber Seeking
+    function seekFromEvent(e) {
       if (!audio.src || isNaN(audio.duration)) return;
       const rect = progressContainer.getBoundingClientRect();
-      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
       audio.currentTime = pct * audio.duration;
+      progressFill.style.width = `${pct * 100}%`;
+      currentTimeEl.textContent = formatTime(audio.currentTime);
       if (audio.paused) playAudio();
+    }
+
+    progressContainer.addEventListener('pointerdown', (e) => {
+      seekFromEvent(e);
+      triggerHaptic();
     });
 
     audio.addEventListener('timeupdate', () => {
@@ -656,29 +776,7 @@
       totalDurationEl.textContent = formatTime(audio.duration);
     });
 
-    // Equalizer
-    bassSlider.addEventListener('input', (e) => {
-      bassVal.textContent = `${e.target.value}dB`;
-      if (bassFilter) bassFilter.gain.value = Number(e.target.value);
-    });
-    midSlider.addEventListener('input', (e) => {
-      midVal.textContent = `${e.target.value}dB`;
-      if (midFilter) midFilter.gain.value = Number(e.target.value);
-    });
-    trebleSlider.addEventListener('input', (e) => {
-      trebleVal.textContent = `${e.target.value}dB`;
-      if (trebleFilter) trebleFilter.gain.value = Number(e.target.value);
-    });
-
-    // Volume
-    volSlider.addEventListener('input', (e) => {
-      const v = Number(e.target.value);
-      audio.volume = v;
-      if (gainNode) gainNode.gain.value = v;
-      volText.textContent = `${Math.round(v * 100)}%`;
-    });
-
-    // Smooth Scroll Wheel Engine (With Full Swipe Cancellation)
+    // ULTRA SENSITIVE ROTATING CLICK-WHEEL (Threshold 8 deg)
     const wheel = document.getElementById('clickWheel');
     let lastAngle = null;
     let accumulatedAngle = 0;
@@ -696,7 +794,6 @@
     }, { passive: false });
 
     wheel.addEventListener('touchmove', (e) => {
-      // Prevent browser default gesture & telegram pull-down close
       e.preventDefault();
       e.stopPropagation();
 
@@ -710,10 +807,11 @@
       accumulatedAngle += diff;
       lastAngle = currentAngle;
 
-      // Every 25 degrees of circular movement registers as a tick
-      if (Math.abs(accumulatedAngle) >= 25) {
+      // Sensitive threshold: fires every 8 degrees for instant fluid response
+      if (Math.abs(accumulatedAngle) >= 8) {
         const step = accumulatedAngle > 0 ? 1 : -1;
         accumulatedAngle = 0;
+        triggerHaptic(); // Tactile tick feedback
 
         if (activeView === 'menu') {
           let nextIndex = currentMenuIndex + step;
@@ -721,24 +819,34 @@
           if (nextIndex >= menuItems.length) nextIndex = 0;
           updateMenuSelection(nextIndex);
         } else if (activeView === 'volume') {
-          let v = Math.max(0, Math.min(1, Number(volSlider.value) + step * 0.05));
-          volSlider.value = v;
-          audio.volume = v;
-          if (gainNode) gainNode.gain.value = v;
-          volText.textContent = `${Math.round(v * 100)}%`;
+          currentVolume = Math.max(0, Math.min(1, currentVolume + step * 0.03));
+          audio.volume = currentVolume;
+          if (gainNode) gainNode.gain.value = currentVolume;
+          volFill.style.width = `${currentVolume * 100}%`;
+          volText.textContent = `${Math.round(currentVolume * 100)}%`;
+        } else if (activeView === 'equalizer') {
+          setupEqualizer();
+          if (selectedEqBand === 0) {
+            eqGains.bass = Math.max(-12, Math.min(12, eqGains.bass + step));
+            bassVal.textContent = `${eqGains.bass > 0 ? '+' : ''}${eqGains.bass}dB`;
+            if (bassFilter) bassFilter.gain.value = eqGains.bass;
+          } else if (selectedEqBand === 1) {
+            eqGains.mid = Math.max(-12, Math.min(12, eqGains.mid + step));
+            midVal.textContent = `${eqGains.mid > 0 ? '+' : ''}${eqGains.mid}dB`;
+            if (midFilter) midFilter.gain.value = eqGains.mid;
+          } else if (selectedEqBand === 2) {
+            eqGains.treble = Math.max(-12, Math.min(12, eqGains.treble + step));
+            trebleVal.textContent = `${eqGains.treble > 0 ? '+' : ''}${eqGains.treble}dB`;
+            if (trebleFilter) trebleFilter.gain.value = eqGains.treble;
+          }
         } else if (activeView === 'nowPlaying' && audio.duration) {
-          audio.currentTime = Math.max(0, Math.min(audio.duration, audio.currentTime + step * 5));
+          audio.currentTime = Math.max(0, Math.min(audio.duration, audio.currentTime + step * 2));
         }
       }
     }, { passive: false });
 
-    wheel.addEventListener('touchend', () => {
-      lastAngle = null;
-    });
-
-    wheel.addEventListener('touchcancel', () => {
-      lastAngle = null;
-    });
+    wheel.addEventListener('touchend', () => { lastAngle = null; });
+    wheel.addEventListener('touchcancel', () => { lastAngle = null; });
   </script>
 </body>
 </html>
