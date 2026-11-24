@@ -2,476 +2,486 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Nokia XpressMusic S60v5 Player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>iPod Classic OS</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    :root {
-      --s60-chassis: #12151b;
-      --s60-bezel: #1e2430;
-      --s60-screen: #0a0e14;
-      --s60-red: #e02424; /* XpressMusic Red Accent */
-      --s60-blue: #0088ff;
-      --s60-cyan: #00d2ff;
-      --s60-text: #f0f4f8;
-      --s60-subtext: #889bb0;
-      --touch-bg: rgba(255, 255, 255, 0.05);
-      --touch-border: rgba(0, 136, 255, 0.25);
-    }
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+      margin: 0;
+      padding: 0;
     }
     body {
-      margin: 0;
-      padding: 12px;
+      background-color: #0d0d0d;
+      font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       min-height: 100vh;
-      background: #05070a;
-      color: var(--s60-text);
-      font-family: "Tahoma", "Lucida Grande", "Segoe UI", sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* All-Glass Touchscreen Bezel */
-    .touch-device {
-      width: 100%;
-      max-width: 370px;
-      background: var(--s60-chassis);
-      border: 3px solid #2d3748;
-      border-radius: 24px;
-      padding: 14px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.95), 0 0 15px rgba(224, 36, 36, 0.15);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    /* Top Branding & Sensor Area */
-    .top-panel {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 2px 6px;
-      border-bottom: 2px solid var(--s60-red);
-      padding-bottom: 8px;
-    }
-    .brand-logo {
-      font-weight: 800;
-      font-size: 0.9rem;
-      letter-spacing: 2px;
-      color: #cbd5e1;
-    }
-    .xpress-tag {
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--s60-red);
-      letter-spacing: 0.5px;
-    }
-
-    /* Full Touchscreen Container */
-    .touch-screen {
-      background: var(--s60-screen);
-      border: 1px solid #1a2332;
-      border-radius: 14px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-    }
-
-    /* S60 Touch Status Bar */
-    .status-bar {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.7rem;
-      color: var(--s60-cyan);
-      border-bottom: 1px solid #141e2c;
-      padding-bottom: 4px;
-      font-weight: 600;
-    }
-
-    /* Track Metadata Display */
-    .track-panel {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid #172435;
-      border-radius: 10px;
-      padding: 8px;
-      text-align: center;
-    }
-    .marquee-wrapper {
-      width: 100%;
+      width: 100vw;
       overflow: hidden;
-      white-space: nowrap;
-      display: flex;
-      justify-content: center;
     }
-    .track-title {
-      display: inline-block;
-      font-size: 1rem;
+
+    /* iPod Classic Metallic Chassis */
+    .ipod-body {
+      width: 100%;
+      max-width: 380px;
+      height: 96vh;
+      max-height: 780px;
+      background: linear-gradient(145deg, #e6e6e6, #c5c5c5);
+      border-radius: 40px;
+      padding: 22px 20px 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8),
+                  inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+                  0 20px 50px rgba(0, 0, 0, 0.9);
+      border: 1px solid #b8b8b8;
+    }
+
+    /* Screen Bezel & Display */
+    .screen-bezel {
+      width: 100%;
+      height: 48%;
+      background: #000;
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.8), 0 1px 2px rgba(255,255,255,0.4);
+      display: flex;
+    }
+    .ipod-lcd {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      font-size: 13px;
+      color: #1a1a1a;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.15);
+    }
+
+    /* iPod Header Bar */
+    .lcd-header {
+      height: 24px;
+      background: linear-gradient(180deg, #d8d8d8 0%, #b8b8b8 50%, #9e9e9e 51%, #c4c4c4 100%);
+      border-bottom: 1px solid #7c7c7c;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
       font-weight: 700;
+      font-size: 11px;
+      color: #222;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+    }
+    .header-icons {
+      display: flex;
+      gap: 6px;
+      font-size: 10px;
+    }
+
+    /* Menu Split Screen Layout */
+    .lcd-content {
+      flex: 1;
+      display: flex;
+      position: relative;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    /* Menu View */
+    .menu-view {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .menu-list {
+      list-style: none;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .menu-item {
+      padding: 7px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+    }
+    .menu-item.active {
+      background: linear-gradient(180deg, #3895e8 0%, #1562b3 100%);
       color: #fff;
     }
-    .marquee-active {
-      display: inline-flex;
-      animation: marqueeSlide 10s linear infinite;
-    }
-    @keyframes marqueeSlide {
-      0% { transform: translateX(0%); }
-      100% { transform: translateX(-50%); }
-    }
-    .track-meta {
-      font-size: 0.72rem;
-      color: var(--s60-cyan);
-      margin-top: 4px;
+    .menu-item .arrow {
+      font-size: 10px;
+      opacity: 0.7;
     }
 
-    /* Seeking / Progress Bar */
-    .progress-box {
+    /* Now Playing View */
+    .now-playing-view {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      display: none;
+      flex-direction: column;
+      padding: 12px;
+      gap: 10px;
+    }
+    .np-top {
+      display: flex;
+      gap: 12px;
+      flex: 1;
+      align-items: center;
+    }
+    .album-art {
+      width: 84px;
+      height: 84px;
+      background: linear-gradient(135deg, #1c1c1c, #444);
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 28px;
+    }
+    .track-details {
+      flex: 1;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
-    .progress-bar-container {
+    .np-title {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .np-artist, .np-album {
+      font-size: 11px;
+      color: #666;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* iPod Scrubber Progress Bar */
+    .progress-box {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-top: 4px;
+    }
+    .progress-track-wrapper {
       width: 100%;
-      height: 22px;
+      height: 14px;
       display: flex;
       align-items: center;
       cursor: pointer;
-      touch-action: none;
     }
     .progress-track {
       width: 100%;
-      height: 7px;
-      background: #141c27;
-      border-radius: 4px;
+      height: 6px;
+      background: #d4d4d4;
+      border-radius: 3px;
+      border: 1px solid #b8b8b8;
       position: relative;
       overflow: hidden;
-      border: 1px solid #223247;
     }
     .progress-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #0088ff, #00d2ff);
+      background: linear-gradient(180deg, #4fa5f5 0%, #176dc7 100%);
       pointer-events: none;
     }
     .time-labels {
       display: flex;
       justify-content: space-between;
-      font-size: 0.7rem;
-      color: var(--s60-subtext);
-      font-family: monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: #555;
     }
 
-    /* On-Screen Touch Playback Controls */
-    .touch-controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 14px;
-      padding: 4px 0;
+    /* Equalizer View */
+    .eq-view {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      display: none;
+      flex-direction: column;
+      padding: 12px;
+      gap: 12px;
     }
-    .touch-btn {
-      background: var(--touch-bg);
-      border: 1px solid var(--touch-border);
-      color: var(--s60-text);
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.1s, transform 0.1s;
-    }
-    .touch-btn svg {
-      width: 18px;
-      height: 18px;
-      fill: #e2e8f0;
-    }
-    .touch-btn:active {
-      transform: scale(0.92);
-      background: rgba(0, 136, 255, 0.25);
-      border-color: var(--s60-cyan);
-    }
-    .touch-btn-play {
-      width: 58px;
-      height: 58px;
-      background: linear-gradient(135deg, rgba(0, 136, 255, 0.3), rgba(0, 210, 255, 0.2));
-      border: 1px solid var(--s60-cyan);
-      box-shadow: 0 0 12px rgba(0, 136, 255, 0.3);
-    }
-    .touch-btn-play svg {
-      width: 22px;
-      height: 22px;
-      fill: #fff;
-    }
-
-    /* On-Screen Touch Volume Bar */
-    .touch-volume-box {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid #162232;
-      border-radius: 10px;
-      padding: 6px 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .vol-icon {
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-    .vol-text {
-      font-size: 0.7rem;
-      font-family: monospace;
-      color: var(--s60-cyan);
-      min-width: 36px;
-      text-align: right;
-    }
-
-    /* 3-Band Equalizer LCD Screen */
-    .eq-screen-box {
-      background: #06090e;
-      border: 1px solid #162230;
-      border-radius: 10px;
-      padding: 8px 10px;
+    .eq-row {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 3px;
     }
-    .eq-screen-title {
+    .eq-info {
       display: flex;
       justify-content: space-between;
-      font-size: 0.68rem;
+      font-size: 11px;
       font-weight: 700;
-      color: var(--s60-cyan);
-      text-transform: uppercase;
+      color: #333;
     }
-    .eq-slider-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .eq-info span.val {
+      color: #176dc7;
     }
-    .eq-name {
-      font-size: 0.7rem;
-      color: var(--s60-subtext);
-      width: 44px;
-    }
-    .eq-val {
-      font-size: 0.7rem;
-      color: var(--s60-red);
-      width: 34px;
-      text-align: right;
-      font-family: monospace;
-    }
-    input[type="range"] {
-      flex: 1;
-      height: 5px;
-      background: #172230;
-      border-radius: 3px;
-      outline: none;
-      accent-color: var(--s60-blue);
-      cursor: pointer;
+    input[type=range] {
+      width: 100%;
+      accent-color: #1562b3;
+      height: 4px;
     }
 
-    /* Touch Softkeys Bar (File Open & Stop) */
-    .touch-softkeys {
+    /* Volume View */
+    .volume-view {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      gap: 12px;
+    }
+
+    /* iPod Click Wheel */
+    .click-wheel {
+      width: 220px;
+      height: 220px;
+      background: #f7f7f7;
+      border-radius: 50%;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1),
+                  0 4px 10px rgba(0,0,0,0.25),
+                  0 0 0 1px #d6d6d6;
+      position: relative;
       display: flex;
-      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      touch-action: none;
     }
-    .touch-action-btn {
-      flex: 1;
-      padding: 9px;
-      background: var(--touch-bg);
-      border: 1px solid #203045;
-      border-radius: 8px;
-      color: var(--s60-cyan);
-      font-size: 0.75rem;
+    .wheel-label {
+      position: absolute;
       font-weight: 700;
+      font-size: 12px;
+      color: #8c8c8c;
+      letter-spacing: 0.5px;
+      pointer-events: auto;
       cursor: pointer;
-      text-transform: uppercase;
-      text-align: center;
     }
-    .touch-action-btn:active {
-      background: rgba(0, 136, 255, 0.2);
-      border-color: var(--s60-blue);
+    .wheel-menu { top: 16px; }
+    .wheel-prev { left: 16px; display: flex; align-items: center; }
+    .wheel-next { right: 16px; display: flex; align-items: center; }
+    .wheel-play { bottom: 16px; display: flex; align-items: center; }
+
+    /* Center Select Button */
+    .center-btn {
+      width: 82px;
+      height: 82px;
+      background: linear-gradient(145deg, #e6e6e6, #d1d1d1);
+      border-radius: 50%;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.18), inset 0 1px 2px rgba(255,255,255,0.9);
+      border: 1px solid #bfbfbf;
+      cursor: pointer;
     }
-    #audioInput {
+    .center-btn:active {
+      background: #c8c8c8;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.25);
+    }
+
+    #fileInput {
       display: none;
     }
   </style>
 </head>
 <body>
 
-  <div class="touch-device">
-    <!-- Top Branding -->
-    <div class="top-panel">
-      <span class="brand-logo">NOKIA</span>
-      <span class="xpress-tag">XpressMusic Touch</span>
-    </div>
-
-    <!-- Main Touchscreen Display -->
-    <div class="touch-screen">
-      <!-- Top Status Header -->
-      <div class="status-bar">
-        <span>📶 3.5G HSDPA</span>
-        <span>TOUCH PLAYER</span>
-        <span id="screenBattery">🔋 100%</span>
-      </div>
-
-      <!-- Track Information Screen -->
-      <div class="track-panel">
-        <div class="marquee-wrapper" id="marqueeWrapper">
-          <span class="track-title" id="trackName">Touch to Select Audio</span>
-        </div>
-        <div class="track-meta" id="trackIndex">Local Storage or Chat Stream</div>
-      </div>
-
-      <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
-
-      <!-- Timing / Progress Bar -->
-      <div class="progress-box">
-        <div class="progress-bar-container" id="progressContainer">
-          <div class="progress-track">
-            <div class="progress-fill" id="progressFill"></div>
+  <div class="ipod-body">
+    <!-- LCD Bezel Screen -->
+    <div class="screen-bezel">
+      <div class="ipod-lcd">
+        <!-- Title Bar -->
+        <div class="lcd-header">
+          <span id="headerTitle">iPod</span>
+          <div class="header-icons">
+            <span id="playStateIcon">⏸</span>
+            <span>🔋</span>
           </div>
         </div>
-        <div class="time-labels">
-          <span id="currentTime">00:00</span>
-          <span id="totalDuration">00:00</span>
+
+        <!-- Main Screen Content Area -->
+        <div class="lcd-content">
+          <!-- 1. OS Menu -->
+          <div class="menu-view" id="menuView">
+            <ul class="menu-list" id="menuList">
+              <li class="menu-item active" data-view="nowPlaying">Now Playing <span class="arrow">▶</span></li>
+              <li class="menu-item" data-view="openFile">Choose Local Songs <span class="arrow">▶</span></li>
+              <li class="menu-item" data-view="equalizer">Equalizer (DSP) <span class="arrow">▶</span></li>
+              <li class="menu-item" data-view="volume">Volume Control <span class="arrow">▶</span></li>
+            </ul>
+          </div>
+
+          <!-- 2. Now Playing Screen -->
+          <div class="now-playing-view" id="nowPlayingView">
+            <div class="np-top">
+              <div class="album-art" id="npArt">🎵</div>
+              <div class="track-details">
+                <div class="np-title" id="trackName">No song selected</div>
+                <div class="np-artist" id="artistName">Apple iPod</div>
+                <div class="np-album" id="sourceMeta">Tap Menu to load files</div>
+              </div>
+            </div>
+
+            <div class="progress-box">
+              <div class="progress-track-wrapper" id="progressContainer">
+                <div class="progress-track">
+                  <div class="progress-fill" id="progressFill"></div>
+                </div>
+              </div>
+              <div class="time-labels">
+                <span id="currentTime">0:00</span>
+                <span id="totalDuration">0:00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Equalizer Screen -->
+          <div class="eq-view" id="eqView">
+            <div class="eq-row">
+              <div class="eq-info"><span>Bass (60Hz)</span><span class="val" id="bassVal">0dB</span></div>
+              <input type="range" id="bassSlider" min="-12" max="12" value="0">
+            </div>
+            <div class="eq-row">
+              <div class="eq-info"><span>Mid (1kHz)</span><span class="val" id="midVal">0dB</span></div>
+              <input type="range" id="midSlider" min="-12" max="12" value="0">
+            </div>
+            <div class="eq-row">
+              <div class="eq-info"><span>Treble (3kHz)</span><span class="val" id="trebleVal">0dB</span></div>
+              <input type="range" id="trebleSlider" min="-12" max="12" value="0">
+            </div>
+          </div>
+
+          <!-- 4. Volume Screen -->
+          <div class="volume-view" id="volumeView">
+            <div style="font-weight:700; color:#333; font-size:12px;">Headphone Volume</div>
+            <input type="range" id="volSlider" min="0" max="1" step="0.01" value="1" style="width:85%;">
+            <div style="font-size:11px; font-weight:700; color:#176dc7;" id="volText">100%</div>
+          </div>
         </div>
-      </div>
-
-      <!-- Touch Playback Controls (All Inside Screen) -->
-      <div class="touch-controls">
-        <button class="touch-btn" id="prevBtn" title="Previous Track">
-          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
-        </button>
-
-        <button class="touch-btn touch-btn-play" id="playPauseBtn" title="Play / Pause">
-          <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </button>
-
-        <button class="touch-btn" id="stopBtn" title="Stop">
-          <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
-        </button>
-
-        <button class="touch-btn" id="nextBtn" title="Next Track">
-          <svg viewBox="0 0 24 24"><path d="m6 18 8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-        </button>
-      </div>
-
-      <!-- Touch Volume Slider -->
-      <div class="touch-volume-box">
-        <span class="vol-icon" id="volIcon">🔊</span>
-        <input type="range" id="volSlider" min="0" max="1" step="0.01" value="1">
-        <span class="vol-text" id="volText">100%</span>
-      </div>
-
-      <!-- Symbian Touch Equalizer Box -->
-      <div class="eq-screen-box">
-        <div class="eq-screen-title">
-          <span>Manual Equalizer</span>
-          <span>DSP Active</span>
-        </div>
-
-        <div class="eq-slider-row">
-          <span class="eq-name">Bass</span>
-          <input type="range" id="bassSlider" min="-12" max="12" value="0" step="1">
-          <span class="eq-val" id="bassVal">0dB</span>
-        </div>
-
-        <div class="eq-slider-row">
-          <span class="eq-name">Mid</span>
-          <input type="range" id="midSlider" min="-12" max="12" value="0" step="1">
-          <span class="eq-val" id="midVal">0dB</span>
-        </div>
-
-        <div class="eq-slider-row">
-          <span class="eq-name">Treble</span>
-          <input type="range" id="trebleSlider" min="-12" max="12" value="0" step="1">
-          <span class="eq-val" id="trebleVal">0dB</span>
-        </div>
-      </div>
-
-      <!-- Touch Bottom Actions -->
-      <div class="touch-softkeys">
-        <button class="touch-action-btn" onclick="document.getElementById('audioInput').click()">📂 Open Audio</button>
       </div>
     </div>
 
-    <input type="file" id="audioInput" accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*,audio/mpeg,audio/mp4" multiple>
+    <!-- Click Wheel Area -->
+    <div class="click-wheel" id="clickWheel">
+      <div class="wheel-label wheel-menu" id="menuBtn">MENU</div>
+      <div class="wheel-label wheel-prev" id="prevBtn">|◀◀</div>
+      <div class="wheel-label wheel-next" id="nextBtn">▶▶|</div>
+      <div class="wheel-label wheel-play" id="playPauseBtn">▶||</div>
+      <div class="center-btn" id="centerBtn"></div>
+    </div>
+
+    <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
+    <input type="file" id="fileInput" accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*" multiple>
   </div>
 
   <script>
+    // Expand Telegram Mini App Fullscreen
     if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
     }
 
     const audio = document.getElementById('audioElement');
-    const audioInput = document.getElementById('audioInput');
-    const marqueeWrapper = document.getElementById('marqueeWrapper');
-    const trackName = document.getElementById('trackName');
-    const trackIndex = document.getElementById('trackIndex');
+    const fileInput = document.getElementById('fileInput');
 
+    // LCD Views
+    const headerTitle = document.getElementById('headerTitle');
+    const playStateIcon = document.getElementById('playStateIcon');
+    const menuView = document.getElementById('menuView');
+    const nowPlayingView = document.getElementById('nowPlayingView');
+    const eqView = document.getElementById('eqView');
+    const volumeView = document.getElementById('volumeView');
+
+    // Menu list
+    const menuItems = Array.from(document.querySelectorAll('.menu-item'));
+    let currentMenuIndex = 0;
+    let activeView = 'menu'; // 'menu', 'nowPlaying', 'equalizer', 'volume'
+
+    // Track Display
+    const trackName = document.getElementById('trackName');
+    const artistName = document.getElementById('artistName');
+    const sourceMeta = document.getElementById('sourceMeta');
     const progressContainer = document.getElementById('progressContainer');
     const progressFill = document.getElementById('progressFill');
     const currentTimeEl = document.getElementById('currentTime');
     const totalDurationEl = document.getElementById('totalDuration');
 
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    const playIcon = document.getElementById('playIcon');
-    const stopBtn = document.getElementById('stopBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-
-    const volSlider = document.getElementById('volSlider');
-    const volIcon = document.getElementById('volIcon');
-    const volText = document.getElementById('volText');
-
+    // Equalizer & Volume
     const bassSlider = document.getElementById('bassSlider');
     const midSlider = document.getElementById('midSlider');
     const trebleSlider = document.getElementById('trebleSlider');
     const bassVal = document.getElementById('bassVal');
     const midVal = document.getElementById('midVal');
     const trebleVal = document.getElementById('trebleVal');
+    const volSlider = document.getElementById('volSlider');
+    const volText = document.getElementById('volText');
 
     let playlist = [];
     let currentIndex = 0;
-    let lastVolume = 1;
-    let isSeeking = false;
+    let audioCtx = null, sourceNode = null, bassFilter = null, midFilter = null, trebleFilter = null, gainNode = null;
 
-    let audioCtx = null;
-    let sourceNode = null;
-    let bassFilter = null;
-    let midFilter = null;
-    let trebleFilter = null;
-    let gainNode = null;
+    // Switch Screens Function
+    function showView(view) {
+      activeView = view;
+      menuView.style.display = 'none';
+      nowPlayingView.style.display = 'none';
+      eqView.style.display = 'none';
+      volumeView.style.display = 'none';
 
-    function updateTrackTitle(title) {
-      trackName.classList.remove('marquee-active');
-      trackName.textContent = title;
-
-      setTimeout(() => {
-        const wrapperWidth = marqueeWrapper.offsetWidth;
-        const textWidth = trackName.scrollWidth;
-
-        if (textWidth > wrapperWidth) {
-          trackName.innerHTML = `<span>${title}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>${title}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>`;
-          const duration = Math.max(8, Math.round(textWidth / 25));
-          trackName.style.animationDuration = `${duration}s`;
-          trackName.classList.add('marquee-active');
-        } else {
-          trackName.textContent = title;
-        }
-      }, 50);
+      if (view === 'menu') {
+        headerTitle.textContent = 'iPod';
+        menuView.style.display = 'flex';
+      } else if (view === 'nowPlaying') {
+        headerTitle.textContent = 'Now Playing';
+        nowPlayingView.style.display = 'flex';
+      } else if (view === 'equalizer') {
+        headerTitle.textContent = 'Equalizer';
+        eqView.style.display = 'flex';
+      } else if (view === 'volume') {
+        headerTitle.textContent = 'Volume';
+        volumeView.style.display = 'flex';
+      }
     }
 
+    // Menu Item Selection Update
+    function updateMenuSelection(index) {
+      menuItems.forEach((item, idx) => {
+        item.classList.toggle('active', idx === index);
+      });
+      currentMenuIndex = index;
+    }
+
+    // Audio Equalizer setup
     function setupEqualizer() {
       if (audioCtx) return;
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -504,73 +514,88 @@
       gainNode.connect(audioCtx.destination);
     }
 
-    function formatTime(seconds) {
-      if (isNaN(seconds) || seconds < 0) return "00:00";
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
-      return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
-    }
-
-    function setPlayButtonIcon(isPlaying) {
-      if (isPlaying) {
-        playIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
-      } else {
-        playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
-      }
+    function formatTime(secs) {
+      if (isNaN(secs) || secs < 0) return "0:00";
+      const m = Math.floor(secs / 60);
+      const s = Math.floor(secs % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
     }
 
     function playAudio() {
       setupEqualizer();
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
       audio.play().then(() => {
-        setPlayButtonIcon(true);
+        playStateIcon.textContent = '▶';
       }).catch(() => {});
     }
 
     function pauseAudio() {
       audio.pause();
-      setPlayButtonIcon(false);
+      playStateIcon.textContent = '⏸';
     }
 
-    function seekToPosition(clientX) {
-      if (!audio.src || isNaN(audio.duration) || audio.duration <= 0) return;
-      const rect = progressContainer.getBoundingClientRect();
-      const clickX = clientX - rect.left;
-      const clampedX = Math.max(0, Math.min(rect.width, clickX));
-      const percentage = clampedX / rect.width;
-
-      const targetTime = percentage * audio.duration;
-      audio.currentTime = targetTime;
-      progressFill.style.width = `${percentage * 100}%`;
-      currentTimeEl.textContent = formatTime(targetTime);
-
-      if (audio.paused) {
-        playAudio();
-      }
-    }
-
-    progressContainer.addEventListener('pointerdown', (e) => {
-      isSeeking = true;
-      seekToPosition(e.clientX);
-    });
-
-    window.addEventListener('pointermove', (e) => {
-      if (isSeeking) {
-        seekToPosition(e.clientX);
+    // Center Button Click Action
+    document.getElementById('centerBtn').addEventListener('click', () => {
+      if (activeView === 'menu') {
+        const selected = menuItems[currentMenuIndex].dataset.view;
+        if (selected === 'openFile') {
+          fileInput.click();
+        } else {
+          showView(selected);
+        }
+      } else if (activeView === 'nowPlaying') {
+        if (!audio.src) return;
+        audio.paused ? playAudio() : pauseAudio();
       }
     });
 
-    window.addEventListener('pointerup', () => {
-      isSeeking = false;
+    // MENU Button Action (Back key)
+    document.getElementById('menuBtn').addEventListener('click', () => {
+      if (activeView !== 'menu') {
+        showView('menu');
+      }
     });
 
-    window.addEventListener('pointercancel', () => {
-      isSeeking = false;
+    // Play/Pause button
+    document.getElementById('playPauseBtn').addEventListener('click', () => {
+      if (!audio.src) return;
+      audio.paused ? playAudio() : pauseAudio();
     });
 
-    // Chat link receiver
+    // Next / Prev Buttons
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      if (playlist.length <= 1) return;
+      currentIndex = (currentIndex + 1) % playlist.length;
+      loadLocalTrack(currentIndex);
+    });
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      if (playlist.length <= 1) return;
+      currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+      loadLocalTrack(currentIndex);
+    });
+
+    // Load Local Track
+    function loadLocalTrack(index) {
+      const file = playlist[index];
+      trackName.textContent = file.name;
+      artistName.textContent = 'Local Library';
+      sourceMeta.textContent = `Song ${index + 1} of ${playlist.length}`;
+      audio.src = URL.createObjectURL(file);
+      audio.load();
+      showView('nowPlaying');
+      playAudio();
+    }
+
+    fileInput.addEventListener('change', function() {
+      if (this.files.length > 0) {
+        playlist = Array.from(this.files);
+        currentIndex = 0;
+        loadLocalTrack(0);
+      }
+    });
+
+    // Telegram chat direct stream support
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       const streamUrl = params.get('stream');
@@ -578,70 +603,29 @@
       const artist = params.get('artist');
 
       if (streamUrl) {
-        const fullTitle = songTitle ? decodeURIComponent(songTitle) : "Telegram Audio";
-        updateTrackTitle(fullTitle);
-        trackIndex.textContent = artist ? `Chat Stream • ${decodeURIComponent(artist)}` : "Streaming Track";
+        trackName.textContent = songTitle ? decodeURIComponent(songTitle) : "Telegram Audio";
+        artistName.textContent = artist ? decodeURIComponent(artist) : "Telegram";
+        sourceMeta.textContent = "Streaming from chat";
         audio.src = streamUrl;
         audio.load();
+        showView('nowPlaying');
         playAudio();
       }
     });
 
-    // File Picker
-    audioInput.addEventListener('change', function() {
-      if (this.files.length > 0) {
-        playlist = Array.from(this.files);
-        currentIndex = 0;
-        const file = playlist[0];
-        updateTrackTitle(file.name);
-        trackIndex.textContent = `Memory Card • [1/${playlist.length}]`;
-        audio.src = URL.createObjectURL(file);
-        audio.load();
-        playAudio();
-      }
-    });
-
-    playPauseBtn.addEventListener('click', () => {
-      if (!audio.src) return;
+    // Progress bar touch seeking
+    progressContainer.addEventListener('click', (e) => {
+      if (!audio.src || isNaN(audio.duration)) return;
+      const rect = progressContainer.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      audio.currentTime = pct * audio.duration;
       if (audio.paused) playAudio();
-      else pauseAudio();
-    });
-
-    stopBtn.addEventListener('click', () => {
-      if (!audio.src) return;
-      audio.pause();
-      audio.currentTime = 0;
-      setPlayButtonIcon(false);
-      progressFill.style.width = '0%';
-      currentTimeEl.textContent = "00:00";
-    });
-
-    nextBtn.addEventListener('click', () => {
-      if (playlist.length <= 1) return;
-      currentIndex = (currentIndex + 1) % playlist.length;
-      const file = playlist[currentIndex];
-      updateTrackTitle(file.name);
-      trackIndex.textContent = `Memory Card • [${currentIndex + 1}/${playlist.length}]`;
-      audio.src = URL.createObjectURL(file);
-      audio.load();
-      playAudio();
-    });
-
-    prevBtn.addEventListener('click', () => {
-      if (playlist.length <= 1) return;
-      currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-      const file = playlist[currentIndex];
-      updateTrackTitle(file.name);
-      trackIndex.textContent = `Memory Card • [${currentIndex + 1}/${playlist.length}]`;
-      audio.src = URL.createObjectURL(file);
-      audio.load();
-      playAudio();
     });
 
     audio.addEventListener('timeupdate', () => {
-      if (!isSeeking && !isNaN(audio.duration) && audio.duration > 0) {
-        const percent = (audio.currentTime / audio.duration) * 100;
-        progressFill.style.width = `${percent}%`;
+      if (!isNaN(audio.duration) && audio.duration > 0) {
+        const pct = (audio.currentTime / audio.duration) * 100;
+        progressFill.style.width = `${pct}%`;
         currentTimeEl.textContent = formatTime(audio.currentTime);
       }
     });
@@ -650,59 +634,80 @@
       totalDurationEl.textContent = formatTime(audio.duration);
     });
 
-    audio.addEventListener('ended', () => {
-      if (playlist.length > 1) {
-        currentIndex = (currentIndex + 1) % playlist.length;
-        const file = playlist[currentIndex];
-        updateTrackTitle(file.name);
-        trackIndex.textContent = `Memory Card • [${currentIndex + 1}/${playlist.length}]`;
-        audio.src = URL.createObjectURL(file);
-        audio.load();
-        playAudio();
-      } else {
-        setPlayButtonIcon(false);
-      }
-    });
-
-    // Volume
-    function updateVolume(val) {
-      val = Math.max(0, Math.min(1, val));
-      audio.volume = val;
-      if (gainNode) gainNode.gain.value = val;
-      volSlider.value = val;
-      volText.textContent = `${Math.round(val * 100)}%`;
-      volIcon.textContent = val === 0 ? '🔇' : (val < 0.5 ? '🔉' : '🔊');
-    }
-
-    volSlider.addEventListener('input', (e) => {
-      const val = parseFloat(e.target.value);
-      if (val > 0) lastVolume = val;
-      updateVolume(val);
-    });
-
-    volIcon.addEventListener('click', () => {
-      if (audio.volume > 0) {
-        lastVolume = audio.volume;
-        updateVolume(0);
-      } else {
-        updateVolume(lastVolume > 0 ? lastVolume : 1);
-      }
-    });
-
-    // Equalizer Sliders
+    // Equalizer sliders
     bassSlider.addEventListener('input', (e) => {
       bassVal.textContent = `${e.target.value}dB`;
       if (bassFilter) bassFilter.gain.value = Number(e.target.value);
     });
-
     midSlider.addEventListener('input', (e) => {
       midVal.textContent = `${e.target.value}dB`;
       if (midFilter) midFilter.gain.value = Number(e.target.value);
     });
-
     trebleSlider.addEventListener('input', (e) => {
       trebleVal.textContent = `${e.target.value}dB`;
       if (trebleFilter) trebleFilter.gain.value = Number(e.target.value);
+    });
+
+    // Volume Slider
+    volSlider.addEventListener('input', (e) => {
+      const v = Number(e.target.value);
+      audio.volume = v;
+      if (gainNode) gainNode.gain.value = v;
+      volText.textContent = `${Math.round(v * 100)}%`;
+    });
+
+    // Click Wheel Rotation Detection (Virtual Scroll Wheel)
+    const wheel = document.getElementById('clickWheel');
+    let lastAngle = null;
+    let accumulatedAngle = 0;
+
+    function getAngle(touch, elem) {
+      const rect = elem.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      return Math.atan2(touch.clientY - cy, touch.clientX - cx) * (180 / Math.PI);
+    }
+
+    wheel.addEventListener('touchstart', (e) => {
+      lastAngle = getAngle(e.touches[0], wheel);
+      accumulatedAngle = 0;
+    }, { passive: true });
+
+    wheel.addEventListener('touchmove', (e) => {
+      if (lastAngle === null) return;
+      const currentAngle = getAngle(e.touches[0], wheel);
+      let diff = currentAngle - lastAngle;
+
+      if (diff > 180) diff -= 360;
+      if (diff < -180) diff += 360;
+
+      accumulatedAngle += diff;
+      lastAngle = currentAngle;
+
+      // Every 30 degrees of circular rotation moves the menu/volume
+      if (Math.abs(accumulatedAngle) >= 28) {
+        const step = accumulatedAngle > 0 ? 1 : -1;
+        accumulatedAngle = 0;
+
+        if (activeView === 'menu') {
+          let nextIndex = currentMenuIndex + step;
+          if (nextIndex < 0) nextIndex = menuItems.length - 1;
+          if (nextIndex >= menuItems.length) nextIndex = 0;
+          updateMenuSelection(nextIndex);
+        } else if (activeView === 'volume') {
+          let v = Math.max(0, Math.min(1, Number(volSlider.value) + step * 0.05));
+          volSlider.value = v;
+          audio.volume = v;
+          if (gainNode) gainNode.gain.value = v;
+          volText.textContent = `${Math.round(v * 100)}%`;
+        } else if (activeView === 'nowPlaying' && audio.duration) {
+          audio.currentTime = Math.max(0, Math.min(audio.duration, audio.currentTime + step * 5));
+        }
+      }
+    }, { passive: true });
+
+    wheel.addEventListener('touchend', () => {
+      lastAngle = null;
     });
   </script>
 </body>
