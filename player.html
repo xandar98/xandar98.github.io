@@ -3,18 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>TubeTV Neon Equalizer Player</title>
+  <title>Symbian S60 Music Player</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-      --accent: #8b5cf6;
-      --card-bg: rgba(22, 27, 46, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --surface: rgba(255, 255, 255, 0.04);
-      --text: #f8fafc;
-      --subtext: #94a3b8;
-      --slider-track: rgba(255, 255, 255, 0.12);
+      --s60-body-bg: #1c2024;
+      --s60-frame: #323842;
+      --s60-screen-bg: #0c1219;
+      --s60-header: #1b2838;
+      --s60-blue: #0084ff;
+      --s60-orange: #ff7700;
+      --s60-text: #e6f0fa;
+      --s60-subtext: #7d93a8;
+      --s60-key: #252b35;
+      --s60-key-border: #444d5c;
     }
     * {
       box-sizing: border-box;
@@ -23,141 +25,136 @@
     }
     body {
       margin: 0;
-      padding: 16px;
-      min-height: 100vh;
-      background: radial-gradient(circle at 10% 20%, #1e1145 0%, #0b0f19 55%, #05070d 100%);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .player-card {
-      width: 100%;
-      max-width: 380px;
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--card-border);
-      border-radius: 28px;
-      padding: 22px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 0 0 40px rgba(99, 102, 241, 0.12);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .header {
-      text-align: center;
-    }
-    .header h2 {
-      margin: 0 0 4px 0;
-      font-size: 1.25rem;
-      letter-spacing: 0.5px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #fff 40%, #c4b5fd 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .badge {
-      font-size: 0.72rem;
-      font-weight: 600;
-      background: rgba(139, 92, 246, 0.15);
-      color: #c4b5fd;
-      border: 1px solid rgba(139, 92, 246, 0.3);
-      padding: 3px 10px;
-      border-radius: 20px;
-      display: inline-block;
-    }
-    .file-btn {
-      width: 100%;
       padding: 12px;
-      background: var(--surface);
-      border: 1px dashed rgba(168, 85, 247, 0.4);
-      color: #e2e8f0;
-      border-radius: 16px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
+      min-height: 100vh;
+      background: #080a0d;
+      color: var(--s60-text);
+      font-family: "Tahoma", "Lucida Grande", "Segoe UI", sans-serif;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-    }
-    .file-btn:active {
-      transform: scale(0.98);
-      background: rgba(168, 85, 247, 0.1);
-    }
-    #audioInput {
-      display: none;
     }
 
-    /* Track Info & Sliding */
-    .track-info {
-      text-align: center;
-      padding: 2px 4px;
-      overflow: hidden;
+    /* Classic Nokia Chasis Frame */
+    .nokia-device {
+      width: 100%;
+      max-width: 370px;
+      background: linear-gradient(180deg, #3d4552 0%, #20242c 100%);
+      border: 3px solid #566173;
+      border-radius: 26px;
+      padding: 14px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.2);
       display: flex;
       flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Metallic Earpiece Grill & Brand */
+    .brand-bar {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
+      padding: 0 8px;
+    }
+    .brand-title {
+      font-weight: 800;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      color: #9eb1c7;
+      text-transform: uppercase;
+    }
+    .earpiece {
+      width: 48px;
+      height: 4px;
+      background: #111418;
+      border-radius: 4px;
+      box-shadow: inset 0 1px 1px #000, 0 1px 1px rgba(255, 255, 255, 0.15);
+    }
+    .s60-tag {
+      font-size: 0.65rem;
+      color: var(--s60-blue);
+      font-weight: 700;
+    }
+
+    /* Symbian TFT LCD Display Screen */
+    .symbian-screen {
+      background: var(--s60-screen-bg);
+      border: 2px solid #000;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8), 0 1px 0 rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+    }
+
+    /* Screen Top Status Bar (Battery, Signal, Mode) */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.7rem;
+      color: var(--s60-blue);
+      border-bottom: 1px solid #1a2533;
+      padding-bottom: 4px;
+    }
+
+    /* Marquee / Title area */
+    .track-view {
+      background: #080d14;
+      border: 1px solid #1c2b3d;
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
     }
     .marquee-wrapper {
       width: 100%;
       overflow: hidden;
-      position: relative;
       white-space: nowrap;
       display: flex;
       justify-content: center;
     }
     .track-title {
       display: inline-block;
-      font-size: 1.05rem;
-      font-weight: 600;
+      font-size: 0.95rem;
+      font-weight: 700;
       color: #fff;
-      will-change: transform;
     }
     .marquee-active {
       display: inline-flex;
       animation: marqueeSlide 10s linear infinite;
     }
-    .marquee-active:hover {
-      animation-play-state: paused;
-    }
     @keyframes marqueeSlide {
-      0% {
-        transform: translateX(0%);
-      }
-      100% {
-        transform: translateX(-50%);
-      }
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
     }
-    .track-status {
-      font-size: 0.78rem;
-      color: var(--subtext);
-      margin-top: 4px;
+    .track-meta {
+      font-size: 0.7rem;
+      color: var(--s60-orange);
+      margin-top: 2px;
     }
 
-    /* Timing Bar & Touch Area */
-    .progress-area {
+    /* Symbian Progress Bar */
+    .progress-box {
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
-    /* Touch target padding to ensure instant tapping on mobile */
     .progress-bar-container {
       width: 100%;
-      height: 24px;
+      height: 18px;
       display: flex;
       align-items: center;
       cursor: pointer;
-      position: relative;
       touch-action: none;
     }
     .progress-track {
       width: 100%;
-      height: 6px;
-      background: var(--slider-track);
+      height: 8px;
+      background: #151d27;
+      border: 1px solid #28374a;
       border-radius: 4px;
       position: relative;
       overflow: hidden;
@@ -165,238 +162,264 @@
     .progress-fill {
       height: 100%;
       width: 0%;
-      background: var(--primary-gradient);
-      border-radius: 4px;
-      box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+      background: linear-gradient(90deg, #005bb5, #0099ff);
       pointer-events: none;
     }
     .time-labels {
       display: flex;
       justify-content: space-between;
-      font-size: 0.72rem;
-      color: var(--subtext);
-      font-variant-numeric: tabular-nums;
+      font-size: 0.68rem;
+      color: var(--s60-subtext);
+      font-family: monospace;
     }
 
-    /* Modern Vector Buttons */
-    .controls {
+    /* Retro 3-Band Equalizer LCD Box */
+    .eq-screen-box {
+      background: #070b10;
+      border: 1px solid #162230;
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .eq-screen-title {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--s60-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .eq-slider-row {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 16px;
-      padding: 4px 0;
+      gap: 8px;
     }
-    .btn-ctrl {
-      background: var(--surface);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #cbd5e1;
+    .eq-name {
+      font-size: 0.65rem;
+      color: var(--s60-subtext);
       width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .btn-ctrl svg {
-      width: 18px;
-      height: 18px;
-      fill: currentColor;
-    }
-    .btn-ctrl:active {
-      transform: scale(0.9);
-      background: rgba(255, 255, 255, 0.12);
-    }
-    .btn-play {
-      width: 60px;
-      height: 60px;
-      background: var(--primary-gradient);
-      border: none;
-      color: #fff;
-      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.45);
-    }
-    .btn-play svg {
-      width: 24px;
-      height: 24px;
-      fill: #ffffff;
-    }
-    .btn-play:active {
-      transform: scale(0.92);
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-    }
-
-    /* Volume */
-    .volume-box {
-      background: var(--surface);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 16px;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .vol-icon {
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--subtext);
-    }
-    .vol-icon svg {
-      width: 20px;
-      height: 20px;
-      fill: currentColor;
-    }
-    .vol-percent {
-      font-size: 0.75rem;
-      color: var(--subtext);
-      min-width: 36px;
+    .eq-val {
+      font-size: 0.65rem;
+      color: var(--s60-orange);
+      width: 32px;
       text-align: right;
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* Equalizer */
-    .eq-container {
-      background: var(--surface);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 18px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .eq-header {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .eq-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .eq-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.75rem;
-      color: var(--subtext);
-    }
-    .eq-label b {
-      color: #e2e8f0;
+      font-family: monospace;
     }
     input[type="range"] {
       flex: 1;
-      width: 100%;
-      height: 5px;
-      background: var(--slider-track);
-      border-radius: 3px;
+      height: 4px;
+      background: #1b2636;
+      border-radius: 2px;
       outline: none;
-      accent-color: var(--accent);
+      accent-color: var(--s60-blue);
       cursor: pointer;
+    }
+
+    /* Softkeys & Action Area */
+    .softkeys-row {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid #172230;
+      padding-top: 6px;
+    }
+    .softkey-btn {
+      background: transparent;
+      border: none;
+      color: var(--s60-blue);
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      padding: 2px 4px;
+    }
+    .softkey-btn:active {
+      color: var(--s60-orange);
+    }
+    #audioInput {
+      display: none;
+    }
+
+    /* Hardware Buttons & D-Pad Section */
+    .keypad-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    .controls-grid {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 4px;
+    }
+    .hw-key {
+      background: linear-gradient(180deg, #3a4250 0%, #1e242d 100%);
+      border: 1px solid var(--s60-key-border);
+      color: #cfd8dc;
+      border-radius: 12px;
+      width: 46px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #12161c, inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+    .hw-key svg {
+      width: 16px;
+      height: 16px;
+      fill: #cfd8dc;
+    }
+    .hw-key:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #12161c;
+      background: #1e242d;
+    }
+
+    /* Center Media Play Key */
+    .hw-play-key {
+      width: 58px;
+      height: 44px;
+      background: linear-gradient(180deg, #2b6cb0 0%, #1a365d 100%);
+      border: 1px solid #4299e1;
+      border-radius: 14px;
+      box-shadow: 0 3px 0 #0d1b2a, inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    }
+    .hw-play-key svg {
+      width: 20px;
+      height: 20px;
+      fill: #fff;
+    }
+
+    /* Volume Row inside Hardware bezel */
+    .vol-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      padding: 6px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .vol-icon {
+      font-size: 0.75rem;
+      color: var(--s60-subtext);
+      cursor: pointer;
+    }
+    .vol-text {
+      font-size: 0.68rem;
+      font-family: monospace;
+      color: var(--s60-text);
+      width: 32px;
+      text-align: right;
     }
   </style>
 </head>
 <body>
 
-  <div class="player-card">
-    <div class="header">
-      <h2>TubeTV Equalizer</h2>
-      <span class="badge">Chat & Local Audio</span>
+  <div class="nokia-device">
+    <!-- Top Grill & Nokia Styling -->
+    <div class="brand-bar">
+      <span class="brand-title">NOKIA</span>
+      <div class="earpiece"></div>
+      <span class="s60-tag">Nseries</span>
     </div>
 
-    <!-- Local File Picker -->
-    <button type="button" class="file-btn" onclick="document.getElementById('audioInput').click()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"></path>
-      </svg>
-      <span id="fileBtnText">Choose Local Audio</span>
-    </button>
+    <!-- Symbian Color Screen -->
+    <div class="symbian-screen">
+      <!-- Status Top -->
+      <div class="status-bar">
+        <span>📶 3G</span>
+        <span>MUSIC PLAYER</span>
+        <span id="screenBattery">🔋 100%</span>
+      </div>
+
+      <!-- Track Details Screen -->
+      <div class="track-view">
+        <div class="marquee-wrapper" id="marqueeWrapper">
+          <span class="track-title" id="trackName">Standby mode</span>
+        </div>
+        <div class="track-meta" id="trackIndex">Select file or chat link</div>
+      </div>
+
+      <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
+
+      <!-- Timing / Progress Bar -->
+      <div class="progress-box">
+        <div class="progress-bar-container" id="progressContainer">
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+        <div class="time-labels">
+          <span id="currentTime">00:00</span>
+          <span id="totalDuration">00:00</span>
+        </div>
+      </div>
+
+      <!-- Built-in 3-Band Equalizer Box -->
+      <div class="eq-screen-box">
+        <div class="eq-screen-title">
+          <span>Preset: Manual EQ</span>
+          <span>S60 DSP</span>
+        </div>
+
+        <div class="eq-slider-row">
+          <span class="eq-name">Bass</span>
+          <input type="range" id="bassSlider" min="-12" max="12" value="0" step="1">
+          <span class="eq-val" id="bassVal">0dB</span>
+        </div>
+
+        <div class="eq-slider-row">
+          <span class="eq-name">Mid</span>
+          <input type="range" id="midSlider" min="-12" max="12" value="0" step="1">
+          <span class="eq-val" id="midVal">0dB</span>
+        </div>
+
+        <div class="eq-slider-row">
+          <span class="eq-name">Treble</span>
+          <input type="range" id="trebleSlider" min="-12" max="12" value="0" step="1">
+          <span class="eq-val" id="trebleVal">0dB</span>
+        </div>
+      </div>
+
+      <!-- Symbian Softkeys -->
+      <div class="softkeys-row">
+        <button class="softkey-btn" onclick="document.getElementById('audioInput').click()">📁 Open File</button>
+        <button class="softkey-btn" id="stopSoftkey">⏹ Stop</button>
+      </div>
+    </div>
+
     <input type="file" id="audioInput" accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*,audio/mpeg,audio/mp4" multiple>
 
-    <!-- Track Details -->
-    <div class="track-info">
-      <div class="marquee-wrapper" id="marqueeWrapper">
-        <span class="track-title" id="trackName">Waiting for audio...</span>
-      </div>
-      <div class="track-status" id="trackIndex">Select file or launch from chat</div>
-    </div>
+    <!-- Retro Hardware Keypad Area -->
+    <div class="keypad-panel">
+      <!-- Media Navigation Controls -->
+      <div class="controls-grid">
+        <button class="hw-key" id="prevBtn" title="Rewind">
+          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+        </button>
 
-    <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
+        <button class="hw-key hw-play-key" id="playPauseBtn" title="Play / Pause">
+          <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
 
-    <!-- Timing & Seeking Bar -->
-    <div class="progress-area">
-      <div class="progress-bar-container" id="progressContainer">
-        <div class="progress-track">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-      </div>
-      <div class="time-labels">
-        <span id="currentTime">00:00</span>
-        <span id="totalDuration">00:00</span>
-      </div>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="controls">
-      <button class="btn-ctrl" id="prevBtn" title="Previous">
-        <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
-      </button>
-
-      <button class="btn-ctrl" id="stopBtn" title="Stop">
-        <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
-      </button>
-
-      <button class="btn-ctrl btn-play" id="playPauseBtn" title="Play">
-        <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-      </button>
-
-      <button class="btn-ctrl" id="nextBtn" title="Next">
-        <svg viewBox="0 0 24 24"><path d="m6 18 8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-      </button>
-    </div>
-
-    <!-- Volume -->
-    <div class="volume-box">
-      <div class="vol-icon" id="volIcon">
-        <svg id="volSvg" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-      </div>
-      <input type="range" id="volSlider" min="0" max="1" step="0.01" value="1">
-      <span class="vol-percent" id="volText">100%</span>
-    </div>
-
-    <!-- 3-Band Equalizer -->
-    <div class="eq-container">
-      <div class="eq-header">
-        <span>🎛️ Equalizer</span>
-        <span style="font-size:0.72rem; color:var(--subtext)">Real-time DSP</span>
+        <button class="hw-key" id="nextBtn" title="Forward">
+          <svg viewBox="0 0 24 24"><path d="m6 18 8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
       </div>
 
-      <div class="eq-group">
-        <div class="eq-label">
-          <span>Bass (60 Hz)</span>
-          <b id="bassVal">0 dB</b>
-        </div>
-        <input type="range" id="bassSlider" min="-12" max="12" value="0" step="1">
-      </div>
-
-      <div class="eq-group">
-        <div class="eq-label">
-          <span>Mid (1 kHz)</span>
-          <b id="midVal">0 dB</b>
-        </div>
-        <input type="range" id="midSlider" min="-12" max="12" value="0" step="1">
-      </div>
-
-      <div class="eq-group">
-        <div class="eq-label">
-          <span>Treble (3 kHz)</span>
-          <b id="trebleVal">0 dB</b>
-        </div>
-        <input type="range" id="trebleSlider" min="-12" max="12" value="0" step="1">
+      <!-- Volume Adjuster Bar -->
+      <div class="vol-row">
+        <span class="vol-icon" id="volIcon">🔊</span>
+        <input type="range" id="volSlider" min="0" max="1" step="0.01" value="1">
+        <span class="vol-text" id="volText">100%</span>
       </div>
     </div>
   </div>
@@ -412,7 +435,6 @@
     const marqueeWrapper = document.getElementById('marqueeWrapper');
     const trackName = document.getElementById('trackName');
     const trackIndex = document.getElementById('trackIndex');
-    const fileBtnText = document.getElementById('fileBtnText');
 
     const progressContainer = document.getElementById('progressContainer');
     const progressFill = document.getElementById('progressFill');
@@ -421,13 +443,12 @@
 
     const playPauseBtn = document.getElementById('playPauseBtn');
     const playIcon = document.getElementById('playIcon');
-    const stopBtn = document.getElementById('stopBtn');
+    const stopSoftkey = document.getElementById('stopSoftkey');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
 
     const volSlider = document.getElementById('volSlider');
     const volIcon = document.getElementById('volIcon');
-    const volSvg = document.getElementById('volSvg');
     const volText = document.getElementById('volText');
 
     const bassSlider = document.getElementById('bassSlider');
@@ -440,7 +461,7 @@
     let playlist = [];
     let currentIndex = 0;
     let lastVolume = 1;
-    let isSeeking = false; // Prevents timeupdate glitch while user drags
+    let isSeeking = false;
 
     let audioCtx = null;
     let sourceNode = null;
@@ -530,7 +551,6 @@
       setPlayButtonIcon(false);
     }
 
-    // Direct Seek Calculation function
     function seekToPosition(clientX) {
       if (!audio.src || isNaN(audio.duration) || audio.duration <= 0) return;
       const rect = progressContainer.getBoundingClientRect();
@@ -543,13 +563,11 @@
       progressFill.style.width = `${percentage * 100}%`;
       currentTimeEl.textContent = formatTime(targetTime);
 
-      // If user taps while paused, immediately start playback from that point
       if (audio.paused) {
         playAudio();
       }
     }
 
-    // Touch & Click Event Listeners for Instant Seeking
     progressContainer.addEventListener('pointerdown', (e) => {
       isSeeking = true;
       seekToPosition(e.clientX);
@@ -565,11 +583,7 @@
       isSeeking = false;
     });
 
-    window.addEventListener('pointercancel', () => {
-      isSeeking = false;
-    });
-
-    // Chat URL Loading
+    // Chat link receiver
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       const streamUrl = params.get('stream');
@@ -579,22 +593,21 @@
       if (streamUrl) {
         const fullTitle = songTitle ? decodeURIComponent(songTitle) : "Telegram Audio";
         updateTrackTitle(fullTitle);
-        trackIndex.textContent = artist ? `From Chat • ${decodeURIComponent(artist)}` : "Playing from Telegram Chat";
+        trackIndex.textContent = artist ? `Chat • ${decodeURIComponent(artist)}` : "Streaming Track";
         audio.src = streamUrl;
         audio.load();
         playAudio();
       }
     });
 
-    // Local file selector
+    // File Picker
     audioInput.addEventListener('change', function() {
       if (this.files.length > 0) {
         playlist = Array.from(this.files);
-        fileBtnText.textContent = `Loaded ${playlist.length} song(s)`;
         currentIndex = 0;
         const file = playlist[0];
         updateTrackTitle(file.name);
-        trackIndex.textContent = `Track 1 of ${playlist.length} (Local)`;
+        trackIndex.textContent = `Memory Card • [1/${playlist.length}]`;
         audio.src = URL.createObjectURL(file);
         audio.load();
         playAudio();
@@ -607,7 +620,7 @@
       else pauseAudio();
     });
 
-    stopBtn.addEventListener('click', () => {
+    stopSoftkey.addEventListener('click', () => {
       if (!audio.src) return;
       audio.pause();
       audio.currentTime = 0;
@@ -621,7 +634,7 @@
       currentIndex = (currentIndex + 1) % playlist.length;
       const file = playlist[currentIndex];
       updateTrackTitle(file.name);
-      trackIndex.textContent = `Track ${currentIndex + 1} of ${playlist.length}`;
+      trackIndex.textContent = `Memory Card • [${currentIndex + 1}/${playlist.length}]`;
       audio.src = URL.createObjectURL(file);
       audio.load();
       playAudio();
@@ -632,7 +645,7 @@
       currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
       const file = playlist[currentIndex];
       updateTrackTitle(file.name);
-      trackIndex.textContent = `Track ${currentIndex + 1} of ${playlist.length}`;
+      trackIndex.textContent = `Memory Card • [${currentIndex + 1}/${playlist.length}]`;
       audio.src = URL.createObjectURL(file);
       audio.load();
       playAudio();
@@ -655,7 +668,7 @@
         currentIndex = (currentIndex + 1) % playlist.length;
         const file = playlist[currentIndex];
         updateTrackTitle(file.name);
-        trackIndex.textContent = `Track ${currentIndex + 1} of ${playlist.length}`;
+        trackIndex.textContent = `Memory Card • [${currentIndex + 1}/${playlist.length}]`;
         audio.src = URL.createObjectURL(file);
         audio.load();
         playAudio();
@@ -671,14 +684,7 @@
       if (gainNode) gainNode.gain.value = val;
       volSlider.value = val;
       volText.textContent = `${Math.round(val * 100)}%`;
-
-      if (val === 0) {
-        volSvg.innerHTML = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4 9.91 6.09 12 8.18V4z"/>';
-      } else if (val < 0.5) {
-        volSvg.innerHTML = '<path d="M7 9v6h4l5 5V4L11 9H7zm11.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>';
-      } else {
-        volSvg.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
-      }
+      volIcon.textContent = val === 0 ? '🔇' : (val < 0.5 ? '🔉' : '🔊');
     }
 
     volSlider.addEventListener('input', (e) => {
@@ -698,17 +704,17 @@
 
     // Equalizer
     bassSlider.addEventListener('input', (e) => {
-      bassVal.textContent = `${e.target.value} dB`;
+      bassVal.textContent = `${e.target.value}dB`;
       if (bassFilter) bassFilter.gain.value = Number(e.target.value);
     });
 
     midSlider.addEventListener('input', (e) => {
-      midVal.textContent = `${e.target.value} dB`;
+      midVal.textContent = `${e.target.value}dB`;
       if (midFilter) midFilter.gain.value = Number(e.target.value);
     });
 
     trebleSlider.addEventListener('input', (e) => {
-      trebleVal.textContent = `${e.target.value} dB`;
+      trebleVal.textContent = `${e.target.value}dB`;
       if (trebleFilter) trebleFilter.gain.value = Number(e.target.value);
     });
   </script>
