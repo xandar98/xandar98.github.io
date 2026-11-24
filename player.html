@@ -68,10 +68,17 @@
       border: 1px solid #c2c8d0;
       position: relative;
     }
+
+    /* Dynamic Blur State for Custom Wallpaper */
+    .lcd-wp-blur {
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
     .lcd-header {
       height: 22px;
-      background: linear-gradient(180deg, rgba(211,216,223,0.92) 0%, rgba(178,186,197,0.92) 50%, rgba(155,165,178,0.92) 51%, rgba(186,194,205,0.92) 100%);
-      border-bottom: 1px solid #7c8896;
+      background: linear-gradient(180deg, rgba(211,216,223,0.85) 0%, rgba(178,186,197,0.85) 50%, rgba(155,165,178,0.85) 51%, rgba(186,194,205,0.85) 100%);
+      border-bottom: 1px solid rgba(124, 136, 150, 0.6);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -94,22 +101,59 @@
     .battery-fill { width: 80%; height: 100%; background: #27ae60; border-radius: 1px; }
     .lcd-content { flex: 1; display: flex; position: relative; overflow: hidden; }
 
-    /* Split Screen */
+    /* 50/50 Translucent Glass Split Screen */
     .split-menu { width: 100%; height: 100%; display: flex; }
-    .menu-left { width: 55%; height: 100%; border-right: 1px solid rgba(210,214,220,0.8); overflow-y: auto; background: rgba(255,255,255,0.88); backdrop-filter: blur(4px); }
+    .menu-left {
+      width: 55%;
+      height: 100%;
+      border-right: 1px solid rgba(255, 255, 255, 0.3);
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.48);
+    }
     .menu-list { list-style: none; }
     .menu-item {
-      padding: 6px 8px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 11px; border-bottom: 1px solid rgba(240,242,245,0.8); cursor: pointer;
+      padding: 6px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 11px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+      cursor: pointer;
+      color: #111;
+      text-shadow: 0 0.5px 1px rgba(255,255,255,0.8);
     }
-    .menu-item.active { background: linear-gradient(180deg, #378fe6 0%, #175bb3 100%); color: #fff; }
+    .menu-item.active {
+      background: linear-gradient(180deg, #378fe6 0%, #175bb3 100%);
+      color: #fff;
+      text-shadow: none;
+    }
     .menu-item .arrow-svg { width: 7px; height: 7px; fill: currentColor; }
-    .menu-right { width: 45%; height: 100%; background: rgba(244,246,249,0.75); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 10px; }
-    .preview-box { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; color: #64748b; }
-    .preview-box svg { width: 44px; height: 44px; fill: #64748b; }
-    .preview-text { font-size: 10px; font-weight: 600; }
+    
+    .menu-right {
+      width: 45%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+    .preview-box { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; color: #1e293b; }
+    .preview-box svg { width: 44px; height: 44px; fill: #1e293b; }
+    .preview-text { font-size: 10px; font-weight: 700; text-shadow: 0 1px 2px rgba(255,255,255,0.7); }
 
-    /* Screen Views */
-    .view-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.92); backdrop-filter: blur(6px); display: none; flex-direction: column; }
+    /* Screen Views (50/50 Translucent Background) */
+    .view-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.55);
+      display: none;
+      flex-direction: column;
+    }
     .np-view { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
     .np-top { display: flex; gap: 10px; flex: 1; align-items: center; }
     
@@ -120,25 +164,25 @@
     .album-art-fallback { width: 32px; height: 32px; fill: #a0aec0; }
     
     .track-details { flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: 3px; }
-    .np-title { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #111; }
-    .np-artist, .np-album { font-size: 10px; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .np-title { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #000; text-shadow: 0 0.5px 1px rgba(255,255,255,0.8); }
+    .np-artist, .np-album { font-size: 10px; color: #222; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .progress-box { display: flex; flex-direction: column; gap: 4px; }
     .progress-track-wrapper { width: 100%; height: 14px; display: flex; align-items: center; cursor: pointer; }
-    .progress-track { width: 100%; height: 6px; background: #c8ced6; border-radius: 3px; border: 1px solid #a8b0ba; position: relative; overflow: hidden; }
+    .progress-track { width: 100%; height: 6px; background: rgba(200, 206, 214, 0.8); border-radius: 3px; border: 1px solid #88929e; position: relative; overflow: hidden; }
     .progress-fill { height: 100%; width: 0%; background: linear-gradient(180deg, #4da4f7 0%, #1566be 100%); pointer-events: none; }
-    .time-labels { display: flex; justify-content: space-between; font-size: 10px; font-weight: 600; color: #444; }
+    .time-labels { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; color: #111; }
 
     /* Equalizer */
     .eq-view { padding: 10px 14px; gap: 8px; }
     .eq-row { display: flex; flex-direction: column; gap: 2px; padding: 4px 6px; border-radius: 6px; border: 1px solid transparent; }
-    .eq-row.active { background: rgba(55, 143, 230, 0.16); border: 1px solid #378fe6; }
-    .eq-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #222; }
-    .eq-info span.val { color: #175bb3; font-family: monospace; }
-    .eq-hint { font-size: 9px; color: #666; text-align: center; margin-top: auto; font-weight: 600; }
+    .eq-row.active { background: rgba(55, 143, 230, 0.3); border: 1px solid #175bb3; }
+    .eq-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #111; }
+    .eq-info span.val { color: #0a4da3; font-family: monospace; font-weight: 800; }
+    .eq-hint { font-size: 9px; color: #111; text-align: center; margin-top: auto; font-weight: 700; }
 
     /* Volume */
     .volume-view { justify-content: center; align-items: center; padding: 20px; gap: 12px; }
-    .vol-track { width: 85%; height: 8px; background: #c8ced6; border: 1px solid #a8b0ba; border-radius: 4px; overflow: hidden; }
+    .vol-track { width: 85%; height: 8px; background: rgba(200, 206, 214, 0.8); border: 1px solid #7c8896; border-radius: 4px; overflow: hidden; }
     .vol-fill { width: 100%; height: 100%; background: linear-gradient(180deg, #4da4f7 0%, #1566be 100%); }
 
     /* Video & Photo Views */
@@ -148,8 +192,9 @@
     .photo-view img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
     /* Settings View */
-    .settings-view { padding: 12px; font-size: 11px; color: #333; display: flex; flex-direction: column; gap: 8px; }
-    .settings-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #eee; }
+    .settings-view { padding: 12px; font-size: 11px; color: #111; font-weight: 600; display: flex; flex-direction: column; gap: 8px; }
+    .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .settings-btn { padding: 4px 8px; font-size: 10px; font-weight: 700; border-radius: 4px; border: 1px solid #7c8896; background: rgba(255,255,255,0.8); cursor: pointer; }
 
     /* Click Wheel */
     .click-wheel {
@@ -169,10 +214,7 @@
     }
     .center-btn:active { background: #c8c8c8; box-shadow: inset 0 2px 4px rgba(0,0,0,0.25); transform: scale(0.96); }
 
-    /* Native hidden inputs */
-    .hidden-file-input {
-      display: none;
-    }
+    .hidden-file-input { display: none; }
   </style>
 </head>
 <body>
@@ -190,12 +232,11 @@
           </div>
         </div>
 
-        <div class="lcd-content">
+        <div class="lcd-content" id="lcdContent">
           <!-- 1. Apple iPod Split-Screen Main OS Menu -->
           <div class="split-menu" id="splitMenuView">
             <div class="menu-left">
               <ul class="menu-list" id="menuList">
-                <!-- Using direct native label triggers for 100% reliable iOS file picker opening -->
                 <label for="audioFileInput">
                   <li class="menu-item active" data-type="offlineMusic">
                     <span>Add Offline Songs</span>
@@ -298,18 +339,24 @@
 
           <!-- 6. Volume Screen -->
           <div class="view-container volume-view" id="volumeView">
-            <div style="font-weight:700; color:#333; font-size:12px;">Headphone Volume</div>
+            <div style="font-weight:700; color:#111; font-size:12px;">Headphone Volume</div>
             <div class="vol-track"><div class="vol-fill" id="volFill"></div></div>
             <div style="font-size:11px; font-weight:700; color:#175bb3;" id="volText">100%</div>
           </div>
 
           <!-- 7. Settings / About Screen -->
           <div class="view-container settings-view" id="settingsView">
-            <div style="font-weight:700; color:#111; margin-bottom:4px;">iPod Classic (6th Gen)</div>
-            <div class="settings-row"><span>IndexedDB Storage</span><span id="storageCount">0 Songs</span></div>
-            <div class="settings-row"><span>Wallpaper</span><span id="wpStatus">Default</span></div>
+            <div style="font-weight:700; color:#000; margin-bottom:4px;">iPod Settings</div>
+            <div class="settings-row">
+              <span>Wallpaper Blur</span>
+              <button class="settings-btn" id="blurToggleBtn" onclick="toggleWallpaperBlur()">Blur: OFF</button>
+            </div>
+            <div class="settings-row">
+              <span>Reset Wallpaper</span>
+              <button class="settings-btn" onclick="resetWallpaper()">Reset to Default</button>
+            </div>
+            <div class="settings-row"><span>Storage</span><span id="storageCount">0 Songs</span></div>
             <div class="settings-row"><span>DSP Engine</span><span>3-Band Active</span></div>
-            <div class="settings-row"><button style="padding:4px 8px; font-size:10px; border-radius:4px; border:1px solid #ccc; cursor:pointer;" onclick="resetWallpaper()">Reset Wallpaper</button></div>
           </div>
         </div>
       </div>
@@ -332,7 +379,7 @@
 
     <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
 
-    <!-- Inputs with explicit native IDs -->
+    <!-- Inputs -->
     <input type="file" id="audioFileInput" class="hidden-file-input" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg,audio/mpeg,audio/mp4" multiple>
     <input type="file" id="videoFileInput" class="hidden-file-input" accept="video/*,.mp4,.webm,.mov">
     <input type="file" id="photoFileInput" class="hidden-file-input" accept="image/*,.jpg,.jpeg,.png,.webp" multiple>
@@ -356,6 +403,7 @@
     const video = document.getElementById('videoElement');
     const photo = document.getElementById('photoElement');
     const ipodLcd = document.getElementById('ipodLcd');
+    const lcdContent = document.getElementById('lcdContent');
 
     const audioFileInput = document.getElementById('audioFileInput');
     const videoFileInput = document.getElementById('videoFileInput');
@@ -457,20 +505,39 @@
 
     initDB();
 
-    // --- WALLPAPER LOCALSTORAGE ---
+    // --- WALLPAPER & BLUR SETTINGS ---
+    let isWallpaperBlur = localStorage.getItem('ipod_wp_blur') === 'true';
+
+    function updateBlurUI() {
+      const btn = document.getElementById('blurToggleBtn');
+      if (isWallpaperBlur) {
+        lcdContent.classList.add('lcd-wp-blur');
+        if (btn) btn.textContent = 'Blur: ON';
+      } else {
+        lcdContent.classList.remove('lcd-wp-blur');
+        if (btn) btn.textContent = 'Blur: OFF';
+      }
+    }
+
+    function toggleWallpaperBlur() {
+      isWallpaperBlur = !isWallpaperBlur;
+      localStorage.setItem('ipod_wp_blur', isWallpaperBlur);
+      updateBlurUI();
+      triggerHaptic();
+    }
+
     function applySavedWallpaper() {
       const savedWp = localStorage.getItem('ipod_wallpaper');
       if (savedWp) {
         ipodLcd.style.backgroundImage = `url(${savedWp})`;
-        document.getElementById('wpStatus').textContent = 'Custom';
       }
+      updateBlurUI();
     }
     applySavedWallpaper();
 
     function resetWallpaper() {
       localStorage.removeItem('ipod_wallpaper');
       ipodLcd.style.backgroundImage = 'linear-gradient(180deg, #f8f9fa 0%, #eef1f5 100%)';
-      document.getElementById('wpStatus').textContent = 'Default';
       triggerHaptic();
     }
 
@@ -481,7 +548,6 @@
           const dataUrl = e.target.result;
           localStorage.setItem('ipod_wallpaper', dataUrl);
           ipodLcd.style.backgroundImage = `url(${dataUrl})`;
-          document.getElementById('wpStatus').textContent = 'Custom';
           showView('menu');
         };
         reader.readAsDataURL(this.files[0]);
@@ -611,7 +677,6 @@
         triggerHaptic();
         updateMenuSelection(idx);
         const type = item.dataset.type;
-        // Non-file picker views switch directly
         if (type !== 'offlineMusic' && type !== 'wallpaper' && type !== 'videos' && type !== 'photos') {
           showView(type);
         }
@@ -643,7 +708,6 @@
       }
     }
 
-    // Pure Native Click Binding (Safe from iOS security block)
     document.getElementById('centerBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       triggerHaptic();
@@ -850,7 +914,7 @@
     wheel.addEventListener('touchstart', (e) => {
       lastAngle = getAngle(e.touches[0], wheel);
       accumulatedAngle = 0;
-    }, { passive: true });
+    }, { passive: false });
 
     wheel.addEventListener('touchmove', (e) => {
       if (lastAngle === null) return;
@@ -901,7 +965,7 @@
           video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + step * 2));
         }
       }
-    }, { passive: true });
+    }, { passive: false });
 
     wheel.addEventListener('touchend', () => { lastAngle = null; });
     wheel.addEventListener('touchcancel', () => { lastAngle = null; });
