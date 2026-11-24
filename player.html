@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Offline Equalizer Player</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg: #0d0f14;
+      --card: #181b24;
+      --accent: #4e73df;
+      --text: #ffffff;
+      --subtext: #8e95a5;
+      --slider-bg: #2a2e3d;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      margin: 0;
+      padding: 16px;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .player-card {
+      width: 100%;
+      max-width: 380px;
+      background: var(--card);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .header {
+      text-align: center;
+    }
+    .header h2 {
+      margin: 0 0 4px 0;
+      font-size: 1.2rem;
+    }
+    .badge {
+      font-size: 0.75rem;
+      background: #1c2b4d;
+      color: #6c9bff;
+      padding: 3px 8px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+    .file-picker-box {
+      border: 1px dashed #3a4156;
+      border-radius: 16px;
+      padding: 14px;
+      text-align: center;
+      background: #12141c;
+      cursor: pointer;
+    }
+    .file-picker-box span {
+      font-size: 0.85rem;
+      color: var(--subtext);
+    }
+    input[type="file"] {
+      display: none;
+    }
+    .track-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+    }
+    audio {
+      width: 100%;
+      height: 40px;
+      border-radius: 8px;
+    }
+    .eq-container {
+      background: #12141c;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .eq-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .eq-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--subtext);
+    }
+    .eq-label b {
+      color: var(--text);
+    }
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      background: var(--slider-bg);
+      border-radius: 3px;
+      outline: none;
+      accent-color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="player-card">
+    <div class="header">
+      <h2>Offline Equalizer Player</h2>
+      <span class="badge">Offline Ready • Web Audio API</span>
+    </div>
+
+    <!-- Custom File Picker -->
+    <label class="file-picker-box" for="audioInput">
+      <span id="fileLabel">📁 Tap to Select Local Audio (MP3/M4A)</span>
+      <input type="file" id="audioInput" accept="audio/*">
+    </label>
+
+    <div class="track-title" id="trackName">No track selected</div>
+
+    <audio id="audioElement" controls></audio>
+
+    <!-- 3-Band Equalizer -->
+    <div class="eq-container">
+      <div class="eq-group">
+        <div class="eq-label">
+          <span>Bass (60 Hz)</span>
+          <b id="bassVal">0 dB</b>
+        </div>
+        <input type="range" id="bassSlider" min="-12" max="12" value="0" step="1">
+      </div>
+
+      <div class="eq-group">
+        <div class="eq-label">
+          <span>Mid (1 kHz)</span>
+          <b id="midVal">0 dB</b>
+        </div>
+        <input type="range" id="midSlider" min="-12" max="12" value="0" step="1">
+      </div>
+
+      <div class="eq-group">
+        <div class="eq-label">
+          <span>Treble (3 kHz)</span>
+          <b id="trebleVal">0 dB</b>
+        </div>
+        <input type="range" id="trebleSlider" min="-12" max="12" value="0" step="1">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. Initialize Telegram Mini App
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+    }
+
+    // 2. Service Worker Registration (Offline Caching)
+    if ('serviceWorker' in navigator) {
+      const swCode = `
+        const CACHE_NAME = 'tg-audio-player-v1';
+        self.addEventListener('install', (e) => {
+          e.waitUntil(
+            caches.open(CACHE_NAME).then((cache) => cache.addAll([self.location.href]))
+          );
+          self.skipWaiting();
+        });
+        self.addEventListener('fetch', (e) => {
+          e.respondWith(
+            caches.match(e.request).then((res) => res || fetch(e.request).catch(() => caches.match(self.location.href)))
+          );
+        });
+      `;
+      const blob = new Blob([swCode], { type: 'application/javascript' });
+      navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+    }
+
+    // 3. Audio & Equalizer Logic
+    const audio = document.getElementById('audioElement');
+    const audioInput = document.getElementById('audioInput');
+    const fileLabel = document.getElementById('fileLabel');
+    const trackName = document.getElementById('trackName');
+
+    const bassSlider = document.getElementById('bassSlider');
+    const midSlider = document.getElementById('midSlider');
+    const trebleSlider = document.getElementById('trebleSlider');
+
+    const bassVal = document.getElementById('bassVal');
+    const midVal = document.getElementById('midVal');
+    const trebleVal = document.getElementById('trebleVal');
+
+    let audioCtx = null;
+    let sourceNode = null;
+    let bassFilter = null;
+    let midFilter = null;
+    let trebleFilter = null;
+
+    function setupEqualizer() {
+      if (audioCtx) return;
+
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContextClass();
+      sourceNode = audioCtx.createMediaElementSource(audio);
+
+      // Low Shelf Filter (Bass)
+      bassFilter = audioCtx.createBiquadFilter();
+      bassFilter.type = 'lowshelf';
+      bassFilter.frequency.value = 60;
+      bassFilter.gain.value = Number(bassSlider.value);
+
+      // Peaking Filter (Mid)
+      midFilter = audioCtx.createBiquadFilter();
+      midFilter.type = 'peaking';
+      midFilter.frequency.value = 1000;
+      midFilter.Q.value = 1.0;
+      midFilter.gain.value = Number(midSlider.value);
+
+      // High Shelf Filter (Treble)
+      trebleFilter = audioCtx.createBiquadFilter();
+      trebleFilter.type = 'highshelf';
+      trebleFilter.frequency.value = 3000;
+      trebleFilter.gain.value = Number(trebleSlider.value);
+
+      // Routing: Source -> Bass -> Mid -> Treble -> Speaker
+      sourceNode.connect(bassFilter);
+      bassFilter.connect(midFilter);
+      midFilter.connect(trebleFilter);
+      trebleFilter.connect(audioCtx.destination);
+    }
+
+    // Handle Local File Selection
+    audioInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        trackName.textContent = file.name;
+        fileLabel.textContent = "🔄 Change Local Audio";
+        audio.src = URL.createObjectURL(file);
+        audio.play().catch(() => {});
+      }
+    });
+
+    // Start Web Audio on user play
+    audio.addEventListener('play', () => {
+      setupEqualizer();
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    });
+
+    // Slider Event Listeners
+    bassSlider.addEventListener('input', (e) => {
+      const val = e.target.value;
+      bassVal.textContent = `${val} dB`;
+      if (bassFilter) bassFilter.gain.value = Number(val);
+    });
+
+    midSlider.addEventListener('input', (e) => {
+      const val = e.target.value;
+      midVal.textContent = `${val} dB`;
+      if (midFilter) midFilter.gain.value = Number(val);
+    });
+
+    trebleSlider.addEventListener('input', (e) => {
+      const val = e.target.value;
+      trebleVal.textContent = `${val} dB`;
+      if (trebleFilter) trebleFilter.gain.value = Number(val);
+    });
+  </script>
+</body>
+</html>
