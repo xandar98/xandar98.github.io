@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Offline Equalizer Player</title>
+  <title>Offline & Chat Equalizer Player</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg: #0d0f14;
-      --card: #181b24;
-      --accent: #4e73df;
+      --bg: #0b0d13;
+      --card: #151922;
+      --accent: #5865f2;
       --text: #ffffff;
-      --subtext: #8e95a5;
-      --slider-bg: #2a2e3d;
+      --subtext: #949ba4;
+      --surface: #1e2330;
+      --slider-bg: #2b3142;
     }
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
     body {
       margin: 0;
@@ -35,7 +37,7 @@
       background: var(--card);
       border-radius: 24px;
       padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.7);
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -45,22 +47,21 @@
     }
     .header h2 {
       margin: 0 0 4px 0;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
     }
     .badge {
       font-size: 0.75rem;
-      background: #1c2b4d;
-      color: #6c9bff;
-      padding: 3px 8px;
+      background: #1c2438;
+      color: #7289da;
+      padding: 3px 10px;
       border-radius: 12px;
       display: inline-block;
     }
-    /* iOS friendly file picker button */
     .file-btn {
       width: 100%;
       padding: 12px;
-      background: #242a3a;
-      border: 1px dashed #4e73df;
+      background: #1a202c;
+      border: 1px dashed var(--accent);
       color: #fff;
       border-radius: 14px;
       font-size: 0.85rem;
@@ -74,27 +75,92 @@
     #audioInput {
       display: none;
     }
+    .track-info {
+      text-align: center;
+      padding: 4px 8px;
+    }
     .track-title {
-      font-size: 0.95rem;
+      font-size: 1.05rem;
       font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      text-align: center;
-      color: #4e73df;
+      color: #fff;
+      margin-bottom: 4px;
     }
-    audio {
+    .track-status {
+      font-size: 0.8rem;
+      color: var(--subtext);
+    }
+    .progress-area {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .progress-bar-container {
       width: 100%;
-      height: 40px;
-      border-radius: 8px;
+      height: 6px;
+      background: var(--slider-bg);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+    .time-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--subtext);
+      font-variant-numeric: tabular-nums;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 4px 0;
+    }
+    .btn-ctrl {
+      background: var(--surface);
+      border: none;
+      color: #fff;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+    .btn-ctrl:active {
+      transform: scale(0.92);
+    }
+    .btn-play {
+      width: 56px;
+      height: 56px;
+      background: var(--accent);
+      font-size: 1.4rem;
     }
     .eq-container {
-      background: #12141c;
+      background: var(--surface);
       border-radius: 16px;
       padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
+    }
+    .eq-header {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      justify-content: space-between;
     }
     .eq-group {
       display: flex;
@@ -104,7 +170,7 @@
     .eq-label {
       display: flex;
       justify-content: space-between;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--subtext);
     }
     .eq-label b {
@@ -112,7 +178,7 @@
     }
     input[type="range"] {
       width: 100%;
-      height: 6px;
+      height: 5px;
       background: var(--slider-bg);
       border-radius: 3px;
       outline: none;
@@ -124,23 +190,50 @@
 
   <div class="player-card">
     <div class="header">
-      <h2>Offline Equalizer Player</h2>
-      <span class="badge">iOS & Offline Ready</span>
+      <h2>TubeTV Equalizer Player</h2>
+      <span class="badge">Chat Stream + Local Mode</span>
     </div>
 
-    <!-- Clickable Button for iOS Files Picker -->
+    <!-- Local File Picker -->
     <button type="button" class="file-btn" onclick="document.getElementById('audioInput').click()">
-      📁 <span id="fileBtnText">Choose MP3 / Audio File</span>
+      📂 <span id="fileBtnText">Choose Local Audio</span>
     </button>
+    <input type="file" id="audioInput" accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*,audio/mpeg,audio/mp4" multiple>
 
-    <!-- iOS Fix: Added extensions and common audio MIME types -->
-    <input type="file" id="audioInput" accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*,audio/mpeg,audio/mp4">
+    <!-- Track Details -->
+    <div class="track-info">
+      <div class="track-title" id="trackName">Waiting for audio...</div>
+      <div class="track-status" id="trackIndex">Select file or launch from chat</div>
+    </div>
 
-    <div class="track-title" id="trackName">No track selected</div>
+    <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
 
-    <audio id="audioElement" controls playsinline></audio>
+    <!-- Progress Bar -->
+    <div class="progress-area">
+      <div class="progress-bar-container" id="progressContainer">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="time-labels">
+        <span id="currentTime">00:00</span>
+        <span id="totalDuration">00:00</span>
+      </div>
+    </div>
 
+    <!-- Controls -->
+    <div class="controls">
+      <button class="btn-ctrl" id="prevBtn">⏮</button>
+      <button class="btn-ctrl" id="stopBtn">⏹</button>
+      <button class="btn-ctrl btn-play" id="playPauseBtn">▶</button>
+      <button class="btn-ctrl" id="nextBtn">⏭</button>
+    </div>
+
+    <!-- 3-Band Equalizer -->
     <div class="eq-container">
+      <div class="eq-header">
+        <span>🎛️ Equalizer</span>
+        <span style="font-size:0.75rem; color:var(--subtext)">Real-time DSP</span>
+      </div>
+
       <div class="eq-group">
         <div class="eq-label">
           <span>Bass (60 Hz)</span>
@@ -175,16 +268,29 @@
 
     const audio = document.getElementById('audioElement');
     const audioInput = document.getElementById('audioInput');
-    const fileBtnText = document.getElementById('fileBtnText');
     const trackName = document.getElementById('trackName');
+    const trackIndex = document.getElementById('trackIndex');
+    const fileBtnText = document.getElementById('fileBtnText');
+
+    const progressContainer = document.getElementById('progressContainer');
+    const progressFill = document.getElementById('progressFill');
+    const currentTimeEl = document.getElementById('currentTime');
+    const totalDurationEl = document.getElementById('totalDuration');
+
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
     const bassSlider = document.getElementById('bassSlider');
     const midSlider = document.getElementById('midSlider');
     const trebleSlider = document.getElementById('trebleSlider');
-
     const bassVal = document.getElementById('bassVal');
     const midVal = document.getElementById('midVal');
     const trebleVal = document.getElementById('trebleVal');
+
+    let playlist = [];
+    let currentIndex = 0;
 
     let audioCtx = null;
     let sourceNode = null;
@@ -194,7 +300,6 @@
 
     function setupEqualizer() {
       if (audioCtx) return;
-
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       audioCtx = new AudioContextClass();
       sourceNode = audioCtx.createMediaElementSource(audio);
@@ -221,22 +326,112 @@
       trebleFilter.connect(audioCtx.destination);
     }
 
-    audioInput.addEventListener('change', function(e) {
-      const file = this.files[0];
-      if (file) {
-        trackName.textContent = file.name;
-        fileBtnText.textContent = "Change Selected Audio";
-        audio.src = URL.createObjectURL(file);
-        audio.load();
-        audio.play().catch(() => {});
-      }
-    });
+    function formatTime(seconds) {
+      if (isNaN(seconds)) return "00:00";
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
 
-    audio.addEventListener('play', () => {
+    function playAudio() {
       setupEqualizer();
       if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
+      audio.play().then(() => {
+        playPauseBtn.textContent = '⏸';
+      }).catch(() => {});
+    }
+
+    function pauseAudio() {
+      audio.pause();
+      playPauseBtn.textContent = '▶';
+    }
+
+    // চ্যাট থেকে আসা লিংক স্বয়ংক্রিয়ভাবে লোড করা (URL Parameters Check)
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const streamUrl = params.get('stream');
+      const songTitle = params.get('title');
+
+      if (streamUrl) {
+        trackName.textContent = songTitle ? decodeURIComponent(songTitle) : "Telegram Audio";
+        trackIndex.textContent = "Streaming directly from Telegram Chat";
+        audio.src = streamUrl;
+        audio.load();
+        playAudio();
+      }
+    });
+
+    // লোকাল ফাইল পিকার
+    audioInput.addEventListener('change', function() {
+      if (this.files.length > 0) {
+        playlist = Array.from(this.files);
+        fileBtnText.textContent = `Loaded ${playlist.length} song(s)`;
+        currentIndex = 0;
+        const file = playlist[0];
+        trackName.textContent = file.name;
+        trackIndex.textContent = `Track 1 of ${playlist.length} (Local)`;
+        audio.src = URL.createObjectURL(file);
+        audio.load();
+        playAudio();
+      }
+    });
+
+    playPauseBtn.addEventListener('click', () => {
+      if (!audio.src) return;
+      if (audio.paused) playAudio();
+      else pauseAudio();
+    });
+
+    stopBtn.addEventListener('click', () => {
+      if (!audio.src) return;
+      audio.pause();
+      audio.currentTime = 0;
+      playPauseBtn.textContent = '▶';
+      progressFill.style.width = '0%';
+      currentTimeEl.textContent = "00:00";
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (playlist.length <= 1) return;
+      currentIndex = (currentIndex + 1) % playlist.length;
+      const file = playlist[currentIndex];
+      trackName.textContent = file.name;
+      trackIndex.textContent = `Track ${currentIndex + 1} of ${playlist.length}`;
+      audio.src = URL.createObjectURL(file);
+      audio.load();
+      playAudio();
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (playlist.length <= 1) return;
+      currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+      const file = playlist[currentIndex];
+      trackName.textContent = file.name;
+      trackIndex.textContent = `Track ${currentIndex + 1} of ${playlist.length}`;
+      audio.src = URL.createObjectURL(file);
+      audio.load();
+      playAudio();
+    });
+
+    audio.addEventListener('timeupdate', () => {
+      if (!isNaN(audio.duration) && audio.duration > 0) {
+        const percent = (audio.currentTime / audio.duration) * 100;
+        progressFill.style.width = `${percent}%`;
+        currentTimeEl.textContent = formatTime(audio.currentTime);
+      }
+    });
+
+    audio.addEventListener('loadedmetadata', () => {
+      totalDurationEl.textContent = formatTime(audio.duration);
+    });
+
+    progressContainer.addEventListener('click', (e) => {
+      if (!audio.src || isNaN(audio.duration)) return;
+      const rect = progressContainer.getBoundingClientRect();
+      const clickPos = (e.clientX - rect.left) / rect.width;
+      audio.currentTime = clickPos * audio.duration;
     });
 
     bassSlider.addEventListener('input', (e) => {
