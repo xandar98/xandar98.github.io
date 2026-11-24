@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>iPod Classic OS</title>
+  <title>iPod Classic Wheel OS</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * {
@@ -17,7 +17,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      overscroll-behavior: none; /* Prevents Telegram swipe-to-close bounce */
+      overscroll-behavior: none;
       touch-action: none;
     }
     body {
@@ -28,7 +28,7 @@
       align-items: center;
     }
 
-    /* iPod Classic Metallic Chassis */
+    /* Metallic iPod Chassis */
     .ipod-body {
       width: 100%;
       max-width: 380px;
@@ -70,7 +70,7 @@
       box-shadow: inset 0 0 10px rgba(0,0,0,0.15);
     }
 
-    /* iPod Header Bar */
+    /* Header Bar */
     .lcd-header {
       height: 24px;
       background: linear-gradient(180deg, #d8d8d8 0%, #b8b8b8 50%, #9e9e9e 51%, #c4c4c4 100%);
@@ -90,7 +90,7 @@
       font-size: 10px;
     }
 
-    /* Screen Views Area */
+    /* Views Layout */
     .lcd-content {
       flex: 1;
       display: flex;
@@ -99,7 +99,7 @@
       overflow: hidden;
     }
 
-    /* 1. Menu View */
+    /* 1. Menu */
     .menu-view {
       width: 100%;
       height: 100%;
@@ -129,7 +129,7 @@
       opacity: 0.7;
     }
 
-    /* 2. Now Playing View */
+    /* 2. Now Playing */
     .now-playing-view {
       position: absolute;
       top: 0;
@@ -182,7 +182,6 @@
       text-overflow: ellipsis;
     }
 
-    /* Progress Scrubber */
     .progress-box {
       display: flex;
       flex-direction: column;
@@ -218,7 +217,7 @@
       color: #555;
     }
 
-    /* 3. Equalizer View */
+    /* 3. Equalizer */
     .eq-view {
       position: absolute;
       top: 0;
@@ -252,7 +251,7 @@
       height: 4px;
     }
 
-    /* 4. Volume View */
+    /* 4. Volume */
     .volume-view {
       position: absolute;
       top: 0;
@@ -268,11 +267,11 @@
       gap: 12px;
     }
 
-    /* Pure Touch Keypad (No Accidental Gestures) */
-    .touch-wheel-pad {
+    /* iPod Rotating Click-Wheel with Anti-Gesture Protection */
+    .click-wheel {
       width: 220px;
       height: 220px;
-      background: #f4f4f4;
+      background: #f7f7f7;
       border-radius: 50%;
       box-shadow: inset 0 2px 5px rgba(0,0,0,0.1),
                   0 4px 10px rgba(0,0,0,0.25),
@@ -281,74 +280,39 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      touch-action: none;
     }
 
-    /* Direct Touch Buttons */
-    .pad-btn {
+    .wheel-label {
       position: absolute;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       font-weight: 700;
-      color: #777;
+      font-size: 12px;
+      color: #8c8c8c;
+      letter-spacing: 0.5px;
+      pointer-events: auto;
       cursor: pointer;
-      user-select: none;
+      padding: 10px;
+      z-index: 2;
     }
-    .pad-btn:active {
+    .wheel-label:active {
       color: #1562b3;
       transform: scale(0.92);
     }
+    .wheel-menu { top: 6px; }
+    .wheel-prev { left: 8px; display: flex; align-items: center; }
+    .wheel-next { right: 8px; display: flex; align-items: center; }
+    .wheel-play { bottom: 6px; display: flex; align-items: center; }
 
-    /* Button Positions */
-    .btn-menu {
-      top: 10px;
+    /* Center Select Button */
+    .center-btn {
       width: 80px;
-      height: 36px;
-      font-size: 13px;
-      letter-spacing: 0.5px;
-    }
-    .btn-play {
-      bottom: 10px;
-      width: 80px;
-      height: 36px;
-      font-size: 13px;
-    }
-    .btn-prev {
-      left: 10px;
-      width: 44px;
       height: 80px;
-      font-size: 12px;
-    }
-    .btn-next {
-      right: 10px;
-      width: 44px;
-      height: 80px;
-      font-size: 12px;
-    }
-
-    /* Up / Down Navigation Buttons */
-    .btn-up {
-      top: 48px;
-      width: 40px;
-      height: 24px;
-      font-size: 11px;
-    }
-    .btn-down {
-      bottom: 48px;
-      width: 40px;
-      height: 24px;
-      font-size: 11px;
-    }
-
-    /* Center Select Touch Button */
-    .center-touch-btn {
-      width: 78px;
-      height: 78px;
-      background: linear-gradient(145deg, #e8e8e8, #cecece);
+      background: linear-gradient(145deg, #e6e6e6, #d1d1d1);
       border-radius: 50%;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.15), inset 0 1px 2px rgba(255,255,255,0.9);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.18), inset 0 1px 2px rgba(255,255,255,0.9);
       border: 1px solid #bfbfbf;
       cursor: pointer;
+      z-index: 3;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -356,8 +320,8 @@
       font-weight: 700;
       color: #666;
     }
-    .center-touch-btn:active {
-      background: #c2c2c2;
+    .center-btn:active {
+      background: #c8c8c8;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.25);
       transform: scale(0.96);
     }
@@ -373,7 +337,6 @@
     <!-- LCD Bezel Screen -->
     <div class="screen-bezel">
       <div class="ipod-lcd">
-        <!-- Status Header -->
         <div class="lcd-header">
           <span id="headerTitle">iPod</span>
           <div class="header-icons">
@@ -382,7 +345,6 @@
           </div>
         </div>
 
-        <!-- Main Screen Views -->
         <div class="lcd-content">
           <!-- 1. OS Menu -->
           <div class="menu-view" id="menuView">
@@ -394,14 +356,14 @@
             </ul>
           </div>
 
-          <!-- 2. Now Playing Screen -->
+          <!-- 2. Now Playing -->
           <div class="now-playing-view" id="nowPlayingView">
             <div class="np-top">
               <div class="album-art" id="npArt">🎵</div>
               <div class="track-details">
                 <div class="np-title" id="trackName">No song loaded</div>
                 <div class="np-artist" id="artistName">Apple iPod</div>
-                <div class="np-album" id="sourceMeta">Tap Menu to load files</div>
+                <div class="np-album" id="sourceMeta">Scroll wheel to browse</div>
               </div>
             </div>
 
@@ -444,28 +406,13 @@
       </div>
     </div>
 
-    <!-- Touch Button Pad (No Rotating Wheel Glitches) -->
-    <div class="touch-wheel-pad">
-      <!-- Menu Button -->
-      <div class="pad-btn btn-menu" id="menuBtn">MENU</div>
-      
-      <!-- Up Navigation Arrow -->
-      <div class="pad-btn btn-up" id="upBtn">▲</div>
-
-      <!-- Left / Previous Button -->
-      <div class="pad-btn btn-prev" id="prevBtn">|◀◀</div>
-
-      <!-- Center Select Touch Button -->
-      <div class="center-touch-btn" id="centerBtn">SELECT</div>
-
-      <!-- Right / Next Button -->
-      <div class="pad-btn btn-next" id="nextBtn">▶▶|</div>
-
-      <!-- Down Navigation Arrow -->
-      <div class="pad-btn btn-down" id="downBtn">▼</div>
-
-      <!-- Play / Pause Button -->
-      <div class="pad-btn btn-play" id="playPauseBtn">▶||</div>
+    <!-- iPod Click Wheel with Touch Rotation -->
+    <div class="click-wheel" id="clickWheel">
+      <div class="wheel-label wheel-menu" id="menuBtn">MENU</div>
+      <div class="wheel-label wheel-prev" id="prevBtn">|◀◀</div>
+      <div class="wheel-label wheel-next" id="nextBtn">▶▶|</div>
+      <div class="wheel-label wheel-play" id="playPauseBtn">▶||</div>
+      <div class="center-btn" id="centerBtn">SELECT</div>
     </div>
 
     <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
@@ -473,17 +420,21 @@
   </div>
 
   <script>
-    // 1. Prevent Telegram App Closing Glitch
+    // 1. Prevent Telegram Close on Swipe
     if (window.Telegram && window.Telegram.WebApp) {
       const tg = window.Telegram.WebApp;
       tg.ready();
       tg.expand();
-      // Disable vertical swipe to close so the mini-app stays open permanently
       if (typeof tg.isVerticalSwipesEnabled !== 'undefined') {
         tg.isVerticalSwipesEnabled = false;
       }
       tg.enableClosingConfirmation && tg.enableClosingConfirmation();
     }
+
+    // Stop all page-level pull-down bounces
+    document.body.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+    }, { passive: false });
 
     const audio = document.getElementById('audioElement');
     const fileInput = document.getElementById('fileInput');
@@ -549,39 +500,9 @@
       currentMenuIndex = index;
     }
 
-    // Touch Up / Down Buttons
-    document.getElementById('upBtn').addEventListener('click', () => {
-      if (activeView === 'menu') {
-        currentMenuIndex = (currentMenuIndex - 1 + menuItems.length) % menuItems.length;
-        updateMenuSelection(currentMenuIndex);
-      } else if (activeView === 'volume') {
-        adjustVolume(0.05);
-      } else if (activeView === 'nowPlaying' && audio.duration) {
-        audio.currentTime = Math.min(audio.duration, audio.currentTime + 10);
-      }
-    });
-
-    document.getElementById('downBtn').addEventListener('click', () => {
-      if (activeView === 'menu') {
-        currentMenuIndex = (currentMenuIndex + 1) % menuItems.length;
-        updateMenuSelection(currentMenuIndex);
-      } else if (activeView === 'volume') {
-        adjustVolume(-0.05);
-      } else if (activeView === 'nowPlaying' && audio.duration) {
-        audio.currentTime = Math.max(0, audio.currentTime - 10);
-      }
-    });
-
-    function adjustVolume(delta) {
-      let v = Math.max(0, Math.min(1, Number(volSlider.value) + delta));
-      volSlider.value = v;
-      audio.volume = v;
-      if (gainNode) gainNode.gain.value = v;
-      volText.textContent = `${Math.round(v * 100)}%`;
-    }
-
-    // Center Select Touch Button
-    document.getElementById('centerBtn').addEventListener('click', () => {
+    // Center Button Action
+    document.getElementById('centerBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
       if (activeView === 'menu') {
         const selected = menuItems[currentMenuIndex].dataset.view;
         if (selected === 'openFile') {
@@ -595,33 +516,37 @@
       }
     });
 
-    // Touch Menu (Back)
-    document.getElementById('menuBtn').addEventListener('click', () => {
+    // MENU Button Action (Back)
+    document.getElementById('menuBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
       if (activeView !== 'menu') {
         showView('menu');
       }
     });
 
-    // Play/Pause Touch
-    document.getElementById('playPauseBtn').addEventListener('click', () => {
+    // Play/Pause Button
+    document.getElementById('playPauseBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
       if (!audio.src) return;
       audio.paused ? playAudio() : pauseAudio();
     });
 
-    // Next / Prev Touch
-    document.getElementById('nextBtn').addEventListener('click', () => {
+    // Next / Prev Buttons
+    document.getElementById('nextBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
       if (playlist.length <= 1) return;
       currentIndex = (currentIndex + 1) % playlist.length;
       loadLocalTrack(currentIndex);
     });
 
-    document.getElementById('prevBtn').addEventListener('click', () => {
+    document.getElementById('prevBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
       if (playlist.length <= 1) return;
       currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
       loadLocalTrack(currentIndex);
     });
 
-    // Audio Equalizer setup
+    // Web Audio DSP Equalizer
     function setupEqualizer() {
       if (audioCtx) return;
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -711,7 +636,6 @@
       }
     });
 
-    // Direct Time Seek on touch
     progressContainer.addEventListener('click', (e) => {
       if (!audio.src || isNaN(audio.duration)) return;
       const rect = progressContainer.getBoundingClientRect();
@@ -732,7 +656,7 @@
       totalDurationEl.textContent = formatTime(audio.duration);
     });
 
-    // Equalizer sliders
+    // Equalizer
     bassSlider.addEventListener('input', (e) => {
       bassVal.textContent = `${e.target.value}dB`;
       if (bassFilter) bassFilter.gain.value = Number(e.target.value);
@@ -746,12 +670,74 @@
       if (trebleFilter) trebleFilter.gain.value = Number(e.target.value);
     });
 
-    // Volume Slider
+    // Volume
     volSlider.addEventListener('input', (e) => {
       const v = Number(e.target.value);
       audio.volume = v;
       if (gainNode) gainNode.gain.value = v;
       volText.textContent = `${Math.round(v * 100)}%`;
+    });
+
+    // Smooth Scroll Wheel Engine (With Full Swipe Cancellation)
+    const wheel = document.getElementById('clickWheel');
+    let lastAngle = null;
+    let accumulatedAngle = 0;
+
+    function getAngle(touch, elem) {
+      const rect = elem.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      return Math.atan2(touch.clientY - cy, touch.clientX - cx) * (180 / Math.PI);
+    }
+
+    wheel.addEventListener('touchstart', (e) => {
+      lastAngle = getAngle(e.touches[0], wheel);
+      accumulatedAngle = 0;
+    }, { passive: false });
+
+    wheel.addEventListener('touchmove', (e) => {
+      // Prevent browser default gesture & telegram pull-down close
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (lastAngle === null) return;
+      const currentAngle = getAngle(e.touches[0], wheel);
+      let diff = currentAngle - lastAngle;
+
+      if (diff > 180) diff -= 360;
+      if (diff < -180) diff += 360;
+
+      accumulatedAngle += diff;
+      lastAngle = currentAngle;
+
+      // Every 25 degrees of circular movement registers as a tick
+      if (Math.abs(accumulatedAngle) >= 25) {
+        const step = accumulatedAngle > 0 ? 1 : -1;
+        accumulatedAngle = 0;
+
+        if (activeView === 'menu') {
+          let nextIndex = currentMenuIndex + step;
+          if (nextIndex < 0) nextIndex = menuItems.length - 1;
+          if (nextIndex >= menuItems.length) nextIndex = 0;
+          updateMenuSelection(nextIndex);
+        } else if (activeView === 'volume') {
+          let v = Math.max(0, Math.min(1, Number(volSlider.value) + step * 0.05));
+          volSlider.value = v;
+          audio.volume = v;
+          if (gainNode) gainNode.gain.value = v;
+          volText.textContent = `${Math.round(v * 100)}%`;
+        } else if (activeView === 'nowPlaying' && audio.duration) {
+          audio.currentTime = Math.max(0, Math.min(audio.duration, audio.currentTime + step * 5));
+        }
+      }
+    }, { passive: false });
+
+    wheel.addEventListener('touchend', () => {
+      lastAngle = null;
+    });
+
+    wheel.addEventListener('touchcancel', () => {
+      lastAngle = null;
     });
   </script>
 </body>
