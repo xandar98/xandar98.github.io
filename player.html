@@ -391,8 +391,12 @@
       transform: scale(0.96);
     }
 
+    /* Hidden file input placed outside viewport */
     #fileInput {
-      display: none;
+      position: fixed;
+      left: -9999px;
+      opacity: 0;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -417,7 +421,7 @@
                 <span>Now Playing</span>
                 <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
               </li>
-              <li class="menu-item" data-view="openFile">
+              <li class="menu-item" data-view="openFile" id="openFileItem">
                 <span>Choose Local Songs</span>
                 <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
               </li>
@@ -496,7 +500,8 @@
     </div>
 
     <audio id="audioElement" playsinline crossorigin="anonymous"></audio>
-    <input type="file" id="fileInput" accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*" multiple>
+    <!-- Explicit audio extensions for iOS Safari file pickers -->
+    <input type="file" id="fileInput" accept=".mp3,.m4a,.wav,.aac,.ogg,audio/*,audio/mpeg,audio/mp4" multiple>
   </div>
 
   <script>
@@ -510,7 +515,6 @@
       tg.enableClosingConfirmation && tg.enableClosingConfirmation();
     }
 
-    // High performance Click / Haptic feedback generator
     function triggerHaptic() {
       if (tg && tg.HapticFeedback) {
         tg.HapticFeedback.impactOccurred('light');
@@ -597,28 +601,20 @@
       });
     }
 
-    // Helper for ZERO-LATENCY TOUCH HANDLING (No 300ms click delay)
-    function bindInstantTouch(element, callback) {
-      let triggered = false;
-      element.addEventListener('pointerdown', (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        triggered = true;
+    // Direct Menu item touch click (Direct tap on LCD list)
+    menuItems.forEach((item, idx) => {
+      item.addEventListener('click', () => {
         triggerHaptic();
-        callback();
+        updateMenuSelection(idx);
+        handleSelectAction();
       });
-      element.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!triggered) callback();
-        triggered = false;
-      });
-    }
+    });
 
-    // Instant Center Button Action
-    bindInstantTouch(document.getElementById('centerBtn'), () => {
+    function handleSelectAction() {
       if (activeView === 'menu') {
         const selected = menuItems[currentMenuIndex].dataset.view;
         if (selected === 'openFile') {
+          // Native clean trigger for iOS file picker
           fileInput.click();
         } else {
           showView(selected);
@@ -630,29 +626,44 @@
         selectedEqBand = (selectedEqBand + 1) % 3;
         updateEqRowHighlight();
       }
+    }
+
+    // Center Select Button
+    document.getElementById('centerBtn').addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      triggerHaptic();
+      handleSelectAction();
     });
 
-    // Instant Menu Button (Back)
-    bindInstantTouch(document.getElementById('menuBtn'), () => {
+    // Menu (Back) Button
+    document.getElementById('menuBtn').addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      triggerHaptic();
       if (activeView !== 'menu') {
         showView('menu');
       }
     });
 
-    // Instant Play / Pause
-    bindInstantTouch(document.getElementById('playPauseBtn'), () => {
+    // Play/Pause Button
+    document.getElementById('playPauseBtn').addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      triggerHaptic();
       if (!audio.src) return;
       audio.paused ? playAudio() : pauseAudio();
     });
 
-    // Instant Next / Prev
-    bindInstantTouch(document.getElementById('nextBtn'), () => {
+    // Next / Prev Buttons
+    document.getElementById('nextBtn').addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      triggerHaptic();
       if (playlist.length <= 1) return;
       currentIndex = (currentIndex + 1) % playlist.length;
       loadLocalTrack(currentIndex);
     });
 
-    bindInstantTouch(document.getElementById('prevBtn'), () => {
+    document.getElementById('prevBtn').addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      triggerHaptic();
       if (playlist.length <= 1) return;
       currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
       loadLocalTrack(currentIndex);
@@ -722,8 +733,9 @@
       playAudio();
     }
 
+    // Local Audio File Change Event
     fileInput.addEventListener('change', function() {
-      if (this.files.length > 0) {
+      if (this.files && this.files.length > 0) {
         playlist = Array.from(this.files);
         currentIndex = 0;
         loadLocalTrack(0);
@@ -747,7 +759,7 @@
       }
     });
 
-    // Ultra Fast Scrubber Seeking
+    // Scrubber Seeking
     function seekFromEvent(e) {
       if (!audio.src || isNaN(audio.duration)) return;
       const rect = progressContainer.getBoundingClientRect();
@@ -776,7 +788,7 @@
       totalDurationEl.textContent = formatTime(audio.duration);
     });
 
-    // ULTRA SENSITIVE ROTATING CLICK-WHEEL (Threshold 8 deg)
+    // ROTATING CLICK-WHEEL (Fast Response)
     const wheel = document.getElementById('clickWheel');
     let lastAngle = null;
     let accumulatedAngle = 0;
@@ -807,11 +819,10 @@
       accumulatedAngle += diff;
       lastAngle = currentAngle;
 
-      // Sensitive threshold: fires every 8 degrees for instant fluid response
       if (Math.abs(accumulatedAngle) >= 8) {
         const step = accumulatedAngle > 0 ? 1 : -1;
         accumulatedAngle = 0;
-        triggerHaptic(); // Tactile tick feedback
+        triggerHaptic();
 
         if (activeView === 'menu') {
           let nextIndex = currentMenuIndex + step;
